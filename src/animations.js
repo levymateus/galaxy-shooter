@@ -3,7 +3,6 @@ import { AnimatedSprite, Texture } from 'pixi.js';
 export function create() {
   const props = {
     animations: [],
-    current: null,
   };
 
   props.add = function(name, images, autoUpdate = true) {
@@ -19,9 +18,6 @@ export function create() {
   props.play = function(name, opts = { loop: true }) {
     const animation = props.get(name);
     if (animation.sprite) {
-      if (props.current) {
-        props.current.stop();
-      }
       animation.sprite.loop = opts.loop;
       animation.sprite.play();
       props.current = animation.sprite;

@@ -4,21 +4,16 @@ import { Container } from 'pixi.js';
 import app from './app';
 
 const images = {
-  bullet: [
-    "assets/Bullet/MainBullet.png",
+  rocket: [
+    "assets/Bullet/Bullet_001.png",
+    "assets/Bullet/Bullet_002.png",
+    "assets/Bullet/Bullet_003.png",
   ],
   explosion: [
-    "assets/Explosion/Explosion2_001.png",
-    "assets/Explosion/Explosion2_002.png",
-    "assets/Explosion/Explosion2_003.png",
-    "assets/Smoke/Smoke_001.png",
-    "assets/Smoke/Smoke_002.png",
-    "assets/Smoke/Smoke_003.png",
-    "assets/Smoke/Smoke_004.png",
-    "assets/Smoke/Smoke_005.png",
-    "assets/Smoke/Smoke_006.png",
-    "assets/Smoke/Smoke_007.png",
-    "assets/Smoke/Smoke_008.png",
+    "assets/Explosion/Explosion_001.png",
+    "assets/Explosion/Explosion_002.png",
+    "assets/Explosion/Explosion_003.png",
+    "assets/Explosion/Explosion_004.png",
   ],
 }
 
@@ -27,7 +22,7 @@ export function create({
 }) {
   const props = {
     x, y, scale,
-    speed: { x: 0, y: 2 },
+    speed: { x: 0, y: 3 },
     dir: { x: 0, y: -1 },
     width: 8, height: 8,
     exploded: false,
@@ -40,13 +35,13 @@ export function create({
   };
 
   props.start = function(){
-    const def = props.animations.add('bullet', images.bullet);
+    const def = props.animations.add('rocket', images.rocket);
     props.animations.add('explosion', images.explosion);
 
     def.anchor.set(0.5);
     def.animationSpeed = 8 / 60;
 
-    props.animations.play('bullet');
+    props.animations.play('rocket');
 
     props.container = new Container();
     props.container.addChild(def);
@@ -64,8 +59,8 @@ export function create({
       props.container.x = props.x;
       props.container.y = props.y;
 
-      if (props.speed.y + 0.3 <= 6) {
-        props.speed.y += 0.3;
+      if (props.speed.y + 0.4 <= 4) {
+        props.speed.y += 0.4;
       }
 
       if (props.y <= 0) {
