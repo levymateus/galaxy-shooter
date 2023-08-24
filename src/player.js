@@ -51,8 +51,11 @@ export function create({
     const idle = props.animations.add('idle', images.idle);
     const engine = props.animations.add('engine', images.engine);
 
+    idle.anchor.set(0.5);
+
     engine.animationSpeed = 8 / 60;
     engine.y += 14;
+    engine.anchor.set(0.5);
     engine.play();
 
     props.animations.add('dead', images.explosion);

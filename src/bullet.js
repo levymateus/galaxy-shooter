@@ -39,6 +39,7 @@ export function create({
     const def = props.animations.add('default', images.default);
     props.animations.add('explosion', images.explosion);
 
+    def.anchor.set(0.5);
     def.animationSpeed = 8 / 60;
 
     props.animations.play('default');
