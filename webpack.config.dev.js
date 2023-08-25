@@ -3,6 +3,7 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
+  stats: 'errors-only',
   mode: 'development',
   devServer: {
     static: {
