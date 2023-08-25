@@ -8,7 +8,7 @@ import * as Timer from './timer';
 import * as Shield from './shield';
 import * as Power from './power';
 
-import { BlurFilter, Container } from 'pixi.js';
+import { Container } from 'pixi.js';
 import app from './app';
 
 const images = {
@@ -134,6 +134,9 @@ export function create({
 
     props.cd = Timer.countdown(10);
 
+    app.stage.pivot.x = props.x - app.view.width / 2;
+    app.stage.pivot.y = props.y - app.view.height + 128;
+
     props.state.listen((prevState, newState) => {
       if (prevState === newState) return;
       switch(newState) {
@@ -165,12 +168,12 @@ export function create({
       props.container.x = props.x;
     }
 
-    if (Keyboard.isKeyDown('w') && props.state.value !== 'dead') {
+    if (Keyboard.isKeyDown('w') && props.y - 80 >= 0 && props.state.value !== 'dead') {
       props.y -= props.speed.y * delta;
       props.container.y = props.y;
     }
 
-    if (Keyboard.isKeyDown('s') && props.state.value !== 'dead') {
+    if (Keyboard.isKeyDown('s') && props.y - 48 <= app.view.height && props.state.value !== 'dead') {
       props.y += props.speed.y * delta;
       props.container.y = props.y;
     }
@@ -195,6 +198,8 @@ export function create({
       props.weapons.center.shoot();
       props.cd.start(20);
     }
+
+    app.stage.pivot.x = props.x - app.view.width / 2;
 
     props.weapons.left.x = props.x - 12;
     props.weapons.left.y = props.y - 16;

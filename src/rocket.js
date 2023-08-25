@@ -24,13 +24,14 @@ export function create({
     x, y, scale,
     speed: { x: 0, y: 3 },
     dir: { x: 0, y: -1 },
-    width: 8, height: 8,
+    width: 32, height: 32,
     exploded: false,
     start: null,
     update: null,
     destroy: null,
     oncollide: null,
     container: null,
+    initialPosition: { x, y },
     animations: Animations.create(),
   };
 
@@ -63,7 +64,7 @@ export function create({
         props.speed.y += 0.4;
       }
 
-      if (props.y <= 0) {
+      if (props.y - app.stage.pivot.y - props.height / 2 <= 0) {
         props.destroy();
       }
     }
