@@ -1,36 +1,42 @@
-<<<<<<< Updated upstream
-export default class Timer {
-  static countdown(count, callback, complete) {
-    let countdown = count;
-    let intervalId = null;
-    callback && callback(countdown);
-    intervalId = setInterval(() => {
-      countdown -= 1;
-      if (countdown > 0) {
-        callback && callback(countdown);
-      } else {
-        clearInterval(intervalId);
-        complete();
-      }
-    }, 1000);
-  }
-=======
+import app from "./app";
 
-export function timeout(callback, ms) {
+function tick(cd, callback) {
+  let countdown = cd;
+  let ticker = null;
+
   const props = {
-    timedout: false,
-    id: null,
+    done: true,
+    start: null,
   }
 
-  window.setTimeout(function () {
-    props.timedout = true;
-    callback();
-  }, ms),
-
-  props.stop = function() {
-    window.clearTimeout(props.id);
+  function count(dt) {
+    countdown -= dt;
+    console.log(countdown);
+    if (countdown <= 0) {
+      if (!!callback && !props.done) {
+        app.ticker.remove(ticker);
+        ticker = null;
+        callback();
+      }
+      props.done = true;
+    }
   }
-  
+
+  props.start = (argCd) => {
+    props.done = false;
+    countdown = argCd || cd;
+    if (!ticker) {
+      ticker = app.ticker.add(count);
+    }
+  }
+
   return props;
->>>>>>> Stashed changes
+}
+
+export function timeout(t, callback) {
+  return tick(t, callback);
+}
+
+export function countdown(t, callback) {
+  return tick(t, callback);
 }

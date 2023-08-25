@@ -19,9 +19,8 @@ export function create() {
     const animation = props.get(name);
     if (animation.sprite) {
       animation.sprite.loop = opts.loop;
-      animation.sprite.play();
-      props.current = animation.sprite;
-      return props.current;
+      animation.sprite.gotoAndPlay(0);
+      return animation.sprite;
     }
     return null;
   }
@@ -29,9 +28,8 @@ export function create() {
   props.stop = function(name) {
     const animation = props.get(name);
     if (animation) {
-      animation.sprite.stop();
-      props.current = null;
-      return props.current;
+      animation.sprite.gotoAndStop(0);
+      return animation.sprite;
     }
     return null;
   }
