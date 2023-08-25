@@ -6,8 +6,9 @@ import * as Observervable from './observable';
 import * as Gun from './gun';
 import * as Timer from './timer';
 import * as Shield from './shield';
+import * as Power from './power';
 
-import { Container } from 'pixi.js';
+import { BlurFilter, Container } from 'pixi.js';
 import app from './app';
 
 const images = {
@@ -43,6 +44,8 @@ export function create({
     speed: { x: 3, y: 3 },
     width: 32, height: 32,
     cd: null,
+    shield: null,
+    power: null,
     start: null,
     update: null,
     destroy: null,
@@ -119,6 +122,13 @@ export function create({
     });
     //-----------------
 
+    // power ----------
+    props.power = Power.create({
+      range: props.width,
+      container: props.container,
+    });
+    // ----------------
+
     props.container.x = x;
     props.container.y = y;
 
@@ -177,6 +187,10 @@ export function create({
       props.shield.activate();
     }
 
+    if (Keyboard.isKeyDown('p')) {
+      props.power.activate();
+    }
+
     if (Keyboard.isKeyDown('r') && props.state.value !== 'dead') {
       props.weapons.center.shoot();
       props.cd.start(20);
@@ -214,16 +228,16 @@ export function create({
   }
 
   props.destroy = function () {
-    const explosion = props.animations.get('dead').sprite;
-    explosion.animationSpeed = 4 / 60;
-    explosion.anchor.set(0.5);
-    explosion.onComplete = () => {
+    const anim = props.animations.get('dead').sprite;
+    anim.animationSpeed = 4 / 60;
+    anim.anchor.set(0.5);
+    anim.onComplete = () => {
       props.container.removeChildren();
       props.container.destroy();
       app.ticker.remove(props.update);
     }
     props.container.removeChildren();
-    props.container.addChildAt(explosion, 0);
+    props.container.addChildAt(anim, 0);
     props.animations.play('dead', { loop: false });
   };
 

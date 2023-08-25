@@ -11,11 +11,8 @@ function tick(cd, callback) {
 
   function count(dt) {
     countdown -= dt;
-    console.log(countdown);
     if (countdown <= 0) {
       if (!!callback && !props.done) {
-        app.ticker.remove(ticker);
-        ticker = null;
         callback();
       }
       props.done = true;
