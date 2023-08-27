@@ -9,7 +9,7 @@ import * as Shield from './shield';
 import * as Power from './power';
 
 import { Container } from 'pixi.js';
-import app from './app';
+import app, { MIN_X, MAX_X } from './app';
 
 const images = {
   idle: [
@@ -135,7 +135,7 @@ export function create({
     props.cd = Timer.countdown(10);
 
     app.stage.pivot.x = props.x - app.view.width / 2;
-    app.stage.pivot.y = props.y - app.view.height + 128;
+    app.stage.pivot.y = props.y - app.view.height + 64;
 
     props.state.listen((prevState, newState) => {
       if (prevState === newState) return;
@@ -158,12 +158,12 @@ export function create({
 
   props.update = function (delta) {
 
-    if (Keyboard.isKeyDown('d') && props.state.value !== 'dead') {
+    if (Keyboard.isKeyDown('d') && props.x + app.view.width / 2 <= MAX_X && props.state.value !== 'dead') {
       props.x += props.speed.x * delta;
       props.container.x = props.x;
     }
 
-    if (Keyboard.isKeyDown('a') && props.state.value !== 'dead') {
+    if (Keyboard.isKeyDown('a') && props.x - app.view.width / 2 >= MIN_X && props.state.value !== 'dead') {
       props.x -= props.speed.x * delta;
       props.container.x = props.x;
     }

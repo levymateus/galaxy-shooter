@@ -1,5 +1,7 @@
 import app from './app';
 
 import * as Player from './player';
+import * as Stars from './bg';
 
-Player.create({ x: app.view.width / 2, y: app.view.height - 64 })
+Stars.create({ amount: 512 });
+Player.create({ x: 0, y: app.view.height });
