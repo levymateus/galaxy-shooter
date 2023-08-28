@@ -1,6 +1,7 @@
 import app, { MAX_X, MIN_X } from './app';
 
 import * as Star from './star';
+
 import { randomFloat, rng } from './utils';
 
 export function create({ amount = 512 }) {

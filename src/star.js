@@ -1,8 +1,10 @@
-import app from "./app";
+import app, { MAX_X, MIN_X } from "./app";
 
 import * as Animation from "./animations";
+import * as Keyboard from './keyboard';
 
 import { Container } from "pixi.js";
+import { randomFloat } from "./utils";
 
 const images = [
   ["assets/Star/Star_001.png"],
@@ -14,10 +16,11 @@ const images = [
 
 export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }){
 
+  const initialSpeed = { ...speed };
   const props = {
     x, y, z,
     index,
-    speed,
+    speed: { ...speed },
     dir: { x: 0, y: 1 },
     start: null,
     update: null,
@@ -50,8 +53,18 @@ export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }){
     props.container.y = props.y;
     props.container.z = z;
 
+    if (Keyboard.isKeyDown('w') && props.speed.y <= initialSpeed.y * 12) {
+      props.speed.y += 0.2;
+    }
+
+    if (Keyboard.isKeyDown('s') && props.speed.y - 0.02 >= initialSpeed.y) {
+      props.speed.y -= 0.02;
+    } else if (props.speed.y - 0.018 >= initialSpeed.y) {
+      props.speed.y -= 0.018;
+    }
+
     if (props.y >= app.view.height + app.stage.pivot.y) {
-      props.x = x;
+      props.x = randomFloat(MIN_X, MAX_X);
       props.y = 0;
       props.container.x = props.x;
       props.container.y = props.y;
