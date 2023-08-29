@@ -17,6 +17,8 @@ const images = [
 export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }){
 
   const initialSpeed = { ...speed };
+  const maxSpeed = { x: 0, y: initialSpeed.y * 4 };
+
   const props = {
     x, y, z,
     index,
@@ -51,9 +53,9 @@ export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }){
 
     props.container.x = props.x;
     props.container.y = props.y;
-    props.container.z = z;
+    props.container.z = props.z;
 
-    if (Keyboard.isKeyDown('w') && props.speed.y <= initialSpeed.y * 12) {
+    if (Keyboard.isKeyDown('w') && props.speed.y <= maxSpeed.y) {
       props.speed.y += 0.2;
     }
 
@@ -66,8 +68,10 @@ export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }){
     if (props.y >= app.view.height + app.stage.pivot.y) {
       props.x = randomFloat(MIN_X, MAX_X);
       props.y = 0;
+      props.z = 0;
       props.container.x = props.x;
       props.container.y = props.y;
+      props.container.z = props.z;
     }
   }
 
