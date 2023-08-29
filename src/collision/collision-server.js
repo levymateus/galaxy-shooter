@@ -1,7 +1,6 @@
 import app from "../app";
 
-let bodies = null;
-let circles = [];
+let circles = null;
 
 function circleVsCircle(circleA, circleB) {
   const distX = circleA.x - circleB.x;
@@ -10,17 +9,18 @@ function circleVsCircle(circleA, circleB) {
   return (dist <= circleA.body.shape.radius + circleB.body.shape.radius)
 }
 
-export function create(){
+export const create = () => {
 
   const props = {
     start: null,
     register: null,
     update: null,
+    remove: null,
   };
 
   props.start = function() {
-    if (!bodies) {
-      bodies = new Set();
+    if (!circles) {
+      circles = new Set();
     }
   }
 
@@ -39,13 +39,18 @@ export function create(){
   }
 
   props.register = function(ref) {
-    if (bodies && !bodies.has(ref)) {
+    if (circles && !circles.has(ref)) {
 
       if (ref.body.shape.type === 'Circle') {
-        circles.push(ref);
+        circles.add(ref);
       }
 
-      bodies.add(ref);
+    }
+  }
+
+  props.remove = function(ref) {
+    if (circles && circles.has(ref)) {
+      circles.delete(ref);
     }
   }
 
@@ -55,3 +60,5 @@ export function create(){
   return props;
 
 }
+
+export const get = create;

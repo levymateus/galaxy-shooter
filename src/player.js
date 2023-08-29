@@ -214,7 +214,7 @@ export function create({
   }
 
   props.oncollide = function (col) {
-    props.state.set('dead');
+    // props.state.set('dead');
   }
 
   props.shoot = function(gun, animation) {
@@ -237,7 +237,6 @@ export function create({
 
   props.destroy = function () {
     const anim = props.animations.get('dead').sprite;
-    anim.z = 10;
     anim.animationSpeed = 4 / 60;
     anim.anchor.set(0.5);
     anim.onComplete = () => {
@@ -245,6 +244,7 @@ export function create({
       props.container.destroy();
       app.ticker.remove(props.update);
     }
+    props.body.remove();
     props.container.removeChildren();
     props.container.addChildAt(anim, 0);
     props.animations.play('dead', { loop: false });

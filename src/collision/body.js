@@ -13,7 +13,12 @@ export function create(ref, shape){
       radius: 16,
       ...shape,
     },
+    remove: null,
   };
+
+  props.remove = function() {
+    CollisionServer.get().remove(ref);
+  }
 
   ref.body = props;
   CollisionServer.create().register(ref);

@@ -4,6 +4,7 @@ import * as Animations from "./animations";
 import * as Keyboard from './keyboard';
 import * as Stone from "./stone";
 import * as CollisionBody from "./collision/body";
+import * as Emitter from "./particles/emitter";
 
 import { Container } from "pixi.js";
 import { randomFloat, rng } from "./utils";
@@ -34,7 +35,9 @@ const images = {
 
 export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
 
+  let collision = null;
   const initialSpeed = { ...speed };
+
   const props = {
     x, y, z,
     speed,
@@ -75,7 +78,6 @@ export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
     props.container.addChild(anim);
 
     if (props.body) {
-      props.z = 0 ;
       anim.scale.set(randomFloat(1.0, 1.5));
       props.speed.x = 0;
       props.speed.y = randomFloat(1.3, 2.5);
@@ -128,13 +130,32 @@ export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
   }
 
   props.oncollide = function(col) {
-    // ...
+    if (collision === null || (collision && collision.body.id !== col.body.id)) {
+      collision = col;
+      props.destroy();
+    }
   }
 
   props.destroy = function() {
-    props.container.removeChildren();
-    props.container.destroy();
-    app.ticker.remove(props.update);
+    const em = Emitter.create({
+      assetPath: "assets/Stone/Stone_001.png",
+      speed: { x: randomFloat(2, 3), y: randomFloat(1, 2), },
+      particles: { min: 16, max: 24 },
+    });
+
+    props.speed = { x: 0, y: 0  };
+    props.body.remove();
+    props.container.removeChild(
+      props.animations.get(props.name).sprite,
+    );
+    props.container.addChild(em.container);
+
+    em.oncomplete = function() {
+      console.log('complete');
+      props.container.removeChildren();
+      props.container.destroy();
+      app.ticker.remove(props.update);
+    }
   }
 
   props.start();
