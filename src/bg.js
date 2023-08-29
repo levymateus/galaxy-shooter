@@ -5,7 +5,7 @@ import * as Asteroids from './asteroid';
 
 import { randomFloat, rng } from './utils';
 
-export function create({ amount = 512, asteroids = 64 }) {
+export function create({ amount = 512, asteroids = 56 }) {
   const props = {
     amount,
     asteroids,
@@ -30,7 +30,6 @@ export function create({ amount = 512, asteroids = 64 }) {
         x: rng(MIN_X, MAX_X),
         y: rng(-32, app.view.height),
         z: -1,
-        index: rng(0, 6),
         speed: {
           x: 0,
           y: randomFloat(0.1, 0.45),

@@ -7,6 +7,7 @@ import * as Gun from './gun';
 import * as Timer from './timer';
 import * as Shield from './shield';
 import * as Power from './power';
+import * as CollisionBody from './collision/body';
 
 import { Container } from 'pixi.js';
 import app, { MIN_X, MAX_X } from './app';
@@ -36,15 +37,16 @@ const images = {
 }
 
 export function create({
-  x, y, scale = 1
+  x, y, z = 0, scale = 1
 }) {
   const props = {
     id: uuid(),
-    x, y, scale,
+    x, y, z, scale,
     speed: { x: 3, y: 3 },
     width: 32, height: 32,
     cd: null,
     shield: null,
+    body: null,
     power: null,
     start: null,
     update: null,
@@ -64,6 +66,7 @@ export function create({
 
   props.start = function () {
     props.container = new Container();
+    props.body = CollisionBody.create(props);
 
     // animations ----------
     const idle = props.animations.add('idle', images.idle);
@@ -210,8 +213,8 @@ export function create({
 
   }
 
-  props.oncollide = function () {
-
+  props.oncollide = function (col) {
+    props.state.set('dead');
   }
 
   props.shoot = function(gun, animation) {
@@ -234,6 +237,7 @@ export function create({
 
   props.destroy = function () {
     const anim = props.animations.get('dead').sprite;
+    anim.z = 10;
     anim.animationSpeed = 4 / 60;
     anim.anchor.set(0.5);
     anim.onComplete = () => {
