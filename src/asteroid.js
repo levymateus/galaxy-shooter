@@ -30,7 +30,13 @@ const images = {
   ],
   'Asteroid_outline_006': [
     "assets/Asteroid/Asteroid_outline_006.png",
-  ]
+  ],
+  explosion: [
+    "assets/Explosion/Explosion_001.png",
+    "assets/Explosion/Explosion_002.png",
+    "assets/Explosion/Explosion_003.png",
+    "assets/Explosion/Explosion_004.png",
+  ],
 }
 
 export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
@@ -70,6 +76,7 @@ export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
     anim.anchor.set(0.5);
     anim.animationSpeed = 8 / 60;
 
+    props.animations.add('explosion', images.explosion);
 
     props.container.x = x;
     props.container.y = y;
@@ -137,10 +144,20 @@ export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
   }
 
   props.destroy = function() {
-    const em = Emitter.create({
+
+    let explosionIsDone = false;
+    let emmiterIsDone = false;
+
+    function removeAll() {
+      props.container.removeChildren();
+      props.container.destroy();
+      app.ticker.remove(props.update);
+    }
+
+    const emitter = Emitter.create({
       assetPath: "assets/Stone/Stone_001.png",
       speed: { x: randomFloat(2, 3), y: randomFloat(1, 2), },
-      particles: { min: 16, max: 24 },
+      particles: { min: 24, max: 32 },
     });
 
     props.speed = { x: 0, y: 0  };
@@ -148,13 +165,25 @@ export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
     props.container.removeChild(
       props.animations.get(props.name).sprite,
     );
-    props.container.addChild(em.container);
+    props.container.addChild(emitter.container);
 
-    em.oncomplete = function() {
-      console.log('complete');
-      props.container.removeChildren();
-      props.container.destroy();
-      app.ticker.remove(props.update);
+    const explosion = props.animations.get('explosion').sprite;
+    explosion.anchor.set(0.5);
+    explosion.animationSpeed = 4 / 60;
+    explosion.onComplete = function() {
+      explosionIsDone = true;
+      if (explosionIsDone && emmiterIsDone) {
+        removeAll();
+      }
+    }
+    props.container.addChild(explosion);
+    props.animations.play('explosion', { loop: false });
+
+    emitter.oncomplete = function() {
+      emmiterIsDone = true;
+      if (explosionIsDone && emmiterIsDone) {
+        removeAll();
+      }
     }
   }
 

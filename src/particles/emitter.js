@@ -6,6 +6,7 @@ import { Container } from "pixi.js";
 import { randomFloat, rng } from "../utils";
 
 export function create({
+  frequency = 0,
   particles = {
     min: 1,
     max: 3,
@@ -21,13 +22,15 @@ export function create({
 }){
 
   let timer = 0;
+  let count = rng(particles.min, particles.max);
+
   const props = {
+    frequency,
     start: null,
     update: null,
     destroy: null,
     container: null,
     oncomplete: null,
-    count: rng(particles.min, particles.max),
     particles: [],
   };
 
@@ -35,22 +38,32 @@ export function create({
     props.container = new Container();
     props.container.x = position.x;
     props.container.y = position.y;
+
+    if (!props.frequency) {
+      spawn(count);
+    }
   }
 
-  props.update = function(delta) {
-
-    if (timer >= 1 && props.count) {
+  function spawn(n) {
+    for (let i = 0; i < n; i++) {
       const p = Particle.create({
         assetPath,
         container: props.container,
-        scale: 1.5,
+        scale: 2,
         dir: {
           x: randomFloat(-1, 1),
           y: randomFloat(-1, 1),
         }
       });
       props.particles.push(p);
-      props.count -= 1;
+    }
+  }
+
+  props.update = function(delta) {
+
+    if (props.frequency && timer >= props.frequency && count) {
+      spawn(1);
+      count -= 1;
       timer = 0;
     }
 
@@ -79,7 +92,6 @@ export function create({
     props.particles.splice(index, 1);
     if (props.particles.length <= 0) {
       props.oncomplete();
-      console.log('destroy particles');
       props.container.removeChildren();
       props.container.destroy();
     }
