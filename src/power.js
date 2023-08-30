@@ -1,10 +1,9 @@
-import app from "./app";
 
-import * as Timer from "./timer";
 import * as Animation from "./animations";
+import * as Timer from "./timer";
 
 import { Container } from 'pixi.js';
-import { rng } from "./utils";
+import { randomInt } from "./utils";
 
 const images = {
   lightning001: [
@@ -14,7 +13,7 @@ const images = {
   ]
 }
 
-export function create({ x = 0, y = 0, range = 32, cd = 500, container }){
+export function create({ x = 0, y = 0, range = 32, cd = 500, container }) {
 
   const props = {
     up: false,
@@ -26,7 +25,7 @@ export function create({ x = 0, y = 0, range = 32, cd = 500, container }){
     animations: null,
   };
 
-  props.start = function() {
+  props.start = function () {
     props.container = new Container();
     props.animations = Animation.create();
     props.cd = Timer.countdown(cd, () => {
@@ -35,12 +34,12 @@ export function create({ x = 0, y = 0, range = 32, cd = 500, container }){
     props.animations.add('lightning001', images.lightning001);
   }
 
-  props.update = function() {
+  props.update = function () {
 
   }
 
-  props.activate = function() {
-    const anim = props.animations.get('lightning001').sprite;
+  props.activate = function () {
+    const anim = props.animations.get('lightning001');
 
     if (anim.playing || !props.cd.done || props.up) {
       return
@@ -48,18 +47,18 @@ export function create({ x = 0, y = 0, range = 32, cd = 500, container }){
 
     props.up = true;
 
-    anim.x = x + rng(-range / 2, range /2);
-    anim.y = y + rng(-range / 2, range /2);
+    anim.x = x + randomInt(-range / 2, range / 2);
+    anim.y = y + randomInt(-range / 2, range / 2);
     anim.alpha = 1;
-    anim.angle = rng(0, 360);
+    anim.angle = randomInt(0, 360);
     anim.animationSpeed = 24 / 60;
     anim.scale.set(1, 1);
     anim.anchor.set(0.5);
 
     anim.onComplete = () => {
-      anim.x = x + rng(-range / 2, range /2);
-      anim.y = y + rng(-range / 2, range / 2);
-      anim.angle += rng(0, 360);
+      anim.x = x + randomInt(-range / 2, range / 2);
+      anim.y = y + randomInt(-range / 2, range / 2);
+      anim.angle += randomInt(0, 360);
 
       if (props.up) {
         anim.gotoAndPlay(0);

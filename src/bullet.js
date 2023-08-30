@@ -1,4 +1,7 @@
+import _enum from './enum';
+
 import * as Animations from './animations';
+import * as CollisionBody from './collision/body';
 
 import { Container } from 'pixi.js';
 import app from './app';
@@ -27,6 +30,7 @@ export function create({
 }) {
   const props = {
     x, y, scale,
+    label: _enum.Bullet,
     speed: { x: 0, y: 2 },
     dir: { x: 0, y: -1 },
     width: 32, height: 32,
@@ -36,11 +40,14 @@ export function create({
     destroy: null,
     oncollide: null,
     container: null,
-    initialPosition: { x, y },
+    body: null,
     animations: Animations.create(),
   };
 
   props.start = function(){
+    props.container = new Container();
+    props.body = CollisionBody.create(props, { radius: 4 });
+
     const def = props.animations.add('bullet', images.bullet);
     props.animations.add('explosion', images.explosion);
 
@@ -48,8 +55,6 @@ export function create({
     def.animationSpeed = 8 / 60;
 
     props.animations.play('bullet');
-
-    props.container = new Container();
     props.container.addChild(def);
 
     props.container.x = x;
@@ -75,20 +80,31 @@ export function create({
     }
   }
 
-  props.oncollide = function() {
-    const explosion = props.animations.play('explosion', { loop: false });
-    explosion.animationSpeed = 12 / 60;
-    explosion.anchor.set(0.5);
-    explosion.scale.set(0.7, 0.7);
-    explosion.onComplete = () => {
-      props.destroy();
+  props.oncollide = function(col) {
+    switch(col.label) {
+      case _enum.Bullet:
+      case _enum.Player:
+        break;
+      default:
+        const explosion = props.animations.play('explosion', { loop: false });
+        explosion.animationSpeed = 12 / 60;
+        explosion.anchor.set(0.5);
+        explosion.scale.set(0.7, 0.7);
+        explosion.onComplete = () => {
+          props.destroy();
+        }
+        props.exploded = true;
+        props.container.removeChild(
+          props.animations.get('bullet'),
+        );
+        props.container.addChild(explosion);
+      return;
     }
-    props.exploded = true;
-    props.container.removeChildAt(0);
-    props.container.addChildAt(explosion, 0);
   }
 
   props.destroy = function() {
+    props.body.remove();
+    app.stage.removeChild(props.container);
     props.container.removeChildren();
     props.container.destroy();
     app.ticker.remove(props.update);

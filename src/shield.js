@@ -37,7 +37,7 @@ export function create({ health = 10, cd, container }) {
   }
 
   props.activate = function() {
-    const anim = props.animations.get('shield').sprite;
+    const anim = props.animations.get('shield');
 
     if (anim.playing || !props.cd.done || props.up) {
       return

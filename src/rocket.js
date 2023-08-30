@@ -1,4 +1,7 @@
+import _enum from './enum';
+
 import * as Animations from './animations';
+import * as CollisionBody from './collision/body';
 
 import { Container } from 'pixi.js';
 import app from './app';
@@ -22,9 +25,11 @@ export function create({
 }) {
   const props = {
     x, y, scale,
+    label: _enum.Rocket,
     speed: { x: 0, y: 3 },
     dir: { x: 0, y: -1 },
     width: 32, height: 32,
+    body: null,
     exploded: false,
     start: null,
     update: null,
@@ -36,6 +41,8 @@ export function create({
   };
 
   props.start = function(){
+    props.body = CollisionBody.create(props, { radius: 8 });
+
     const def = props.animations.add('rocket', images.rocket);
     props.animations.add('explosion', images.explosion);
 
@@ -53,37 +60,47 @@ export function create({
   }
 
   props.update = function(delta) {
-    if (!props.exploded) {
-      props.x += props.dir.x * delta * props.speed.x;
-      props.y += props.dir.y * delta * props.speed.y;
+    if (props.exploded) return
 
-      props.container.x = props.x;
-      props.container.y = props.y;
+    props.x += props.dir.x * delta * props.speed.x;
+    props.y += props.dir.y * delta * props.speed.y;
 
-      if (props.speed.y + 0.4 <= 4) {
-        props.speed.y += 0.4;
-      }
+    props.container.x = props.x;
+    props.container.y = props.y;
 
-      if (props.y - app.stage.pivot.y - props.height / 2 <= 0) {
-        props.destroy();
-      }
+    if (props.speed.y + 0.4 <= 4) {
+      props.speed.y += 0.4;
+    }
+
+    if (props.y - app.stage.pivot.y - props.height / 2 <= 0) {
+      props.destroy();
     }
   }
 
-  props.oncollide = function() {
-    const explosion = props.animations.play('explosion', { loop: false });
-    explosion.animationSpeed = 12 / 60;
-    explosion.anchor.set(0.5);
-    explosion.scale.set(0.7, 0.7);
-    explosion.onComplete = () => {
-      props.destroy();
+  props.oncollide = function(col) {
+    if (props.exploded) return
+    switch(col.label) {
+      case _enum.Asteroid:
+        const explosion = props.animations.play('explosion', { loop: false });
+        explosion.animationSpeed = 12 / 60;
+        explosion.anchor.set(0.5);
+        explosion.scale.set(0.7, 0.7);
+        explosion.onComplete = () => {
+          props.destroy();
+        }
+        props.exploded = true;
+        props.container.removeChild(
+          props.animations.get('rocket'),
+        );
+        props.container.addChild(explosion);
+      default:
+        return;
     }
-    props.exploded = true;
-    props.container.removeChildAt(0);
-    props.container.addChildAt(explosion, 0);
   }
 
   props.destroy = function() {
+    props.body.remove();
+    app.stage.removeChild(props.container);
     props.container.removeChildren();
     props.container.destroy();
     app.ticker.remove(props.update);

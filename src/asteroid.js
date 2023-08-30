@@ -1,13 +1,14 @@
-import app, { MAX_X, MIN_X } from "./app";
+import app, { MAX_X, MIN_X, MIN_Y } from "./app";
+import _enum from "./enum";
 
 import * as Animations from "./animations";
-import * as Keyboard from './keyboard';
-import * as Stone from "./stone";
 import * as CollisionBody from "./collision/body";
+import * as Keyboard from './keyboard';
 import * as Emitter from "./particles/emitter";
+import * as Stone from "./stone";
 
 import { Container } from "pixi.js";
-import { randomFloat, rng } from "./utils";
+import { randomFloat, randomInt } from "./utils";
 
 const images = {
   'Asteroid_001': [
@@ -39,18 +40,19 @@ const images = {
   ],
 }
 
-export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
+export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }) {
 
   let collision = null;
   const initialSpeed = { ...speed };
 
   const props = {
-    x, y, z,
-    speed,
-    name,
-    body: null,
+    x, y, z, speed, name,
+    destroid: false,
+    label: _enum.Asteroid,
     dir: { x: 0, y: 1 },
+    body: null,
     start: null,
+    reset: null,
     update: null,
     destroy: null,
     oncollide: null,
@@ -58,23 +60,26 @@ export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
     animations: null,
   };
 
-  props.start = function() {
-    const keys = Object.entries(images)
+  props.start = function () {
+    props.container = new Container();
+
+    const keys = Object.entries(images);
+    const keysCount = Object.keys(images).filter(key => !key.includes('outline')).length - 1;
+
     props.name = !name
-      ? keys[rng(0, Object.keys(images)
-          .filter(key => !key.includes('outline')).length - 1)][0]
-      : name
+      ? keys[randomInt(0, keysCount)][0]
+      : name;
+
     props.body = props.name.includes('outline')
       ? CollisionBody.create(props)
       : null;
 
-    props.container = new Container();
+    // animation --------------
     props.animations = Animations.create();
-
-    const anim = props.animations.add(props.name, images[props.name]);
-    anim.angle = randomFloat(0, 60);
-    anim.anchor.set(0.5);
-    anim.animationSpeed = 8 / 60;
+    const animation = props.animations.add(props.name, images[props.name]);
+    animation.angle = randomFloat(0, 60);
+    animation.anchor.set(0.5);
+    animation.animationSpeed = 8 / 60;
 
     props.animations.add('explosion', images.explosion);
 
@@ -82,29 +87,30 @@ export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
     props.container.y = y;
     props.container.z = z;
 
-    props.container.addChild(anim);
+    props.container.addChild(animation);
+    props.animations.play(props.name);
 
     if (props.body) {
-      anim.scale.set(randomFloat(1.0, 1.5));
+      animation.scale.set(randomFloat(1.0, 1.5));
       props.speed.x = 0;
       props.speed.y = randomFloat(1.3, 2.5);
-    } else {
+    }
 
-      for (let i = 0; i <= rng(0, 2); i += 1) {
+    if (!props.body) {
+      for (let i = 0; i <= randomInt(0, 2); i += 1) {
         Stone.create({
-          x: rng(-64, 64),
-          y: rng(-64, 64),
+          x: randomInt(-64, 64),
+          y: randomInt(-64, 64),
           container: props.container,
           speed: { y: 0, x: randomFloat(0.1, 0.8) }
         });
       }
     }
 
-    props.animations.play(props.name);
   }
 
-  props.update = function(delta) {
-    const anim = props.animations.get(props.name).sprite;
+  props.update = function (delta) {
+    const anim = props.animations.get(props.name);
 
     anim.angle += 0.1 * delta * props.speed.y;
     props.x += props.speed.x * delta * props.dir.x;
@@ -127,64 +133,78 @@ export function create({ x, y, z = -1, name = null, speed = { x: 0, y: 1 } }){
     }
 
     if (props.y >= app.view.height + app.stage.pivot.y + 32) {
-      props.x = randomFloat(MIN_X, MAX_X);
-      props.y = 0;
-      props.z = z;
-      props.container.x = props.x;
-      props.container.y = props.y;
-      props.container.z = props.z
+      props.reset();
     }
   }
 
-  props.oncollide = function(col) {
-    if (collision === null || (collision && collision.body.id !== col.body.id)) {
-      collision = col;
-      props.destroy();
+  props.oncollide = function (col) {
+    if (props.destroid) return;
+    switch(col.label) {
+      case _enum.Player:
+      case _enum.Bullet:
+      case _enum.Rocket:
+        props.destroy();
+        break;
+      default: return;
     }
   }
 
-  props.destroy = function() {
+  props.destroy = function () {
+
+    props.destroid = true;
+    props.speed = { x: 0, y: 0 };
 
     let explosionIsDone = false;
-    let emmiterIsDone = false;
+    let emmiterIsDone = true;
 
-    function removeAll() {
-      props.container.removeChildren();
-      props.container.destroy();
-      app.ticker.remove(props.update);
-    }
+    props.container.removeChild(props.animations.get(props.name));
 
-    const emitter = Emitter.create({
+    // particles -------------
+    const particles = Emitter.create({
       assetPath: "assets/Stone/Stone_001.png",
       speed: { x: randomFloat(2, 3), y: randomFloat(1, 2), },
       particles: { min: 24, max: 32 },
     });
 
-    props.speed = { x: 0, y: 0  };
-    props.body.remove();
-    props.container.removeChild(
-      props.animations.get(props.name).sprite,
-    );
-    props.container.addChild(emitter.container);
+    particles.oncomplete = function () {
+      emmiterIsDone = true;
+      if (explosionIsDone && emmiterIsDone)
+        props.reset();
+    }
 
-    const explosion = props.animations.get('explosion').sprite;
+    props.container.addChild(particles.container);
+
+    // explosion -------------
+    const explosion = props.animations.get('explosion');
     explosion.anchor.set(0.5);
     explosion.animationSpeed = 4 / 60;
-    explosion.onComplete = function() {
+
+    explosion.onComplete = function () {
       explosionIsDone = true;
-      if (explosionIsDone && emmiterIsDone) {
-        removeAll();
-      }
+      props.container.removeChild(explosion);
+      if (explosionIsDone && emmiterIsDone)
+        props.reset();
     }
+
     props.container.addChild(explosion);
     props.animations.play('explosion', { loop: false });
 
-    emitter.oncomplete = function() {
-      emmiterIsDone = true;
-      if (explosionIsDone && emmiterIsDone) {
-        removeAll();
-      }
-    }
+  }
+
+  props.reset = function() {
+    props.destroid = false;
+    props.speed = speed;
+
+    props.x = randomFloat(MIN_X, MAX_X);
+    props.y = MIN_Y;
+    props.z = z;
+
+    props.container.x = props.x;
+    props.container.y = props.y;
+    props.container.z = props.z;
+
+    props.container.addChild(props.animations.get(props.name));
+
   }
 
   props.start();

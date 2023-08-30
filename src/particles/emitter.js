@@ -3,7 +3,7 @@ import app from "../app";
 import * as Particle from "./particle";
 
 import { Container } from "pixi.js";
-import { randomFloat, rng } from "../utils";
+import { randomFloat, randomInt } from "../utils";
 
 export function create({
   frequency = 0,
@@ -17,12 +17,19 @@ export function create({
   alpha = {
     min: 0.4,
     max: 1,
+    step: 0.01,
+  },
+  scale = {
+    step: 0.01,
+  },
+  angle = {
+    step: 2,
   },
   assetPath = "",
-}){
+}) {
 
   let timer = 0;
-  let count = rng(particles.min, particles.max);
+  let count = randomInt(particles.min, particles.max);
 
   const props = {
     frequency,
@@ -34,7 +41,7 @@ export function create({
     particles: [],
   };
 
-  props.start = function() {
+  props.start = function () {
     props.container = new Container();
     props.container.x = position.x;
     props.container.y = position.y;
@@ -59,7 +66,7 @@ export function create({
     }
   }
 
-  props.update = function(delta) {
+  props.update = function (delta) {
 
     if (props.frequency && timer >= props.frequency && count) {
       spawn(1);
@@ -70,9 +77,9 @@ export function create({
     props.particles.forEach((p, index) => {
       p.x += p.speed.x * p.dir.x * delta;
       p.y += p.speed.y * p.dir.y * delta;
-      p.alpha -= 0.01;
-      p.scale -= 0.01;
-      p.angle += 2;
+      p.alpha -= alpha.step;
+      p.scale -= scale.step;
+      p.angle += angle.step;
 
       p.sprite.x = p.x;
       p.sprite.y = p.y;
@@ -88,12 +95,14 @@ export function create({
     timer += delta;
   }
 
-  props.destroy = function(index) {
+  props.destroy = function (index) {
     props.particles.splice(index, 1);
     if (props.particles.length <= 0) {
       props.oncomplete();
+      app.stage.removeChild(props.container);
       props.container.removeChildren();
       props.container.destroy();
+      app.ticker.remove(props.update);
     }
   }
 

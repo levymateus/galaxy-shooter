@@ -1,23 +1,23 @@
 import app, { MAX_X, MIN_X } from './app';
 
-import * as Star from './star';
 import * as Asteroids from './asteroid';
+import * as Star from './star';
 
-import { randomFloat, rng } from './utils';
+import { randomFloat, randomInt } from './utils';
 
-export function create({ amount = 512, asteroids = 56 }) {
+export function create({ stars = 512, asteroids = 56 }) {
   const props = {
-    amount,
+    stars,
     asteroids,
     start: null,
   };
 
-  props.start = function() {
-    for (let i = 0; i < props.amount; i++) {
+  props.start = function () {
+    for (let i = 0; i < props.stars; i++) {
       Star.create({
-        index: rng(0, 4),
-        x: rng(MIN_X, MAX_X),
-        y: rng(-32, app.view.height),
+        index: randomInt(0, 4),
+        x: randomInt(MIN_X, MAX_X),
+        y: randomInt(-32, app.view.height),
         speed: {
           x: 0,
           y: randomFloat(0.1, 0.45),
@@ -27,8 +27,8 @@ export function create({ amount = 512, asteroids = 56 }) {
 
     for (let i = 0; i < props.asteroids; i++) {
       Asteroids.create({
-        x: rng(MIN_X, MAX_X),
-        y: rng(-32, app.view.height),
+        x: randomInt(MIN_X, MAX_X),
+        y: randomInt(-32, app.view.height),
         z: -1,
         speed: {
           x: 0,

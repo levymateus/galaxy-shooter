@@ -1,4 +1,5 @@
 import uuid from './uuid';
+import _enum from './enum';
 
 import * as Animations from './animations';
 import * as Keyboard from './keyboard';
@@ -42,6 +43,7 @@ export function create({
   const props = {
     id: uuid(),
     x, y, z, scale,
+    label: _enum.Player,
     speed: { x: 3, y: 3 },
     width: 32, height: 32,
     cd: null,
@@ -214,12 +216,18 @@ export function create({
   }
 
   props.oncollide = function (col) {
-    // props.state.set('dead');
+    switch(col.label) {
+      case _enum.Asteroid:
+        props.state.set('dead');
+        break;
+      default:
+        return;
+    }
   }
 
   props.shoot = function(gun, animation) {
     if (gun.shoot()) {
-      const anim = props.animations.get(animation).sprite;
+      const anim = props.animations.get(animation);
       if (!anim.playing) {
         anim.animationSpeed = 24 / 60;
         anim.scale.set(0.5, 0.5);
@@ -236,12 +244,13 @@ export function create({
   }
 
   props.destroy = function () {
-    const anim = props.animations.get('dead').sprite;
+    const anim = props.animations.get('dead');
     anim.animationSpeed = 4 / 60;
     anim.anchor.set(0.5);
     anim.onComplete = () => {
       props.container.removeChildren();
       props.container.destroy();
+      app.stage.removeChild(props.container);
       app.ticker.remove(props.update);
     }
     props.body.remove();

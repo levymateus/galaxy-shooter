@@ -2,9 +2,8 @@ import { AnimatedSprite, Spritesheet, Texture, BaseTexture, Assets } from 'pixi.
 
 export function create() {
   const props = {
-    animations: [],
+    animations: {},
     add: null,
-    from: null,
     get: null,
     play: null,
     stop: null,
@@ -12,20 +11,20 @@ export function create() {
 
   props.add = function (name, data, opts = { autoUpdate: true }) {
     const sprite = new AnimatedSprite(data.map((img) => Texture.from(img)), opts.autoUpdate);
-    props.animations.push({ name, sprite });
+    props.animations[name] = sprite;
     return sprite;
   }
 
   props.get = function(name) {
-    return props.animations.find((animation) => animation.name === name);
+    return props.animations[name] || null;
   }
 
   props.play = function(name, opts = { loop: true }) {
     const animation = props.get(name);
-    if (animation.sprite) {
-      animation.sprite.loop = opts.loop;
-      animation.sprite.gotoAndPlay(0);
-      return animation.sprite;
+    if (animation) {
+      animation.loop = opts.loop;
+      animation.gotoAndPlay(0);
+      return animation;
     }
     return null;
   }
@@ -33,8 +32,8 @@ export function create() {
   props.stop = function(name) {
     const animation = props.get(name);
     if (animation) {
-      animation.sprite.gotoAndStop(0);
-      return animation.sprite;
+      animation.gotoAndStop(0);
+      return animation;
     }
     return null;
   }

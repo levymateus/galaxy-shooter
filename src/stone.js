@@ -2,29 +2,29 @@
 import app from "./app";
 
 import { Sprite, Texture } from "pixi.js";
-import { rng } from "./utils";
+import { randomInt } from "./utils";
 
-export function create({ x, y, speed = { x: 1, y: 1 }, container }){
+export function create({ x, y, speed = { x: 1, y: 1 }, container }) {
 
   const props = {
     x, y,
-    speed: { ...speed   },
+    speed: { ...speed },
     start: null,
     update: null,
     sprite: null,
     container: container,
   };
 
-  props.start = function() {
+  props.start = function () {
     props.sprite = new Sprite(Texture.from(`assets/Stone/Stone_001.png`));
     props.sprite.x = props.x;
     props.sprite.y = props.y;
-    props.sprite.angle = rng(0, 360);
+    props.sprite.angle = randomInt(0, 360);
     props.sprite.anchor.set(0.5);
     props.container.addChild(props.sprite);
   }
 
-  props.update = function(delta) {
+  props.update = function (delta) {
     props.sprite.angle += delta * props.speed.x;
   }
 
