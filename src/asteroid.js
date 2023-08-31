@@ -6,6 +6,7 @@ import * as CollisionBody from "./collision/body";
 import * as Keyboard from './keyboard';
 import * as Emitter from "./particles/emitter";
 import * as Stone from "./stone";
+import * as Timer from './timer';
 
 import { Container, Sprite, Texture } from "pixi.js";
 import { randFloatBet, randIntBet } from "./utils";
@@ -43,11 +44,13 @@ export function create({
 
     dir: { x: 0, y: 1 },
 
+    angle: 0,
     body: null,
     start: null,
     restart: null,
     update: null,
     sprite: null,
+    flick: null,
     explode: null,
     destroy: null,
     oncollide: null,
@@ -59,6 +62,7 @@ export function create({
 
     props.container = new Container();
     props.container.position.set(x, y);
+    props.angle = randFloatBet(0, 1)
 
     props.body = !props.static ? CollisionBody.create(props) : null;
 
@@ -80,7 +84,7 @@ export function create({
 
     if (!props.static) {
       props.sprite = new Sprite(Texture.from(images.sprites[5]));
-      props.speed = { x: 0, y: randFloatBet(1.3, 2.5) };
+      props.speed = { x: 0, y: randFloatBet(1, 2) };
     }
 
     props.sprite.anchor.set(0.5);
@@ -90,7 +94,7 @@ export function create({
 
   props.update = function (delta) {
 
-    props.sprite.angle += 0.1 * delta * props.speed.y;
+    props.sprite.angle += delta * props.speed.y * props.angle;
 
     props.x += props.speed.x * delta * props.dir.x;
     props.y += props.speed.y * delta * props.dir.y;
@@ -164,7 +168,7 @@ export function create({
 
   props.restart = function () {
     props.destroid = false;
-    props.speed = speed;
+    props.speed = { x: 0, y: randFloatBet(1, 2) };
 
     if (props.body) {
       props.body.shape.radius = 16;
@@ -177,6 +181,20 @@ export function create({
     props.container.position.set(props.x, props.y);
     props.container.addChild(props.sprite);
 
+    if (!props.static)
+      props.flick(2000);
+
+  }
+
+  props.flick = function (ms) {
+    const counter = Timer.interval(ms / 10, () => {
+      props.container.alpha = props.container.alpha ? 0 : 1;
+      Timer.timeout(ms, () => {
+        props.container.alpha = 1;
+        counter.stop();
+      }).start();
+    });
+    counter.start();
   }
 
   props.start();

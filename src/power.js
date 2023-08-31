@@ -13,7 +13,7 @@ const images = {
   ]
 }
 
-export function create({ x = 0, y = 0, range = 32, cd = 500, container }) {
+export function create({ x = 0, y = 0, range = 32, cd = 5000, container }) {
 
   const props = {
     up: false,

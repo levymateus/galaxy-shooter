@@ -95,28 +95,28 @@ export function create({
       x, y,
       label: 'shoot-left',
       type: 'bullet',
-      cd: 10,
+      cd: 150,
       count: 100
     });
     props.weapons.right = Gun.create({
       x, y,
       label: 'shoot-right',
       type: 'bullet',
-      cd: 10,
+      cd: 150,
       count: 100
     });
     props.weapons.center = Gun.create({
       x, y,
       label: 'shoot-center',
       type: 'rocket',
-      cd: 30,
+      cd: 250,
       count: 100
     });
     props.weapons.active = props.weapons.left;
 
     props.shield = Shield.create({
       health: 100,
-      cd: 100,
+      cd: 1000,
       container: props.container
     });
 
@@ -125,7 +125,7 @@ export function create({
       container: props.container,
     });
 
-    props.cd = Timer.countdown(1000);
+    props.cd = Timer.countdown(150);
 
     props.container.position.set(props.x, props.y);
     app.stage.pivot.x = props.x - app.view.width / 2;
@@ -181,10 +181,10 @@ export function create({
       props.weapons.active = props.weapons.active.label === 'shoot-left'
       ? props.weapons.right
       : props.weapons.left;
-      props.cd.start(1000);
+      props.cd.start(150);
     } else if (Keyboard.isKeyDown('r') && props.cd.done && props.state.value !== 'dead') {
       props.weapons.center.shoot();
-      props.cd.start(2000);
+      props.cd.start(250);
     }
 
     if (Keyboard.isKeyDown('u')) {
