@@ -3,7 +3,7 @@ import * as Animation from "./animations";
 import * as Timer from "./timer";
 
 import { Container } from 'pixi.js';
-import { randomInt } from "./utils";
+import { randIntBet } from "./utils";
 
 const images = {
   lightning001: [
@@ -47,18 +47,18 @@ export function create({ x = 0, y = 0, range = 32, cd = 500, container }) {
 
     props.up = true;
 
-    anim.x = x + randomInt(-range / 2, range / 2);
-    anim.y = y + randomInt(-range / 2, range / 2);
+    anim.x = x + randIntBet(-range / 2, range / 2);
+    anim.y = y + randIntBet(-range / 2, range / 2);
     anim.alpha = 1;
-    anim.angle = randomInt(0, 360);
+    anim.angle = randIntBet(0, 360);
     anim.animationSpeed = 24 / 60;
     anim.scale.set(1, 1);
     anim.anchor.set(0.5);
 
     anim.onComplete = () => {
-      anim.x = x + randomInt(-range / 2, range / 2);
-      anim.y = y + randomInt(-range / 2, range / 2);
-      anim.angle += randomInt(0, 360);
+      anim.x = x + randIntBet(-range / 2, range / 2);
+      anim.y = y + randIntBet(-range / 2, range / 2);
+      anim.angle += randIntBet(0, 360);
 
       if (props.up) {
         anim.gotoAndPlay(0);

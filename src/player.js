@@ -10,13 +10,11 @@ import * as Shield from './shield';
 import * as Power from './power';
 import * as CollisionBody from './collision/body';
 
-import { Container } from 'pixi.js';
+import { Container, Sprite, Texture } from 'pixi.js';
 import app, { MIN_X, MAX_X } from './app';
 
 const images = {
-  idle: [
-    "assets/MainShip/MainShip.png",
-  ],
+  sprite: "assets/MainShip/MainShip.png",
   explosion: [
     "assets/Explosion/Explosion_001.png",
     "assets/Explosion/Explosion_002.png",
@@ -47,11 +45,13 @@ export function create({
     speed: { x: 3, y: 3 },
     width: 32, height: 32,
     cd: null,
+    sprite: null,
     shield: null,
     body: null,
     power: null,
     start: null,
     update: null,
+    immune: null,
     destroy: null,
     oncollide: null,
     container: null,
@@ -70,11 +70,9 @@ export function create({
     props.container = new Container();
     props.body = CollisionBody.create(props);
 
-    // animations ----------
-    const idle = props.animations.add('idle', images.idle);
-    idle.anchor.set(0.5);
-    props.container.addChild(idle);
-    props.animations.play('idle');
+    props.sprite = new Sprite(Texture.from(images.sprite));
+    props.sprite.anchor.set(0.5);
+    props.container.addChild(props.sprite);
 
     const engine = props.animations.add('engine', images.engine);
     engine.y += 14;
@@ -92,9 +90,7 @@ export function create({
     shootRight.y -= 16;
 
     props.animations.add('dead', images.explosion);
-    // ----------------
 
-    // weapons ---------
     props.weapons.left = Gun.create({
       x, y,
       label: 'shoot-left',
@@ -117,28 +113,21 @@ export function create({
       count: 100
     });
     props.weapons.active = props.weapons.left;
-    // -----------------
 
-    // shield ---------
     props.shield = Shield.create({
       health: 100,
       cd: 100,
       container: props.container
     });
-    //-----------------
 
-    // power ----------
     props.power = Power.create({
       range: props.width,
       container: props.container,
     });
-    // ----------------
 
-    props.container.x = x;
-    props.container.y = y;
+    props.cd = Timer.countdown(1000);
 
-    props.cd = Timer.countdown(10);
-
+    props.container.position.set(props.x, props.y);
     app.stage.pivot.x = props.x - app.view.width / 2;
     app.stage.pivot.y = props.y - app.view.height + 64;
 
@@ -148,6 +137,8 @@ export function create({
         case 'dead':
           props.destroy();
           break;
+        case 'immune':
+          props.immune(2000);
         default:
           break;
       }
@@ -159,16 +150,18 @@ export function create({
       }
     });
 
+    props.state.set('immune');
+
   }
 
   props.update = function (delta) {
 
-    if (Keyboard.isKeyDown('d') && props.x + app.view.width / 2 <= MAX_X && props.state.value !== 'dead') {
+    if (Keyboard.isKeyDown('d') && props.x + 16 <= MAX_X && props.state.value !== 'dead') {
       props.x += props.speed.x * delta;
       props.container.x = props.x;
     }
 
-    if (Keyboard.isKeyDown('a') && props.x - app.view.width / 2 >= MIN_X && props.state.value !== 'dead') {
+    if (Keyboard.isKeyDown('a') && props.x - 16 >= MIN_X && props.state.value !== 'dead') {
       props.x -= props.speed.x * delta;
       props.container.x = props.x;
     }
@@ -183,12 +176,15 @@ export function create({
       props.container.y = props.y;
     }
 
-    if (Keyboard.isKeyDown(' ') && props.cd.done ) {
+    if (Keyboard.isKeyDown(' ') && props.cd.done && props.state.value !== 'dead') {
       props.shoot(props.weapons.active, props.weapons.active.label);
       props.weapons.active = props.weapons.active.label === 'shoot-left'
       ? props.weapons.right
       : props.weapons.left;
-      props.cd.start(10);
+      props.cd.start(1000);
+    } else if (Keyboard.isKeyDown('r') && props.cd.done && props.state.value !== 'dead') {
+      props.weapons.center.shoot();
+      props.cd.start(2000);
     }
 
     if (Keyboard.isKeyDown('u')) {
@@ -199,12 +195,10 @@ export function create({
       props.power.activate();
     }
 
-    if (Keyboard.isKeyDown('r') && props.state.value !== 'dead') {
-      props.weapons.center.shoot();
-      props.cd.start(20);
-    }
 
-    app.stage.pivot.x = props.x - app.view.width / 2;
+    if (props.x - app.view.width / 2 >= MIN_X && props.x + app.view.width / 2 <= MAX_X) {
+      app.stage.pivot.x = props.x - app.view.width / 2;
+    }
 
     props.weapons.left.x = props.x - 12;
     props.weapons.left.y = props.y - 16;
@@ -216,12 +210,13 @@ export function create({
   }
 
   props.oncollide = function (col) {
-    switch(col.label) {
-      case _enum.Asteroid:
-        props.state.set('dead');
-        break;
-      default:
-        return;
+    if (
+      col.label === _enum.Asteroid
+      && props.state.value !== 'immune'
+      && props.health.value <= 0
+      && !props.shield.up
+    ) {
+      props.state.set('dead');
     }
   }
 
@@ -243,16 +238,32 @@ export function create({
     }
   }
 
+  props.immune = function(ms) {
+    props.body.shape.radius = 0;
+    const counter = Timer.interval(ms / 10, () => {
+      props.container.alpha = props.container.alpha ? 0 : 1;
+      Timer.timeout(ms, () => {
+        props.container.alpha = 1;
+        props.body.shape.radius = 16;
+        props.state.set('idle');
+        counter.stop();
+      }).start();
+    });
+    counter.start();
+  }
+
   props.destroy = function () {
     const anim = props.animations.get('dead');
     anim.animationSpeed = 4 / 60;
     anim.anchor.set(0.5);
+
     anim.onComplete = () => {
       props.container.removeChildren();
       props.container.destroy();
       app.stage.removeChild(props.container);
       app.ticker.remove(props.update);
-    }
+    };
+
     props.body.remove();
     props.container.removeChildren();
     props.container.addChildAt(anim, 0);

@@ -1,39 +1,39 @@
-import app from "./app";
 
-function tick(cd, callback) {
-  let countdown = cd;
-  let ticker = null;
-
+export function timeout(arg, callback) {
+  let timeoutId = null
   const props = {
     done: true,
     start: null,
-  }
+    stop: null,
+  };
 
-  function count(dt) {
-    countdown -= dt;
-    if (countdown <= 0) {
-      if (!!callback && !props.done) {
-        callback();
-      }
-      props.done = true;
-    }
-  }
-
-  props.start = (argCd) => {
+  props.start = function (timeout) {
     props.done = false;
-    countdown = argCd || cd;
-    if (!ticker) {
-      ticker = app.ticker.add(count);
-    }
-  }
+    timeoutId = window.setTimeout(() => {
+      props.done = true;
+      if (callback) callback();
+    }, timeout || arg);
+  };
+
+  props.stop = function () {
+    window.clearTimeout(timeoutId);
+  };
 
   return props;
 }
 
-export function timeout(t, callback) {
-  return tick(t, callback);
-}
+export const countdown = timeout;
 
-export function countdown(t, callback) {
-  return tick(t, callback);
+export function interval(t, callback) {
+  let intervalId = null
+  const props = {
+    start() {
+      intervalId = window.setInterval(callback, t);
+    },
+    stop() {
+      window.clearInterval(intervalId);
+    }
+  }
+
+  return props;
 }

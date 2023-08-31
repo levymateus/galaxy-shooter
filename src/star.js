@@ -4,7 +4,7 @@ import * as Animation from "./animations";
 import * as Keyboard from './keyboard';
 
 import { Container } from "pixi.js";
-import { randomFloat } from "./utils";
+import { randFloatBet } from "./utils";
 
 const images = [
   ["assets/Star/Star_001.png"],
@@ -14,7 +14,7 @@ const images = [
   ["assets/Star/Star_002.png"],
 ];
 
-export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }){
+export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }) {
 
   const initialSpeed = { ...speed };
   const maxSpeed = { x: 0, y: initialSpeed.y * 4 };
@@ -31,7 +31,7 @@ export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }){
     animations: null,
   };
 
-  props.start = function() {
+  props.start = function () {
     props.container = new Container();
     props.animations = Animation.create();
 
@@ -46,7 +46,7 @@ export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }){
     props.container.z = z;
   }
 
-  props.update = function(delta) {
+  props.update = function (delta) {
     props.x += props.speed.x * delta * props.dir.x;
     props.y += props.speed.y * delta * props.dir.y;
     props.z = 0;
@@ -66,7 +66,7 @@ export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }){
     }
 
     if (props.y >= app.view.height + app.stage.pivot.y) {
-      props.x = randomFloat(MIN_X, MAX_X);
+      props.x = randFloatBet(MIN_X, MAX_X);
       props.y = 0;
       props.z = 0;
       props.container.x = props.x;

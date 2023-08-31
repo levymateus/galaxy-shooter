@@ -3,7 +3,7 @@ import app from "../app";
 import * as Particle from "./particle";
 
 import { Container } from "pixi.js";
-import { randomFloat, randomInt } from "../utils";
+import { randFloatBet, randIntBet } from "../utils";
 
 export function create({
   frequency = 0,
@@ -29,7 +29,7 @@ export function create({
 }) {
 
   let timer = 0;
-  let count = randomInt(particles.min, particles.max);
+  let count = randIntBet(particles.min, particles.max);
 
   const props = {
     frequency,
@@ -58,8 +58,8 @@ export function create({
         container: props.container,
         scale: 2,
         dir: {
-          x: randomFloat(-1, 1),
-          y: randomFloat(-1, 1),
+          x: randFloatBet(-1, 1),
+          y: randFloatBet(-1, 1),
         }
       });
       props.particles.push(p);

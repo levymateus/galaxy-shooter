@@ -1,4 +1,4 @@
-import { AnimatedSprite, Spritesheet, Texture, BaseTexture, Assets } from 'pixi.js';
+import { AnimatedSprite, Texture } from 'pixi.js';
 
 export function create() {
   const props = {
@@ -9,8 +9,10 @@ export function create() {
     stop: null,
   };
 
+  const handleData = (data) => data.map((img) => Texture.from(img))
+
   props.add = function (name, data, opts = { autoUpdate: true }) {
-    const sprite = new AnimatedSprite(data.map((img) => Texture.from(img)), opts.autoUpdate);
+    const sprite = new AnimatedSprite(handleData(data), opts.autoUpdate);
     props.animations[name] = sprite;
     return sprite;
   }

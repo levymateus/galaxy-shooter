@@ -1,16 +1,16 @@
 import app from '../app';
 import uuid from '../uuid';
+import config from '../config';
 
 import * as CollisionServer from './collision-server';
 
 import { Graphics } from 'pixi.js';
 
-export function create(ref, shape){
-
-  const gr = new Graphics();
+export function create(ref, shape, opts = { debug: config.debug }){
 
   const props = {
     id: uuid(),
+    gr: new Graphics(),
     shape: {
       type: 'Circle',
       width: 1,
@@ -23,23 +23,25 @@ export function create(ref, shape){
   };
 
   props.update = function() {
-    gr.clear();
-    gr.beginFill('#d90fbe');
-    if (props.shape.type === 'Circle') {
-      gr.drawCircle(ref.x, ref.y, props.shape.radius);
+    if (opts.debug) {
+      props.gr.clear();
+      props.gr.beginFill('#d90fbe', 0.6);
+      if (props.shape.type === 'Circle') {
+        props.gr.drawCircle(0, 0, props.shape.radius);
+      }
+      props.gr.endFill();
     }
-    gr.endFill();
   }
 
   props.remove = function() {
-    gr.clear();
-    CollisionServer.get().remove(ref);
     app.ticker.remove(props.update);
+    CollisionServer.get().remove(ref);
   }
 
   ref.body = props;
   CollisionServer.create().register(ref);
-  app.stage.addChild(gr);
+  ref.container.addChild(props.gr);
+  ref.container.swapChildren(props.gr, ref.container.getChildAt(0));
   app.ticker.add(props.update);
 
   return props;

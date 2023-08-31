@@ -2,7 +2,7 @@
 import app from "./app";
 
 import { Sprite, Texture } from "pixi.js";
-import { randomInt } from "./utils";
+import { randIntBet } from "./utils";
 
 export function create({ x, y, speed = { x: 1, y: 1 }, container }) {
 
@@ -19,7 +19,7 @@ export function create({ x, y, speed = { x: 1, y: 1 }, container }) {
     props.sprite = new Sprite(Texture.from(`assets/Stone/Stone_001.png`));
     props.sprite.x = props.x;
     props.sprite.y = props.y;
-    props.sprite.angle = randomInt(0, 360);
+    props.sprite.angle = randIntBet(0, 360);
     props.sprite.anchor.set(0.5);
     props.container.addChild(props.sprite);
   }

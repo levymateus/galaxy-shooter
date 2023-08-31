@@ -41,7 +41,8 @@ export function create({
   };
 
   props.start = function(){
-    props.body = CollisionBody.create(props, { radius: 8 });
+    props.container = new Container();
+    props.body = CollisionBody.create(props, { radius: 6 });
 
     const def = props.animations.add('rocket', images.rocket);
     props.animations.add('explosion', images.explosion);
@@ -51,7 +52,6 @@ export function create({
 
     props.animations.play('rocket');
 
-    props.container = new Container();
     props.container.addChild(def);
 
     props.container.x = x;
@@ -82,16 +82,22 @@ export function create({
     switch(col.label) {
       case _enum.Asteroid:
         const explosion = props.animations.play('explosion', { loop: false });
+
         explosion.animationSpeed = 12 / 60;
         explosion.anchor.set(0.5);
         explosion.scale.set(0.7, 0.7);
+
+        props.body.shape.radius = 0;
+        props.exploded = true;
+
         explosion.onComplete = () => {
           props.destroy();
         }
-        props.exploded = true;
+
         props.container.removeChild(
           props.animations.get('rocket'),
         );
+
         props.container.addChild(explosion);
       default:
         return;

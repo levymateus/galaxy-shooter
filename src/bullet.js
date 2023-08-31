@@ -3,13 +3,11 @@ import _enum from './enum';
 import * as Animations from './animations';
 import * as CollisionBody from './collision/body';
 
-import { Container } from 'pixi.js';
+import { Container, Sprite, Texture } from 'pixi.js';
 import app from './app';
 
 const images = {
-  bullet: [
-    "assets/Bullet/MainBullet.png",
-  ],
+  bullet: "assets/Bullet/MainBullet.png",
   explosion: [
     "assets/Explosion/Explosion2_001.png",
     "assets/Explosion/Explosion2_002.png",
@@ -34,6 +32,7 @@ export function create({
     speed: { x: 0, y: 2 },
     dir: { x: 0, y: -1 },
     width: 32, height: 32,
+    sprite: null,
     exploded: false,
     start: null,
     update: null,
@@ -48,17 +47,12 @@ export function create({
     props.container = new Container();
     props.body = CollisionBody.create(props, { radius: 4 });
 
-    const def = props.animations.add('bullet', images.bullet);
+    props.sprite = new Sprite(Texture.from(images.bullet));
+    props.sprite.anchor.set(0.5);
+    props.container.addChild(props.sprite);
     props.animations.add('explosion', images.explosion);
 
-    def.anchor.set(0.5);
-    def.animationSpeed = 8 / 60;
-
-    props.animations.play('bullet');
-    props.container.addChild(def);
-
-    props.container.x = x;
-    props.container.y = y;
+    props.container.position.set(x, y);
 
   }
 
@@ -67,8 +61,7 @@ export function create({
       props.x += props.dir.x * delta * props.speed.x;
       props.y += props.dir.y * delta * props.speed.y;
 
-      props.container.x = props.x;
-      props.container.y = props.y;
+      props.container.position.set(props.x, props.y);
 
       if (props.speed.y + 0.3 <= 6) {
         props.speed.y += 0.3;
@@ -87,16 +80,20 @@ export function create({
         break;
       default:
         const explosion = props.animations.play('explosion', { loop: false });
+
         explosion.animationSpeed = 12 / 60;
         explosion.anchor.set(0.5);
-        explosion.scale.set(0.7, 0.7);
+        explosion.scale.set(1, 1);
+
+        props.exploded = true;
+        props.body.shape.radius = 0;
+
         explosion.onComplete = () => {
           props.destroy();
-        }
-        props.exploded = true;
-        props.container.removeChild(
-          props.animations.get('bullet'),
-        );
+        };
+
+        props.container.removeChild(props.sprite);
+
         props.container.addChild(explosion);
       return;
     }
