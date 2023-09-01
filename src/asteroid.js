@@ -30,19 +30,26 @@ const images = {
 }
 
 export function create({
-  x, y, z = -1, isStatic = false, speed = { x: 0, y: 1 }
+  x, y, z = 0, isStatic = false, speed = { x: 0, y: 1 },
+  collidesWith = [_enum.Player, _enum.Bullet, _enum.Rocket],
 }) {
 
   const initialSpeed = { ...speed };
+  let lastColliderId = '';
 
   const props = {
     x, y, z, speed,
     label: _enum.Asteroid,
     static: isStatic,
 
-    destroid: false,
+    dead: false,
 
     dir: { x: 0, y: 1 },
+
+    attributes: {
+      damage: 100,
+      health: 1,
+    },
 
     angle: 0,
     body: null,
@@ -60,6 +67,7 @@ export function create({
 
   props.start = function () {
 
+    props.attributes.health = randIntBet(2, 6);
     props.container = new Container();
     props.container.position.set(x, y);
     props.angle = randFloatBet(0, 1)
@@ -76,6 +84,7 @@ export function create({
         Stone.create({
           x: randIntBet(-64, 64),
           y: randIntBet(-64, 64),
+          z: -1,
           container: props.container,
           speed: { y: 0, x: randFloatBet(0.1, 0.8) }
         });
@@ -84,7 +93,7 @@ export function create({
 
     if (!props.static) {
       props.sprite = new Sprite(Texture.from(images.sprites[5]));
-      props.speed = { x: 0, y: randFloatBet(1, 2) };
+      props.speed = { x: 0, y: randFloatBet(1, 2), z: 0 };
     }
 
     props.sprite.anchor.set(0.5);
@@ -93,7 +102,6 @@ export function create({
   }
 
   props.update = function (delta) {
-
     props.sprite.angle += delta * props.speed.y * props.angle;
 
     props.x += props.speed.x * delta * props.dir.x;
@@ -116,20 +124,24 @@ export function create({
     }
   }
 
-  props.oncollide = function (col) {
-    if (props.destroid) return;
-    switch (col.label) {
-      case _enum.Player:
-      case _enum.Bullet:
-      case _enum.Rocket:
-        return props.explode();
-      default: return;
+  props.oncollide = function (collisor) {
+    if (props.dead) return
+    if (!collidesWith.includes(collisor.label)) return
+    if (lastColliderId === collisor.body.id) return
+
+    props.attributes.health -= collisor.attributes.damage;
+
+    if (props.attributes.health <= 0) {
+      props.explode();
     }
+
+    lastColliderId = collisor.body.id;
   }
 
   props.explode = function () {
 
-    props.destroid = true;
+    props.z = -1;
+    props.dead = true;
     props.speed = { x: 0, y: 0 };
 
     let explosionIsDone = false;
@@ -167,16 +179,16 @@ export function create({
   }
 
   props.restart = function () {
-    props.destroid = false;
+    props.dead = false;
     props.speed = { x: 0, y: randFloatBet(1, 2) };
 
     if (props.body) {
       props.body.shape.radius = 16;
+      props.z = 0;
     }
 
     props.x = randFloatBet(MIN_X, MAX_X);
     props.y = MIN_Y;
-    props.z = z;
 
     props.container.position.set(props.x, props.y);
     props.container.addChild(props.sprite);

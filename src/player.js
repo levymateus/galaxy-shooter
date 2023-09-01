@@ -3,7 +3,6 @@ import _enum from './enum';
 
 import * as Animations from './animations';
 import * as Keyboard from './keyboard';
-import * as Observervable from './observable';
 import * as Gun from './gun';
 import * as Timer from './timer';
 import * as Shield from './shield';
@@ -36,14 +35,35 @@ const images = {
 }
 
 export function create({
-  x, y, z = 0, scale = 1
+  x, y, z = 0, scale = 1,
+  collidesWith = [_enum.Asteroid],
 }) {
+
+  let lastColliderId = '';
+
   const props = {
     id: uuid(),
     x, y, z, scale,
-    label: _enum.Player,
-    speed: { x: 3, y: 3 },
     width: 32, height: 32,
+    label: _enum.Player,
+    dead: false,
+
+    speed: { x: 3, y: 3 },
+
+    weapons: {
+      active: null,
+      left: null,
+      right: null,
+      center: null,
+    },
+
+    attributes: {
+      damage: 100,
+      health: 100,
+    },
+
+    state: '',
+
     cd: null,
     sprite: null,
     shield: null,
@@ -51,19 +71,12 @@ export function create({
     power: null,
     start: null,
     update: null,
-    immune: null,
+    flick: null,
     destroy: null,
     oncollide: null,
     container: null,
-    weapons: {
-      active: null,
-      left: null,
-      right: null,
-      center: null,
-    },
-    health: Observervable.create(5),
+
     animations: Animations.create(),
-    state: Observervable.create('idle'),
   };
 
   props.start = function () {
@@ -125,32 +138,13 @@ export function create({
       container: props.container,
     });
 
-    props.cd = Timer.countdown(150);
+    props.cd = Timer.countdown(0);
 
     props.container.position.set(props.x, props.y);
     app.stage.pivot.x = props.x - app.view.width / 2;
     app.stage.pivot.y = props.y - app.view.height + 64;
 
-    props.state.listen((prevState, newState) => {
-      if (prevState === newState) return;
-      switch(newState) {
-        case 'dead':
-          props.destroy();
-          break;
-        case 'immune':
-          props.immune(2000);
-        default:
-          break;
-      }
-    });
-
-    props.health.listen((prevState, newState) => {
-      if (prevState !== newState && newState <= 0) {
-        props.state.set('dead');
-      }
-    });
-
-    props.state.set('immune');
+    props.flick(3000);
 
   }
 
@@ -181,10 +175,10 @@ export function create({
       props.weapons.active = props.weapons.active.label === 'shoot-left'
       ? props.weapons.right
       : props.weapons.left;
-      props.cd.start(150);
+      props.cd.start(350);
     } else if (Keyboard.isKeyDown('r') && props.cd.done && props.state.value !== 'dead') {
       props.weapons.center.shoot();
-      props.cd.start(250);
+      props.cd.start(850);
     }
 
     if (Keyboard.isKeyDown('u')) {
@@ -209,15 +203,24 @@ export function create({
 
   }
 
-  props.oncollide = function (col) {
-    if (
-      col.label === _enum.Asteroid
-      && props.state.value !== 'immune'
-      && props.health.value <= 0
-      && !props.shield.up
-    ) {
-      props.state.set('dead');
+  props.oncollide = function (collisor) {
+    if (props.dead) return
+    if (props.state === 'immune') return
+    if (lastColliderId === collisor.body.id) return
+    if (!collidesWith.includes(collisor.label)) return
+    if (props.shield.up) return
+
+    props.attributes.health -= collisor.attributes.damage;
+    
+    const isDead = props.dead || props.attributes.health <= 0;
+
+    if (isDead) {
+      props.dead = true;
+      props.speed = { x: 0, y: 0, z: 0 };
+      props.destroy();
     }
+
+    lastColliderId = collisor.body.id;
   }
 
   props.shoot = function(gun, animation) {
@@ -238,14 +241,17 @@ export function create({
     }
   }
 
-  props.immune = function(ms) {
+  props.flick = function(ms) {
+    props.state = 'immune';
     props.body.shape.radius = 0;
+    props.z = 1;
     const counter = Timer.interval(ms / 10, () => {
       props.container.alpha = props.container.alpha ? 0 : 1;
       Timer.timeout(ms, () => {
         props.container.alpha = 1;
         props.body.shape.radius = 16;
-        props.state.set('idle');
+        props.state = '';
+        props.z = 0;
         counter.stop();
       }).start();
     });

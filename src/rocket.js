@@ -21,26 +21,38 @@ const images = {
 }
 
 export function create({
-  x, y, scale = 1,
+  x, y, z = 0, scale = 1,
+  collidesWith = [_enum.Asteroid]
 }) {
   const props = {
-    x, y, scale,
+    x, y, z, scale,
     label: _enum.Rocket,
-    speed: { x: 0, y: 3 },
-    dir: { x: 0, y: -1 },
     width: 32, height: 32,
+    dead: false,
+
+    initialPosition: { x, y },
+
+    speed: { x: 0, y: 3 },
+
+    dir: { x: 0, y: -1 },
+
+    attributes: {
+      damage: 10,
+      health: 1,
+    },
+
     body: null,
-    exploded: false,
     start: null,
     update: null,
     destroy: null,
     oncollide: null,
     container: null,
-    initialPosition: { x, y },
+    explode: null,
+
     animations: Animations.create(),
   };
 
-  props.start = function(){
+  props.start = function () {
     props.container = new Container();
     props.body = CollisionBody.create(props, { radius: 6 });
 
@@ -59,52 +71,58 @@ export function create({
 
   }
 
-  props.update = function(delta) {
-    if (props.exploded) return
+  props.update = function (delta) {
+    if (!props.dead) {
+      props.x += props.dir.x * delta * props.speed.x;
+      props.y += props.dir.y * delta * props.speed.y;
 
-    props.x += props.dir.x * delta * props.speed.x;
-    props.y += props.dir.y * delta * props.speed.y;
+      props.container.x = props.x;
+      props.container.y = props.y;
 
-    props.container.x = props.x;
-    props.container.y = props.y;
+      if (props.speed.y + 0.4 <= 4) {
+        props.speed.y += 0.4;
+      }
 
-    if (props.speed.y + 0.4 <= 4) {
-      props.speed.y += 0.4;
+      if (props.y - app.stage.pivot.y - props.height / 2 <= 0) {
+        props.destroy();
+      }
     }
+  }
 
-    if (props.y - app.stage.pivot.y - props.height / 2 <= 0) {
+  props.oncollide = function (collisor) {
+    if (props.dead) return
+    if (!collidesWith.includes(collisor.label)) return
+
+    props.attributes.health = 0;
+    props.explode();
+  }
+
+  props.explode = function () {
+    if (props.dead) return
+
+    const explosion = props.animations.play('explosion', { loop: false });
+
+    props.z = 3;
+    props.dead = true;
+    props.body.shape.radius = 0;
+
+    explosion.animationSpeed = 12 / 60;
+    explosion.anchor.set(0.5);
+    explosion.scale.set(0.7, 0.7);
+
+
+    explosion.onComplete = () => {
       props.destroy();
     }
+
+    props.container.removeChild(
+      props.animations.get('rocket'),
+    );
+
+    props.container.addChild(explosion);
   }
 
-  props.oncollide = function(col) {
-    if (props.exploded) return
-    switch(col.label) {
-      case _enum.Asteroid:
-        const explosion = props.animations.play('explosion', { loop: false });
-
-        explosion.animationSpeed = 12 / 60;
-        explosion.anchor.set(0.5);
-        explosion.scale.set(0.7, 0.7);
-
-        props.body.shape.radius = 0;
-        props.exploded = true;
-
-        explosion.onComplete = () => {
-          props.destroy();
-        }
-
-        props.container.removeChild(
-          props.animations.get('rocket'),
-        );
-
-        props.container.addChild(explosion);
-      default:
-        return;
-    }
-  }
-
-  props.destroy = function() {
+  props.destroy = function () {
     props.body.remove();
     app.stage.removeChild(props.container);
     props.container.removeChildren();

@@ -5,7 +5,8 @@ let circles = null;
 function circleVsCircle(circleA, circleB) {
   const distX = circleA.x - circleB.x;
   const distY = circleA.y - circleB.y;
-  const dist = Math.sqrt((distX * distX) + (distY * distY));
+  const distZ = circleA.z - circleB.z;
+  const dist = Math.sqrt((distX * distX) + (distY * distY) + (distZ * distZ));
   return (dist <= circleA.body.shape.radius + circleB.body.shape.radius)
 }
 
@@ -29,7 +30,7 @@ export const create = () => {
       circles.forEach((circleB) => {
         if (circleA.body.id !== circleB.body.id) {
           const isCollide = circleVsCircle(circleA, circleB);
-          if (isCollide) {
+          if (isCollide && circleA.z === circleB.z) {
             circleA.oncollide(circleB);
             circleB.oncollide(circleA);
           }

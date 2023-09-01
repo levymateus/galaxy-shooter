@@ -6,7 +6,7 @@ import * as Keyboard from './keyboard';
 import { Container } from "pixi.js";
 import { randFloatBet } from "./utils";
 
-const images = [
+  const images = [
   ["assets/Star/Star_001.png"],
   ["assets/Star/Star_004.png"],
   ["assets/Star/Star_007.png"],
@@ -14,7 +14,7 @@ const images = [
   ["assets/Star/Star_002.png"],
 ];
 
-export function create({ x, y, z, index = 0, speed = { x: 0, y: 1 } }) {
+export function create({ x, y, z = -2, index = 0, speed = { x: 0, y: 1 } }) {
 
   const initialSpeed = { ...speed };
   const maxSpeed = { x: 0, y: initialSpeed.y * 4 };

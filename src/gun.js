@@ -27,13 +27,7 @@ export function create({ x, y, label, count, type, cd = 1000 }) {
   }
 
   props.update = function(delta) {
-    // if (props.countdown - delta > 0) {
-    //   props.countdown -= delta;
-    //   props.loaded = false;
-    // } else {
-    //   props.countdown = 0;
-    //   props.loaded = true;
-    // }
+
   }
 
   props.destroy = function() {
@@ -43,7 +37,7 @@ export function create({ x, y, label, count, type, cd = 1000 }) {
   props.shoot = function() {
     if (!props.loaded) {
       return false
-    } 
+    }
 
     if (props.ammo.count >= 1) {
       props.ammo.count -= 1;
@@ -54,14 +48,14 @@ export function create({ x, y, label, count, type, cd = 1000 }) {
 
     switch (props.ammo.type) {
       case 'bullet':
-        Bullet.create({ x: props.x, y: props.y });
+        Bullet.create({ x: props.x, y: props.y, speed: { x: 0, y: 10 } });
         props.loaded = false;
-        props.countdown.start();
+        props.countdown.start(cd);
         break;
       case 'rocket':
         Rocket.create({ x: props.x, y: props.y });
         props.loaded = false;
-        props.countdown .start();
+        props.countdown .start(cd);
       default:
         return false;
     }

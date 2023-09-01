@@ -10,7 +10,7 @@ export function create(ref, shape, opts = { debug: config.debug }){
 
   const props = {
     id: uuid(),
-    gr: new Graphics(),
+
     shape: {
       type: 'Circle',
       width: 1,
@@ -18,19 +18,29 @@ export function create(ref, shape, opts = { debug: config.debug }){
       radius: 16,
       ...shape,
     },
-    update: null,
+
     remove: null,
+
+    gr: opts.debug ? new Graphics() : undefined,
+    start: null,
+    update: opts.debug ? null : undefined,
   };
 
-  props.update = function() {
+  props.start = function() {
+    CollisionServer.create().register(ref);
     if (opts.debug) {
-      props.gr.clear();
-      props.gr.beginFill('#d90fbe', 0.6);
-      if (props.shape.type === 'Circle') {
-        props.gr.drawCircle(0, 0, props.shape.radius);
-      }
-      props.gr.endFill();
+      ref.container.addChild(props.gr);
+      ref.container.swapChildren(props.gr, ref.container.getChildAt(0));
     }
+  }
+
+  props.update = opts.debug && function() {
+    props.gr.clear();
+    props.gr.beginFill('#d90fbe', 0.6);
+    if (props.shape.type === 'Circle') {
+      props.gr.drawCircle(0, 0, props.shape.radius);
+    }
+    props.gr.endFill();
   }
 
   props.remove = function() {
@@ -39,9 +49,8 @@ export function create(ref, shape, opts = { debug: config.debug }){
   }
 
   ref.body = props;
-  CollisionServer.create().register(ref);
-  ref.container.addChild(props.gr);
-  ref.container.swapChildren(props.gr, ref.container.getChildAt(0));
+
+  props.start();
   app.ticker.add(props.update);
 
   return props;
