@@ -18,13 +18,19 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   resolve: {
-    extensions: [".js", ".css"]
+    extensions: [".ts", ".js", ".css"],
+    modules: [path.resolve(__dirname, 'src/'), path.resolve(__dirname, 'node_modules')],
   },
   module: {
     rules: [
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.ts?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
     ],
   },
