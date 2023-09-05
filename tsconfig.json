@@ -16,7 +16,7 @@
       "scripts/*": [
         "src/scripts/*"
       ],
-      "prefab/*": [
+      "game-objects/*": [
         "src/game-objects/*"
       ],
       "utils": [
