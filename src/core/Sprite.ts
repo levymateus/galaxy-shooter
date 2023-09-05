@@ -1,6 +1,8 @@
 import { Sprite as PixiJSSprite } from "pixi.js";
+import type { Sprite } from "core/typings";
 
-export default class Sprite {
+// A Sprite Builder
+export default class SpriteBuilder {
 
   private sprite: PixiJSSprite;
 
@@ -11,39 +13,32 @@ export default class Sprite {
     this.sprite.name = 'Sprite_' + name;
   }
 
-  public pos(x: number, y: number): Sprite {
+  public pos(x: number, y: number): SpriteBuilder {
     this.sprite.position.set(x, y);
     return this;
   }
 
-  public move(x: number, y: number) {
-    this.sprite.position = {
-      x: this.sprite.position.x + x,
-      y: this.sprite.position.y + y
-    };
-  }
-
-  public anchor(anchor: number): Sprite {
+  public anchor(anchor: number): SpriteBuilder {
     this.sprite.anchor.set(anchor);
     return this;
   }
 
-  public visible(): Sprite {
+  public visible(): SpriteBuilder {
     this.sprite.visible = true;
     return this;
   }
 
-  public hidden(): Sprite {
+  public hidden(): SpriteBuilder {
     this.sprite.visible = false;
     return this;
   }
 
-  public angle(angle: number): Sprite {
+  public angle(angle: number): SpriteBuilder {
     this.sprite.angle = angle;
     return this;
   }
 
-  public build() {
+  public build(): Sprite {
     return this.sprite;
   }
 }

@@ -1,6 +1,8 @@
 import { AnimatedSprite as PixiJSAnimatedSprite, Texture as PixiJSTexture } from "pixi.js";
+import { AnimatedSprite } from "core/typings";
 
-export default class AnimatedSprite {
+// A AnimatedSprite builder.
+export default class AnimatedSpriteBuilder {
 
   private sprite: PixiJSAnimatedSprite;
 
@@ -14,37 +16,37 @@ export default class AnimatedSprite {
     return srcs.map(src => PixiJSTexture.from(src));
   }
 
-  public pos(x: number, y: number): AnimatedSprite {
+  public pos(x: number, y: number): AnimatedSpriteBuilder {
     this.sprite.position.set(x, y);
     return this;
   }
 
-  public anchor(anchor: number): AnimatedSprite {
+  public anchor(anchor: number): AnimatedSpriteBuilder {
     this.sprite.anchor.set(anchor);
     return this;
   }
 
-  public visible(): AnimatedSprite {
+  public visible(): AnimatedSpriteBuilder {
     this.sprite.visible = true;
     return this;
   }
 
-  public hidden(): AnimatedSprite {
+  public hidden(): AnimatedSpriteBuilder {
     this.sprite.visible = false;
     return this;
   }
 
-  public angle(angle: number): AnimatedSprite {
+  public angle(angle: number): AnimatedSpriteBuilder {
     this.sprite.angle = angle;
     return this;
   }
 
-  public loop(): AnimatedSprite {
+  public loop(): AnimatedSpriteBuilder {
     this.sprite.loop = true;
     return this;
   }
 
-  build() {
+  build(): AnimatedSprite {
     return this.sprite;
   }
 }

@@ -4,13 +4,16 @@ import { App } from "core/App";
 import { DestroyCallback, Node, StartCallback, UpdateCallback } from "core/typings";
 import { Vec } from "src/typings";
 
+// Game Object base class.
 export class GameObject {
 
-  public name: string;
-  private root: Container;
-  private callStart?: StartCallback;
-  private callUpdate?: UpdateCallback;
-  private callDestroy?: DestroyCallback;
+  readonly name: string;
+
+  readonly root: Container;
+
+  readonly callStart?: StartCallback;
+  readonly callUpdate?: UpdateCallback;
+  readonly callDestroy?: DestroyCallback;
 
   constructor(
     name: string,
@@ -39,10 +42,10 @@ export class GameObject {
     return this.root.position;
   }
 
-  public move(x: number, y: number) {
-    this.position = {
-      x: this.root.position.x + x,
-      y: this.root.position.y + y
+  static move(go: GameObject, x: number, y: number) {
+    go.root.position = {
+      x: go.root.position.x + x,
+      y: go.root.position.y + y
     };
   }
 

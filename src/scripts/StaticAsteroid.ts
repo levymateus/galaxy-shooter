@@ -22,7 +22,7 @@ export const StaticAsteroid = () => {
       reset();
     }
 
-    sgo.move(0 * dt, 1 * dt);
+    GameObject.move(sgo, 0 * dt, 1 * dt);
     sgo.rotate(1);
   }
 

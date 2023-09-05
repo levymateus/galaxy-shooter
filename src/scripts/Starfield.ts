@@ -13,7 +13,6 @@ export const Starfield = () => {
   const dir = { x: 0.01, y: 1 };
   const count = 1024;
 
-  console.log(worldBounds);
   for (let i = 0; i <= count; i++) {
     const name = `Star_00${randInt(1, 6)}`;
     const pos = randVec([minX, maxX, minY, maxY]);

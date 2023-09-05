@@ -13,3 +13,7 @@ export type DestroyCallback = () => void;
 export function isAnimatedSprite(node: Node): node is PixiJSAnimatedSprite {
   return node instanceof PixiJSAnimatedSprite
 }
+
+export type Sprite = PixiJSSprite;
+
+export type AnimatedSprite = PixiJSAnimatedSprite;
