@@ -1,13 +1,13 @@
-import World from "core/World";
-import decoretaMainShip from "prefab/SpaceShip";
-import { GameObject, KinematicGameObject } from "core/GameObject";
-import { isAnimatedSprite } from "core/typings";
-import Keyboard from "core/Keyboard";
-import Camera from "core/Camera";
-import { vec } from "utils";
 import { App } from "core/App";
+import Camera from "core/Camera";
+import { GameObject, KinematicGameObject } from "core/GameObject";
+import Keyboard from "core/Keyboard";
+import World from "core/World";
+import { isAnimatedSprite } from "core/typings";
+import decoretaMainShip from "game-objects/SpaceShip";
+import { vec } from "utils";
 
-export const MainShip = () => {
+export const MainShip = (): GameObject => {
 
   const kgo = new KinematicGameObject("KinematicMainShip", start, update);
   const settings = App.settings.getKeyboardSettings();
@@ -17,7 +17,7 @@ export const MainShip = () => {
   let move = vec(0, 0);
 
   function start(o: GameObject) {
-    const [,, ,] = World.calcWorldBounds();
+    const [, , ,] = World.calcWorldBounds();
     o.position = vec();
     o.removeChildren();
     decoretaMainShip(o, `MainShip`);
@@ -52,6 +52,8 @@ export const MainShip = () => {
       as.play();
     }
   }
+
+  return kgo;
 
 }
 

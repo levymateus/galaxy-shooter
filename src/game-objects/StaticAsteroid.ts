@@ -1,5 +1,5 @@
 import World from "core/World";
-import decorateAsteroid from "prefab/Asteroid";
+import decorateAsteroid from "game-objects/Asteroid";
 
 import { GameObject, StaticGameObject } from "core/GameObject";
 import { randFloat, randVec } from "utils";

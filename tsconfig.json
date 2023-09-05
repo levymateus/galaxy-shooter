@@ -13,9 +13,6 @@
       "core/*": [
         "src/core/*"
       ],
-      "scripts/*": [
-        "src/scripts/*"
-      ],
       "game-objects/*": [
         "src/game-objects/*"
       ],
