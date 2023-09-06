@@ -24,6 +24,9 @@
       ],
       "factory/*": [
         "src/factory/*"
+      ],
+      "stages/*": [
+        "src/stages/*"
       ]
     },
     "sourceMap": true,
