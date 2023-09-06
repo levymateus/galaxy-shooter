@@ -76,7 +76,6 @@ export default class Level {
 
   public addPlayer(player: GameObject): Level {
     this.player = player;
-    this.container.addChild(this.player.root);
     return this;
   }
 
@@ -89,6 +88,7 @@ export default class Level {
 
   public start(): Level {
     this.load();
+    this.container.addChild(this.player.root);
     App.app.stage.addChild(this.container);
     return this;
   }
