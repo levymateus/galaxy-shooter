@@ -21,6 +21,9 @@
       ],
       "typings": [
         "src/typings"
+      ],
+      "factory/*": [
+        "src/factory/*"
       ]
     },
     "sourceMap": true,

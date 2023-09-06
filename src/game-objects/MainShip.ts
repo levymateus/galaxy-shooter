@@ -1,49 +1,21 @@
-import { App } from "core/App";
-import Camera from "core/Camera";
 import { GameObject, KinematicGameObject } from "core/GameObject";
-import Keyboard from "core/Keyboard";
-import World from "core/World";
-import { isAnimatedSprite } from "core/typings";
-import decoretaMainShip from "game-objects/SpaceShip";
+import { StartCallback, UpdateCallback, isAnimatedSprite } from "core/typings";
+import buildSpaceShip, { SpaceShips } from "factory/SpaceShipFactory";
 import { vec } from "utils";
 
-export const MainShip = (): GameObject => {
+export type MainShip = (afterStart: StartCallback, update: UpdateCallback) => GameObject;
 
-  const kgo = new KinematicGameObject("KinematicMainShip", start, update);
-  const settings = App.settings.getKeyboardSettings();
+export const MainShip: MainShip = (onStart, OnUpdate): GameObject => {
 
-  // vars
-  const speed = vec(5, 5);
-  let move = vec(0, 0);
+  const kgo = new KinematicGameObject("KinematicMainShip", start, OnUpdate);
 
   function start(o: GameObject) {
-    const [, , ,] = World.calcWorldBounds();
     o.position = vec();
     o.removeChildren();
-    decoretaMainShip(o, `MainShip`);
+    buildSpaceShip(o, 'MainShip', SpaceShips.MainShip);
     playEngine(o);
 
-    new Camera(o.root);
-  }
-
-  function update(dt: number) {
-
-    move = vec(0, 0);
-
-    if (Keyboard.isKeyDown(settings.MoveUp) && kgo.position.y >= Camera.MAX_CAMERA_Y) {
-      move.y = speed.y * -1;
-    }
-    if (Keyboard.isKeyDown(settings.MoveDown) && kgo.position.y <= Camera.MIN_CAMERA_Y) {
-      move.y = speed.y;
-    }
-    if (Keyboard.isKeyDown(settings.MoveLeft)) {
-      move.x = speed.x * -1;
-    }
-    if (Keyboard.isKeyDown(settings.MoveRight)) {
-      move.x = speed.x;
-    }
-
-    GameObject.move(kgo, move.x * dt, move.y * dt);
+    onStart(o);
   }
 
   function playEngine(o: GameObject) {
