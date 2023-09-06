@@ -7,7 +7,7 @@ import { Vec } from "src/typings";
 // Game Object base class.
 export class GameObject {
 
-  readonly name: string;
+  public name: string;
 
   readonly root: Container;
 
@@ -31,7 +31,6 @@ export class GameObject {
     if (this.callUpdate) App.app.ticker.add(this.callUpdate);
     if (this.callStart) this.callStart(this);
 
-    App.app.stage.addChild(this.root);
   }
 
   set position(pos: Vec) {
