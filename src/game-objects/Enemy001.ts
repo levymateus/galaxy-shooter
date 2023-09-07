@@ -1,5 +1,7 @@
 import Camera from "core/Camera";
 import { GameObject } from "core/GameObject";
+import Timer from "core/Timer";
+import buildAlien, { Aliens } from "factory/AlienFactory";
 
 import { Enemy } from "game-objects/Enemy";
 import { VecRange } from "typings";
@@ -16,6 +18,8 @@ export const createEnemy001 = (createEnemy: Enemy): GameObject => {
 
   function start(o: GameObject) {
     o.position = randVec(ENEMY_VEC_BOUNDS);
+    buildAlien(o, 'Alien', Aliens.Alien001);
+    blink(o);
   }
 
   function update(dt: number) {
@@ -24,6 +28,13 @@ export const createEnemy001 = (createEnemy: Enemy): GameObject => {
     }
 
     GameObject.move(kgo, Math.sin(kgo.position.y * speed.x) * dt, speed.y * dt);
+  }
+
+  function blink(o: GameObject) {
+    new Timer().tick((status) => {
+      o.toggleVisible();
+      if (status === 'complete') o.visible();
+    }, 100, 500);
   }
 
   function reset() {

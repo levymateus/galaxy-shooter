@@ -68,6 +68,14 @@ export class GameObject {
     this.root.children.forEach(cb);
   }
 
+  public toggleVisible(): void {
+    this.root.visible = !this.root.visible;
+  }
+
+  public visible(): void {
+    this.root.visible = true;
+  }
+
   public destroy() {
     if (this.callDestroy) this.callDestroy();
     if (this.callUpdate) App.app.ticker.remove(this.callUpdate);
