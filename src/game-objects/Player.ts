@@ -23,10 +23,10 @@ export const createPlayer = (createMainShip: MainShip): GameObject => {
 
     move = vec(0, 0);
 
-    if (Keyboard.isKeyDown(settings.MoveUp) && kgo.position.y >= Camera.MAX_CAMERA_Y) {
+    if (Keyboard.isKeyDown(settings.MoveUp)) {
       move.y = speed.y * -1;
     }
-    if (Keyboard.isKeyDown(settings.MoveDown) && kgo.position.y <= Camera.MIN_CAMERA_Y) {
+    if (Keyboard.isKeyDown(settings.MoveDown)) {
       move.y = speed.y;
     }
     if (Keyboard.isKeyDown(settings.MoveLeft)) {
