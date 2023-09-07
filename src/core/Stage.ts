@@ -1,13 +1,13 @@
 import { GameObject } from "core/GameObject";
-import { App } from "./App";
 import { Container } from "pixi.js";
+import { App } from "./App";
 
-import { Sprite as PixiJSSprite } from "pixi.js";
 import Sprite from "core/Sprite";
 import World from "core/World";
+import { createStaticAsteroid } from "game-objects/StaticAsteroid";
+import { Sprite as PixiJSSprite } from "pixi.js";
 import { Vec } from "src/typings";
 import { randFloat, randInt, randVec } from "utils";
-import { createStaticAsteroid } from "game-objects/StaticAsteroid";
 
 export default class Level {
 
@@ -63,9 +63,9 @@ export default class Level {
 
   private createAsteroids() {
     const count = 128;
-    for(let i = 0; i <= count; i++) {
-      const a = createStaticAsteroid();
-      this.container.addChild(a.root);
+    for (let i = 0; i <= count; i++) {
+      const sa = createStaticAsteroid();
+      this.container.addChild(sa.root);
     }
   }
 

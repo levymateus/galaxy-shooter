@@ -64,6 +64,10 @@ export class GameObject {
     return this.root.getChildByName(name);
   }
 
+  public forEachChild(cb: ((n: Node) => void)) {
+    this.root.children.forEach(cb);
+  }
+
   public destroy() {
     if (this.callDestroy) this.callDestroy();
     if (this.callUpdate) App.app.ticker.remove(this.callUpdate);

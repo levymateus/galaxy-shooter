@@ -9,7 +9,7 @@ export const createStaticAsteroid = (): GameObject => {
   const sgo = new StaticGameObject("StaticAsteroid", start, update);
 
   let speed = randVec([0.0, 0.0, 0.24, 0.6]);
-  let rotate = randFloat(0.0, 0.8);
+  let angle = randFloat(0.0, 0.8);
 
   function start(o: GameObject) {
     o.position = randVec(World.calcWorldBounds());
@@ -23,19 +23,24 @@ export const createStaticAsteroid = (): GameObject => {
       reset();
     }
 
-    sgo.rotate(rotate);
+    rotate();
+
     GameObject.move(sgo, speed.x * dt, speed.y * dt);
+  }
+
+  function rotate() {
+    sgo.forEachChild(c => { c.angle += angle; });
   }
 
   function reset() {
     const [minX, maxX, minY] = World.calcWorldBounds();
 
     speed = randVec([0.0, 0.0, 0.24, 0.6]);
-    rotate = randFloat(0.0, 0.8);
+    angle = randFloat(0.0, 0.8);
 
     sgo.position = randVec([minX, maxX, minY, minY]);
     sgo.removeChildren();
-    
+
     decorateAsteroid(sgo, `Asteroid_00${randInt(1, 6)}`);
   }
 
