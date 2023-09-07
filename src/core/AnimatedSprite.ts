@@ -41,8 +41,20 @@ export default class AnimatedSpriteBuilder {
     return this;
   }
 
+  public scale(scale: number): AnimatedSpriteBuilder {
+    this.sprite.scale.set(scale, scale);
+    return this;
+  }
+
   public loop(): AnimatedSpriteBuilder {
     this.sprite.loop = true;
+    return this;
+  }
+
+  public play(): AnimatedSpriteBuilder {
+    this.visible();
+    this.loop();
+    this.sprite.play();
     return this;
   }
 
