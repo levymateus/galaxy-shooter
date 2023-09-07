@@ -15,15 +15,21 @@ export default class Level {
   private player: GameObject;
 
   private readonly _enemies: GameObject[];
+  private readonly _asteroids: GameObject[];
 
   constructor(name: string) {
     this.container = new Container();
     this.container.name = name;
     this._enemies = [];
+    this._asteroids = [];
   }
 
   get enemies() {
     return this._enemies;
+  }
+
+  get asteroids() {
+    return this._asteroids;
   }
 
   private createStarfield() {
@@ -83,6 +89,13 @@ export default class Level {
     this._enemies.push(enemy);
     enemy.name += '_' + (this._enemies.length).toString();
     this.container.addChild(enemy.root);
+    return this;
+  }
+
+  public addAsteroid(asteroid: GameObject): Level {
+    this._asteroids.push(asteroid);
+    asteroid.name += ' ' + (this._asteroids.length).toString();
+    this.container.addChild(asteroid.root);
     return this;
   }
 
