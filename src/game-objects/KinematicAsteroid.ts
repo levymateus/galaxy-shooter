@@ -34,10 +34,10 @@ export const createKinematicAsteroid = (): GameObject => {
   }
 
   function blink(o: GameObject) {
-    new Timer().tick((status) => {
+    Timer.tick((status) => {
       o.toggleVisible();
       if (status === 'complete') o.visible();
-    }, 100, 5000);
+    }, 200, 1000);
   }
 
   function reset() {

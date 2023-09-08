@@ -1,19 +1,14 @@
 
 export default class Timer {
 
-  private timeoutId: number | null;
 
-  constructor() {
-    this.timeoutId = null;
+  public static countdown (callback: (() => void), ms: number) {
+    window.setTimeout(callback, ms);
   }
 
-  public countdown (callback: (() => void), ms: number) {
-    this.timeoutId = window.setTimeout(callback, ms);
-  }
-
-  public tick (callback: ((status: 'running' | 'complete') => void), tick: number, total: number) {
+  public static tick (callback: ((status: 'running' | 'complete') => void), tick: number, total: number) {
     let intervalId = window.setInterval(() => callback('running'), tick);
-    this.countdown(() => {
+    Timer.countdown(() => {
       if (intervalId) {
         callback('complete');
         window.clearInterval(intervalId);
@@ -21,9 +16,4 @@ export default class Timer {
     }, total);
   }
 
-  public stop () {
-    if (this.timeoutId) {
-      window.clearInterval(this.timeoutId);
-    }
-  }
 }

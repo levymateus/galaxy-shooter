@@ -31,7 +31,7 @@ export const createEnemy001 = (createEnemy: Enemy): GameObject => {
   }
 
   function blink(o: GameObject) {
-    new Timer().tick((status) => {
+    Timer.tick((status) => {
       o.toggleVisible();
       if (status === 'complete') o.visible();
     }, 100, 500);
