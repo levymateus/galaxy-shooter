@@ -4,6 +4,7 @@ import decorateAsteroid from "game-objects/Asteroid";
 import { GameObject, KinematicGameObject } from "core/GameObject";
 import { randFloat, randVec } from "utils";
 import Timer from "core/Timer";
+import Camera from "core/Camera";
 
 export const createKinematicAsteroid = (): GameObject => {
 
@@ -11,6 +12,7 @@ export const createKinematicAsteroid = (): GameObject => {
 
   let speed = randVec([0.0, 0.0, 0.24, 0.6]);
   let angle = randFloat(0.0, 0.8);
+  let isInView = false;
 
   function start(o: GameObject) {
     o.position = randVec(World.calcWorldBounds());
@@ -22,6 +24,11 @@ export const createKinematicAsteroid = (): GameObject => {
 
     if (kgo.position.y > maxY) {
       reset();
+    }
+
+    if (kgo.position.y >= Camera.MIN_CAMERA_Y && !isInView) {
+      isInView = true;
+      blink(kgo);
     }
 
     rotate();
@@ -43,11 +50,10 @@ export const createKinematicAsteroid = (): GameObject => {
   function reset() {
     const [minX, maxX, minY] = World.calcWorldBounds();
 
+    isInView = false;
     speed = randVec([0.0, 0.0, 0.24, 0.6]);
     angle = randFloat(0.0, 0.8);
-
     kgo.position = randVec([minX, maxX, minY, minY]);
-    blink(kgo);
 
   }
 
