@@ -11,7 +11,10 @@ export default function(o: GameObject, name: string): GameObject {
       .angle(randFloat(0, 360))
       .build(),
   );
+  return o;
+}
 
+export function withSmallAsteroids (o: GameObject): GameObject {
   for (let j = 0; j <= randInt(0, 2); j++) {
     const pos = randVec([-128, 128, -128, 128]);
     o.add(
@@ -22,6 +25,5 @@ export default function(o: GameObject, name: string): GameObject {
         .build(),
     );
   }
-
   return o;
 }

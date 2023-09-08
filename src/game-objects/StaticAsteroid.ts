@@ -13,7 +13,7 @@ export const createStaticAsteroid = (): GameObject => {
 
   function start(o: GameObject) {
     o.position = randVec(World.calcWorldBounds());
-    decorateAsteroid(o, `Asteroid_00${randInt(1, 6)}`);
+    decorateAsteroid(o, `Asteroid_00${randInt(1, 5)}`);
   }
 
   function update(dt: number) {
@@ -41,7 +41,7 @@ export const createStaticAsteroid = (): GameObject => {
     sgo.position = randVec([minX, maxX, minY, minY]);
     sgo.removeChildren();
 
-    decorateAsteroid(sgo, `Asteroid_00${randInt(1, 6)}`);
+    decorateAsteroid(sgo, `Asteroid_00${randInt(1, 5)}`);
   }
 
   return sgo;

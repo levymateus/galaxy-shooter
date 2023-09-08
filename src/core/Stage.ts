@@ -4,6 +4,7 @@ import { App } from "./App";
 
 import Sprite from "core/Sprite";
 import World from "core/World";
+import { withSmallAsteroids } from "game-objects/Asteroid";
 import { createStaticAsteroid } from "game-objects/StaticAsteroid";
 import { Sprite as PixiJSSprite } from "pixi.js";
 import { Vec } from "src/typings";
@@ -62,7 +63,7 @@ export default class Level {
   private createAsteroids() {
     const count = 128;
     for (let i = 0; i <= count; i++) {
-      const sa = createStaticAsteroid();
+      const sa = withSmallAsteroids(createStaticAsteroid());
       this.container.addChild(sa.root);
     }
   }
@@ -98,3 +99,5 @@ export default class Level {
     return this;
   }
 }
+
+
