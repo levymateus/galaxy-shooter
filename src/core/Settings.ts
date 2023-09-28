@@ -1,21 +1,26 @@
-import settingsJson from '../settings.json';
+import { Resolution } from "core";
 
-type KeyboardSettings = {
-  MoveUp: string
-  MoveDown: string
-  MoveLeft: string
-  MoveRight: string
+/**
+ * Global game settings parser.
+ */
+class SettingsClass {
+
+  resolutions: [Resolution, Resolution, Resolution] = [
+    { w: 640, h: 360, ratio: [16, 9] },
+    { w: 960, h: 540, ratio: [16, 9] },
+    { w: 549, h: 540, ratio: [1, 1] },
+  ];
+
+  private static instance: SettingsClass;
+
+  public static getInstance(): SettingsClass {
+    if (!SettingsClass.instance) {
+      SettingsClass.instance = new SettingsClass();
+    }
+    return SettingsClass.instance;
+  }
 }
 
-export default class Settings {
+const Settings = SettingsClass.getInstance();
 
-  private config: Record<'Keyboard' | string, KeyboardSettings | unknown>;
-
-  constructor() {
-    this.config = settingsJson;
-  }
-
-  public getKeyboardSettings(): KeyboardSettings {
-    return this.config.Keyboard as KeyboardSettings;
-  }
-}
+export { Settings }

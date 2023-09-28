@@ -1,0 +1,107 @@
+{
+  "frames": {
+    "mainship_weapon_projectile_auto_cannon_bullet_001": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      },
+      "duration": 100
+    },
+    "mainship_weapon_projectile_auto_cannon_bullet_002": {
+      "frame": {
+        "x": 32,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      },
+      "duration": 100
+    },
+    "mainship_weapon_projectile_auto_cannon_bullet_003": {
+      "frame": {
+        "x": 64,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      },
+      "duration": 100
+    },
+    "mainship_weapon_projectile_auto_cannon_bullet_004": {
+      "frame": {
+        "x": 96,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      },
+      "duration": 100
+    }
+  },
+  "animations": {
+    "shoot": [
+      "mainship_weapon_projectile_auto_cannon_bullet_001",
+      "mainship_weapon_projectile_auto_cannon_bullet_002",
+      "mainship_weapon_projectile_auto_cannon_bullet_003",
+      "mainship_weapon_projectile_auto_cannon_bullet_004"
+    ]
+  },
+  "meta": {
+    "app": "http://www.aseprite.org/",
+    "version": "1.2.40-x64-trial",
+    "format": "RGBA8888",
+    "image": "mainship_weapon_projectile_auto_cannon_bullet.png",
+    "size": {
+      "w": 128,
+      "h": 32
+    },
+    "scale": "1"
+  }
+}

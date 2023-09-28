@@ -1,107 +1,23 @@
-import { Container } from "pixi.js";
+import { Circle, Container, Point } from "pixi.js";
+import { HitTestEvents, KinematicBody } from "core/typings";
+import EventEmitter from "core/EventEmitter";
 
-import { App } from "core/App";
-import { DestroyCallback, Node, StartCallback, UpdateCallback } from "core/typings";
-import { Vec } from "src/typings";
+export default class GameObject extends Container implements KinematicBody {
 
-// Game Object base class.
-export class GameObject {
-
+  public id: string;
   public name: string;
+  public speed: Point;
+  public collisionShape: Circle;
+  public events: EventEmitter<HitTestEvents>;
+  public rotate: number;
 
-  readonly root: Container;
-
-  readonly callStart?: StartCallback;
-  readonly callUpdate?: UpdateCallback;
-  readonly callDestroy?: DestroyCallback;
-
-  constructor(
-    name: string,
-    start?: StartCallback,
-    update?: UpdateCallback,
-    destroy?: DestroyCallback,
-  ) {
+  constructor(name: string) {
+    super();
+    this.id = crypto.randomUUID();
     this.name = name;
-    this.root = new Container();
-
-    this.callStart = start;
-    this.callUpdate = update;
-    this.callDestroy = destroy;
-
-    if (this.callUpdate) App.app.ticker.add(this.callUpdate);
-    if (this.callStart) this.callStart(this);
-
-  }
-
-  set position(pos: Vec) {
-    this.root.position.set(pos.x, pos.y);
-  }
-
-  get position() {
-    return this.root.position;
-  }
-
-  static move(go: GameObject, x: number, y: number) {
-    go.root.position = {
-      x: go.root.position.x + x,
-      y: go.root.position.y + y
-    };
-  }
-
-  public rotate(angle: number) {
-    this.root.angle += angle;
-  }
-
-  public add(node: Node) {
-    this.root.addChild(node);
-  }
-
-  public removeChildren() {
-    this.root.removeChildren();
-  }
-
-  public getByName(name: string): Node | null {
-    return this.root.getChildByName(name);
-  }
-
-  public forEachChild(cb: ((n: Node) => void)) {
-    this.root.children.forEach(cb);
-  }
-
-  public toggleVisible(): void {
-    this.root.visible = !this.root.visible;
-  }
-
-  public visible(): void {
-    this.root.visible = true;
-  }
-
-  public destroy() {
-    if (this.callDestroy) this.callDestroy();
-    if (this.callUpdate) App.app.ticker.remove(this.callUpdate);
-    this.root.destroy();
+    this.speed = new Point();
+    this.collisionShape = new Circle(0, 0, 16);
+    this.events = new EventEmitter();
+    this.rotate = 0;
   }
 }
-
-export class StaticGameObject extends GameObject {
-  constructor(
-    name: string,
-    start?: StartCallback,
-    update?: UpdateCallback,
-    destroy?: DestroyCallback,
-  ) {
-    super(name, start, update, destroy);
-  }
-}
-
-export class KinematicGameObject extends GameObject {
-  constructor(
-    name: string,
-    start?: StartCallback,
-    update?: UpdateCallback,
-    destroy?: DestroyCallback,
-  ) {
-    super(name, start, update, destroy);
-  }
-}
-

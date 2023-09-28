@@ -1,0 +1,46 @@
+{
+  "bundles": [
+    {
+      "name": "mainship_bundle",
+      "assets": [
+        {
+          "name": "mainship_base_full_health",
+          "srcs": "assets/sprites/mainship/bases/mainship_base_full_health.png"
+        },
+        {
+          "name": "mainship_base_engine",
+          "srcs": "assets/sprites/mainship/engines/mainship_base_engine.png"
+        },
+        {
+          "name": "mainship_base_engine_idle",
+          "srcs": "assets/sprites/mainship/engine_effects/mainship_base_engine_idle.json"
+        },
+        {
+          "name": "mainship_base_engine_powering",
+          "srcs": "assets/sprites/mainship/engine_effects/mainship_base_engine_powering.json"
+        },
+        {
+          "name": "mainship_weapons_auto_cannon",
+          "srcs": "assets/sprites/mainship/weapons/mainship_weapons_auto_cannon.json"
+        },
+        {
+          "name": "mainship_weapons_projectile_auto_cannon_bullet",
+          "srcs": "assets/sprites/mainship/projectiles/mainship_weapon_projectile_auto_cannon_bullet.json"
+        }
+      ]
+    },
+    {
+      "name": "enviroments_bundle",
+      "assets": [
+        {
+          "name": "asteroid_base",
+          "srcs": "assets/sprites/asteroid/asteroid_base.png"
+        },
+        {
+          "name": "asteroid_explode",
+          "srcs": "assets/sprites/asteroid/asteroid_explode.json"
+        }
+      ]
+    }
+  ]
+}

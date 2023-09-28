@@ -1,0 +1,16 @@
+{
+  "Keyboard": {
+    "MOVE_UP": "w",
+    "MOVE_DOWN": "s",
+    "MOVE_LEFT": "d",
+    "MOVE_RIGHT": "a",
+    "WEAPON_FIRE": " "
+  },
+  "Mouse": {
+    "MOVE_UP": null,
+    "MOVE_DOWN": null,
+    "MOVE_LEFT": null,
+    "MOVE_RIGHT": null,
+    "WEAPON_FIRE": 0
+  }
+}

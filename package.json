@@ -4,14 +4,21 @@
   "main": "src/index.js",
   "license": "MIT",
   "dependencies": {
-    "pixi.js": "^7.2.4"
+    "@pixi-essentials/bounds": "^3.0.0",
+    "@pixi/layers": "^2.1.0",
+    "pixi.js": "^7.2.4",
+    "uuid": "^9.0.1"
   },
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.dev.js"
+    "dev": "webpack-dev-server --config webpack.config.dev.js",
+    "build": "webpack --config webpack.config.prod.js",
+    "serve": "http-server ./dist/ -p 4000",
+    "debug": "webpack-dev-server --config webpack.config.dev.js --env debug=true"
   },
   "devDependencies": {
     "@babel/core": "^7.22.10",
     "@babel/preset-env": "^7.22.10",
+    "@types/uuid": "^9.0.3",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "babel-loader": "^9.1.3",
@@ -19,12 +26,15 @@
     "css-loader": "^6.8.1",
     "eslint": "^8.48.0",
     "html-webpack-plugin": "^5.5.3",
+    "http-server": "^14.1.1",
     "json-loader": "^0.5.7",
     "style-loader": "^3.3.3",
     "ts-loader": "^9.4.4",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.2.2",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0"
   }
 }

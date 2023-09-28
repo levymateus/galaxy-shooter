@@ -1,55 +1,17 @@
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HTMLWebpackPlugin = require('html-webpack-plugin');
+const config = require(__dirname + '/webpack.config.js');
+const { merge } = require('webpack-merge');
 const path = require('path');
 
-module.exports = {
-  stats: 'errors-only',
-  mode: 'development',
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'assets'),
-      publicPath: '/assets'
-    },
-    port: 3000
-  },
-  output: {
-    filename: '[name].js',
-    path: path.join(__dirname, 'dist'),
-  },
-  devtool: 'inline-source-map',
-  resolve: {
-    extensions: [".ts", ".js", ".css", ".json"],
-    modules: [path.resolve(__dirname, 'src/'), path.resolve(__dirname, 'node_modules')],
-  },
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+module.exports = (props) => {
+  return merge(config(props), {
+    stats: 'errors-only',
+    mode: 'development',
+    devServer: {
+      static: {
+        directory: path.join(__dirname, 'assets'),
+        publicPath: '/assets'
       },
-      {
-        test: /\.ts?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
-      },
-    ],
-  },
-  plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: 'assets',
-          to: 'dist/assets'
-        },
-        {
-          from: 'index.html',
-          to: 'dist'
-        }
-      ]
-    }),
-    new HTMLWebpackPlugin({
-      template: 'index.html',
-      filename: 'index.html'
-    })
-  ]
+      port: 3000
+    }
+  });
 }

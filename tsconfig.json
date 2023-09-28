@@ -6,28 +6,16 @@
     "removeComments": true,
     "target": "ES6",
     "baseUrl": "./",
+    "rootDirs": ["src", "assets"],
     "esModuleInterop": true,
     "moduleResolution": "node16",
     "resolveJsonModule": true,
+    "experimentalDecorators": true,
     "paths": {
-      "core/*": [
-        "src/core/*"
-      ],
-      "game-objects/*": [
-        "src/game-objects/*"
-      ],
-      "utils": [
-        "src/utils"
-      ],
-      "typings": [
-        "src/typings"
-      ],
-      "factory/*": [
-        "src/factory/*"
-      ],
-      "stages/*": [
-        "src/stages/*"
-      ]
+      "*": ["src/*"],
+      "assets/*": ["assets/*"],
+      "res/*": ["assets/res/*"],
+      "sprites/*": ["assets/sprites/*"]
     },
     "sourceMap": true,
     "sourceRoot": "/",

@@ -1,21 +1,21 @@
-import { Container, ObservablePoint } from "pixi.js";
-import { App } from "./App";
+import { Container, ObservablePoint, Ticker } from "pixi.js";
+import { Game } from "core";
 
-export default class Camera {
+export class Camera extends Container {
+  constructor(pivot: ObservablePoint, game: Game) {
+    super();
+    this.name = "camera";
 
-  static MAX_CAMERA_Y = App.app.view.height / 2;
-  static MIN_CAMERA_Y = App.app.view.height / 2 * -1;
-  static MIN_CAMERA_X = App.app.view.width / 2 * -1;
-  static MAX_CAMERA_X = App.app.view.width / 2;
+    const centralize = () => {
+      pivot.x -= game.WIDTH / 2;
+      pivot.y -= game.HEIGHT / 2;
+    }
 
-  private root: Container;
-  private pivot: ObservablePoint;
+    window.addEventListener('resize', () => {
+      Ticker.shared.remove(centralize);
+      Ticker.shared.addOnce(centralize);
+    });
 
-  constructor(container: Container) {
-    this.root = container;
-    this.pivot = App.app.stage.pivot;
-
-    this.pivot.x = this.root.position.x - App.app.view.width / 2;
-    this.pivot.y = this.root.position.y - App.app.view.height / 2;
+    Ticker.shared.addOnce(centralize);
   }
 }
