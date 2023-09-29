@@ -49,6 +49,8 @@ export default class MainScene implements ISceneGraph {
     this.mainShip.y = this.axis.bottom + 64;
 
     const klaedFighter = new KlaedFighter(
+      container,
+      this.axis,
       randf(this.axis.top, this.axis.right),
       this.axis.top + 64,
     );
@@ -87,8 +89,10 @@ export default class MainScene implements ISceneGraph {
 
   private spawnKlaedFighter(container: Container): void {
     new Timer().interval(() => {
-      if (this.klaedFighterCount < 3) {
+      if (this.klaedFighterCount < 1) {
         const klaedFighter = new KlaedFighter(
+          container,
+          this.axis,
           randf(this.axis.top, this.axis.right),
           this.axis.top,
         );

@@ -43,6 +43,14 @@
         {
           "name": "klaed_fighter_engine",
           "srcs": "assets/sprites/klaed/engine/klaed_fighter_engine.json"
+        },
+        {
+          "name": "klaed_fighter_weapons",
+          "srcs": "assets/sprites/klaed/weapons/klaed_fighter_weapons.json"
+        },
+        {
+          "name": "klaed_bullet",
+          "srcs": "assets/sprites/klaed/projectiles/klaed_bullet.json"
         }
       ]
     },

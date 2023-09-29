@@ -202,6 +202,8 @@ export default class MainShip
   constructor(parent: Container, boundingRect: AxisAlignedBounds) {
     super("mainship");
 
+    this.collisionShape.radius = 10;
+
     this.boundingRect = boundingRect;
     this.motion = new Point();
 

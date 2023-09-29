@@ -1,0 +1,107 @@
+{
+  "frames": {
+    "klaed_bulet_0": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 4,
+        "h": 16
+      },
+      "duration": 100
+    },
+    "klaed_bulet_1": {
+      "frame": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 4,
+        "h": 16
+      },
+      "duration": 100
+    },
+    "klaed_bulet_2": {
+      "frame": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 4,
+        "h": 16
+      },
+      "duration": 100
+    },
+    "klaed_bulet_3": {
+      "frame": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 4,
+        "h": 16
+      },
+      "duration": 100
+    }
+  },
+  "animations": {
+    "shoot": [
+      "klaed_bulet_0",
+      "klaed_bulet_1",
+      "klaed_bulet_2",
+      "klaed_bulet_3"
+    ]
+  },
+  "meta": {
+    "app": "http://www.aseprite.org/",
+    "version": "1.2.40-x64-trial",
+    "format": "RGBA8888",
+    "image": "klaed_bullet.png",
+    "size": {
+      "w": 16,
+      "h": 16
+    },
+    "scale": "1"
+  }
+}

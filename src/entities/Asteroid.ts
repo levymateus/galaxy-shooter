@@ -18,7 +18,7 @@ export class Asteroid extends GameObject {
     this.rotate = randf(0, 0.2);
     this.speed.set(0, randf(0.4, 0.7));
     this.boundingRect = boundingRect;
-    this.collisionShape.radius = 14;
+    this.collisionShape.radius = 20;
     this.spriteBase = Sprite.from(Assets.get('asteroid_base'));
     this.spriteBase.anchor.set(0.5);
 
