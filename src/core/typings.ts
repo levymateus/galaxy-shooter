@@ -38,9 +38,9 @@ export type GameSettings = {
   }
 }
 
-export interface HitTestEvents {
-  hit: [container: Container & KinematicBody];
-  onHit: [container: Container & KinematicBody];
+export interface GameObjectEvents {
+  collide: [container: Container & KinematicBody];
+  onCollide: [container: Container & KinematicBody];
 }
 
 export interface InputEvents {
@@ -65,7 +65,7 @@ export interface Drawable {
 export interface KinematicBody extends GameObject {
   speed: Point;
   collisionShape: Circle;
-  events: EventEmitter<HitTestEvents>;
+  events: EventEmitter<GameObjectEvents>;
 }
 
 export function isKinematicBody(object: unknown): object is KinematicBody {

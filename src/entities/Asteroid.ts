@@ -1,6 +1,6 @@
+import { AnimatedSprite, Assets, Circle, Sprite } from "pixi.js";
 import { AxisAlignedBounds } from "core";
 import GameObject from "core/GameObject";
-import { AnimatedSprite, Assets, Circle, IDestroyOptions, Sprite, Ticker } from "pixi.js";
 import { randf } from "utils/utils";
 
 export class Asteroid extends GameObject {
@@ -16,7 +16,7 @@ export class Asteroid extends GameObject {
 
     this.position.set(x, y);
     this.rotate = randf(0, 0.2);
-    this.speed.set(0, randf(0.2, 1));
+    this.speed.set(0, randf(0.4, 0.7));
     this.boundingRect = boundingRect;
     this.collisionShape.radius = 14;
     this.spriteBase = Sprite.from(Assets.get('asteroid_base'));
@@ -29,15 +29,19 @@ export class Asteroid extends GameObject {
     this.spriteExplode.loop = false;
     this.spriteExplode.animationSpeed = 0.4;
 
+    this.update = this.onUpdate;
+    this.collide = this.onCollide;
+
     this.addChild(this.spriteBase);
     this.addChild(this.spriteExplode);
-
-    this.events.on('onHit', this.explode, this);
-
-    Ticker.shared.add(this.onUpdate, this);
   }
 
-  private onUpdate(dt: number): void {
+  protected onCollide(collisor: GameObject): void {
+    if (["mainship"].some(name => collisor.name.includes(name)))
+      this.explodeAndDestroy();
+  }
+
+  protected onUpdate(dt: number): void {
     this.position.y += this.speed.y * dt;
     this.angle += this.rotate;
     if (this.position.y >= this.boundingRect.bottom) {
@@ -46,6 +50,7 @@ export class Asteroid extends GameObject {
   }
 
   private explodeAndDestroy(): void {
+    this.tiker.stop();
     this.spriteBase.visible = false;
     this.spriteExplode.onComplete = () => this.destroy({
       children: true,
@@ -54,13 +59,4 @@ export class Asteroid extends GameObject {
     this.spriteExplode.play();
   }
 
-  private explode(collisor: GameObject): void {
-    if (collisor.name.includes("bullet")) this.explodeAndDestroy();
-  }
-
-  public destroy(options?: boolean | IDestroyOptions | undefined): void {
-    Ticker.shared.remove(this.onUpdate, this);
-    this.events.removeListener('onHit', this.explode, this);
-    super.destroy(options);
-  }
 }

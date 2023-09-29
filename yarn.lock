@@ -1175,10 +1175,20 @@
   resolved "https://registry.yarnpkg.com/@pixi/layers/-/layers-2.1.0.tgz#aa0b9ef715135fe8549ba12fdbca2d565d2bd708"
   integrity sha512-e3p3xaHSkVF1jLTfiTEsFGNzGRPffTO0UkKbwA9pfBzRHIBOFM2mCbVqcdhgHSMXRFYr2FoOp1+zK9jJifEUug==
 
+"@pixi/math-extras@^7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@pixi/math-extras/-/math-extras-7.3.1.tgz#3660e0c17222f25de59a862def8fdaadd55d0a2f"
+  integrity sha512-B5MnYQ7jjZzJxDMLBSQvKmxtKlC+kn6G3UM0zheBG2HnOcF5n/qY+75H2ZS1yO+n07mr7cKWA9S9lYBlgDbqdw==
+
 "@pixi/math@7.2.4":
   version "7.2.4"
   resolved "https://registry.yarnpkg.com/@pixi/math/-/math-7.2.4.tgz#219b64ca44348a1ee900ee074c51ee7e41615059"
   integrity sha512-LJB+mozyEPllxa0EssFZrKNfVwysfaBun4b2dJKQQInp0DafgbA0j7A+WVg0oe51KhFULTJMpDqbLn/ITFc41A==
+
+"@pixi/math@^7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@pixi/math/-/math-7.3.1.tgz#3b74343729d097969c3c29d7bc92633abca73d77"
+  integrity sha512-kRTpac/3frRPMf8YRai3+2bFldgE7SwzGsLYjb4//QdeuY0WVaeSPJJKEVXZ/aBK/JgGO7Np75kwr7/2+qegSg==
 
 "@pixi/mesh-extras@7.2.4":
   version "7.2.4"

@@ -74,6 +74,7 @@ class AutoCannonBullet
 
     this.speed.set(0, 10);
     this.direction = new Point(0, -1);
+    this.collisionShape.radius = 8;
     this.boundingRect = axisAlignedBounds;
 
     const bulletSheet = Assets.get('mainship_weapons_projectile_auto_cannon_bullet');
@@ -83,30 +84,28 @@ class AutoCannonBullet
     this.sprite.animationSpeed = 0.4;
     this.sprite.loop = true;
     this.sprite.visible = false;
-    this.sprite.scale.set(this.sprite.scale.x - 0.2, this.sprite.scale.y - 0.2);
+    this.sprite.scale.set(this.sprite.scale.x - 0.3);
 
     this.addChild(this.sprite);
     this.setParent(parent);
-
-    this.events.on('onHit', (collisor: GameObject) => {
-      switch(collisor.name) {
-        case "asteroid":
-          this.destroy();
-          break;
-        default: break;
-      }
-    }, this);
   }
 
-  private onUpdate(dt: number): void {
+  protected onUpdate(dt: number): void {
     const isOutOfBounds = this.position.y <= this.boundingRect.y;
     if (isOutOfBounds) this.destroy();
     else this.position.y += this.direction.y * this.speed.y * dt;
   }
 
+  private onCollides(collisor: GameObject): void {
+    if (["asteroid", "fighter"].some(name => collisor.name.includes(name))) {
+      this.destroy();
+    }
+  }
+
   public shoot(): void {
     this.sprite.visible = true;
-    Ticker.shared.add(this.onUpdate, this);
+    this.update = this.onUpdate;
+    this.collide = this.onCollides;
     this.sprite.play();
   }
 
@@ -115,7 +114,7 @@ class AutoCannonBullet
   }
 
   public destroy(): void {
-    Ticker.shared.remove(this.onUpdate, this);
+    this.collisionTest = false;
     super.destroy({ children: true });
   }
 }
@@ -246,7 +245,7 @@ export default class MainShip
     }
   }
 
-  private onUpdate(dt: number): void {
+  protected onUpdate(dt: number): void {
     const [maxX, minX, minY, maxY] = [0.5, this.friction + 0.015, this.friction + 0.015, 0.5];
 
     if (this.speed.y > minY && this.speed.y <= maxY) {

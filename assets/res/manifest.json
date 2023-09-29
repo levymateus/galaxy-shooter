@@ -30,6 +30,23 @@
       ]
     },
     {
+      "name": "klaed_fighter",
+      "assets": [
+        {
+          "name": "klaed_fighter_base",
+          "srcs": "assets/sprites/klaed/base/klaed_fighter_base.png"
+        },
+        {
+          "name": "klaed_fighter_destruction",
+          "srcs": "assets/sprites/klaed/destruction/klaed_fighter_destruction.json"
+        },
+        {
+          "name": "klaed_fighter_engine",
+          "srcs": "assets/sprites/klaed/engine/klaed_fighter_engine.json"
+        }
+      ]
+    },
+    {
       "name": "enviroments_bundle",
       "assets": [
         {

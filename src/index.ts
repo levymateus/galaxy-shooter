@@ -1,3 +1,4 @@
+import "@pixi/math-extras";
 import "styles.css";
 
 import { Game } from "core";

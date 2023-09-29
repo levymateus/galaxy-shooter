@@ -1,5 +1,5 @@
-import { KeyboardInput } from "core";
-import { MouseInput } from "core";
+import { KeyboardInput } from "core/KeyboardInput";
+import { MouseInput } from "core/MouseInput";
 import EventEmitter from "core/EventEmitter";
 import { Actions, InputEvents } from "core/typings";
 import { Ticker } from "pixi.js";
@@ -8,9 +8,9 @@ import settings from "res/settings.json";
 /**
  * Global game input handling for any type of input (keyboard, controler).
  */
-class InputClass extends EventEmitter<InputEvents> {
+class GameInputHandler extends EventEmitter<InputEvents> {
 
-  private static instance: InputClass;
+  private static instance: GameInputHandler;
   private keyboardInput: KeyboardInput;
   private mouseInput: MouseInput;
   private ticker: Ticker;
@@ -34,11 +34,11 @@ class InputClass extends EventEmitter<InputEvents> {
     this.ticker.start();
   }
 
-  public static getInstance(): InputClass {
-    if (!InputClass.instance) {
-      InputClass.instance = new InputClass();
+  public static getInstance(): GameInputHandler {
+    if (!GameInputHandler.instance) {
+      GameInputHandler.instance = new GameInputHandler();
     }
-    return InputClass.instance;
+    return GameInputHandler.instance;
   }
 
   /**
@@ -80,5 +80,5 @@ class InputClass extends EventEmitter<InputEvents> {
   }
 }
 
-const Input = InputClass.getInstance();
+const Input = GameInputHandler.getInstance();
 export { Input };

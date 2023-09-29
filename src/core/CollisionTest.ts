@@ -15,10 +15,15 @@ export default class CollisionTest<T extends GameObject = GameObject> {
   }
 
   private test(objA: T, objB: T): boolean {
+    if (!objA.collisionTest || !objB.collisionTest) {
+      return false;
+    }
+
     if (objA.collisionShape instanceof Circle && objB.collisionShape instanceof Circle) {
       const dist = Math.sqrt(Math.pow(objA.x - objB.x, 2) + Math.pow(objA.y - objB.y, 2))
       return (dist <= objA.collisionShape.radius + objB.collisionShape.radius);
     }
+
     return false;
   }
 

@@ -6,6 +6,8 @@
   "dependencies": {
     "@pixi-essentials/bounds": "^3.0.0",
     "@pixi/layers": "^2.1.0",
+    "@pixi/math": "^7.3.1",
+    "@pixi/math-extras": "^7.3.1",
     "pixi.js": "^7.2.4",
     "uuid": "^9.0.1"
   },
