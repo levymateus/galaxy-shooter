@@ -1,6 +1,6 @@
 import { KeyboardInput } from "core/KeyboardInput";
 import { MouseInput } from "core/MouseInput";
-import EventEmitter from "core/EventEmitter";
+import { EventEmitter } from "core/EventEmitter";
 import { Actions, InputEvents } from "core/typings";
 import { Ticker } from "pixi.js";
 import settings from "res/settings.json";

@@ -1,6 +1,7 @@
-import devtools from 'config';
 import { GameOptions, ISceneGraph, Resolution, Settings } from "core";
-import { Application, Assets, Container, Ticker, settings } from 'pixi.js';
+import { Application, Assets, Ticker, settings } from 'pixi.js';
+import { Wrapper } from 'core/Wrapper';
+import devtools from 'config';
 
 export class Game {
 
@@ -54,16 +55,16 @@ export class Game {
       this.app.stage.removeChildren();
     }
 
-    const container = new Container();
-    container.width = this.WIDTH;
-    container.height = this.HEIGHT;
-    container.scale.x = this.actualWidth() / this.WIDTH;
-    container.scale.y = this.actualHeight() / this.HEIGHT;
-    container.x = this.app.screen.width / 2 - this.actualWidth() / 2;
-    container.y = this.app.screen.height / 2 - this.actualHeight() / 2;
+    const wrapper = new Wrapper(this.WIDTH, this.HEIGHT);
+    wrapper.width = this.WIDTH;
+    wrapper.height = this.HEIGHT;
+    wrapper.scale.x = this.actualWidth() / this.WIDTH;
+    wrapper.scale.y = this.actualHeight() / this.HEIGHT;
+    wrapper.x = this.app.screen.width / 2 - this.actualWidth() / 2;
+    wrapper.y = this.app.screen.height / 2 - this.actualHeight() / 2;
 
-    await newScene.onStart(container);
-    this.app.stage.addChild(container);
+    await newScene.onStart(wrapper);
+    this.app.stage.addChild(wrapper);
     this.currentScene = newScene;
 
     Ticker.shared.start();

@@ -1,4 +1,5 @@
-import EventEmitter from "core/EventEmitter";
+import { AxisAlignedBounds } from "core";
+import { EventEmitter } from "core";
 import { GameObjectEvents, KinematicBody } from "core/typings";
 import { Circle, Container, IDestroyOptions, Point, Ticker, TickerCallback } from "pixi.js";
 
@@ -7,11 +8,15 @@ import { Circle, Container, IDestroyOptions, Point, Ticker, TickerCallback } fro
  */
 type CollideCallback = ((go: GameObject) => void);
 
+type OutOfBoundsCallback = (bounds: AxisAlignedBounds) => void;
+
 export default class GameObject extends Container implements KinematicBody {
 
   public id: string;
   public name: string;
   public speed: Point;
+  public anchor: number = 0.5;
+  public speedAnimation: number = 0.4;
 
   /**
    * enable or disable collision test.
@@ -21,10 +26,11 @@ export default class GameObject extends Container implements KinematicBody {
   public collisionShape: Circle;
   public events: EventEmitter<GameObjectEvents>;
   public rotate: number;
-  public tiker: Ticker;
+  public ticker: Ticker;
 
   private _update: TickerCallback<GameObject>;
   private _collide: CollideCallback;
+  private _outofbounds: OutOfBoundsCallback;
 
   constructor(name: string) {
     super();
@@ -34,38 +40,32 @@ export default class GameObject extends Container implements KinematicBody {
     this.collisionShape = new Circle(0, 0, 16);
     this.events = new EventEmitter();
     this.rotate = 0;
-    this.tiker = new Ticker();
-    this.tiker.start();
+    this.ticker = new Ticker();
+    this.ticker.start();
   }
 
-  /**
-   * Add add listner for tick events.
-   * @details is removed on call destory().
-   */
   set update(callback: TickerCallback<GameObject>) {
     this._update = callback;
-    this.tiker.add(this._update, this);
+    this.ticker.add(this._update, this);
   }
 
-  /**
-   * Add a collision listener.
-   * @details is removed on call destory().
-   */
   set collide(callback: CollideCallback) {
     this._collide = callback;
     this.events.on('onCollide', this._collide, this);
   }
 
-  protected removeEventListeners(): void {
-    this.tiker.remove(this._update, this).destroy();
-    this.events.removeListener('onCollide', this._collide, this);
+  set outofbounds(callback: OutOfBoundsCallback) {
+    this._outofbounds = callback;
+    this.events.on('outOfWorldBounds', this._outofbounds, this);
   }
 
-  /**
-   * CAUTION: can cause side effects in lines above this call.
-   */
   public destroy(options?: boolean | IDestroyOptions | undefined): void {
-    this.removeEventListeners();
+    this.events.removeAllListeners();
+    this.ticker.destroy();
     super.destroy(options);
+  }
+
+  public clone(): GameObject {
+    return new GameObject(this.name);
   }
 }

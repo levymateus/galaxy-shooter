@@ -9,4 +9,5 @@ export * from "core/MouseInput";
 export * from "core/Rectangle";
 export * from "core/Settings";
 export * from "core/typings";
+export * from "core/Wrapper";
 

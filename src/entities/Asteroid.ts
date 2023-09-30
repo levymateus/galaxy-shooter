@@ -1,62 +1,68 @@
-import { AnimatedSprite, Assets, Circle, Sprite } from "pixi.js";
-import { AxisAlignedBounds } from "core";
 import GameObject from "core/GameObject";
-import { randf } from "utils/utils";
+import { AnimatedSprite, Assets, Circle, Sprite } from "pixi.js";
+import { isValidCollisor, randf } from "utils/utils";
+import Entities from "./Entities";
 
 export class Asteroid extends GameObject {
 
-  public spriteBase: Sprite;
-  public spriteExplode: AnimatedSprite;
+  public baseSprite: Sprite;
+  public explodeSprite: AnimatedSprite;
   public collisionShape: Circle;
 
-  private boundingRect: AxisAlignedBounds;
-
-  constructor(x: number, y: number, boundingRect: AxisAlignedBounds) {
-    super("asteroid");
-
+  constructor(x?: number, y?: number) {
+    super(Entities.ASTEROID);
     this.position.set(x, y);
     this.rotate = randf(0, 0.2);
     this.speed.set(0, randf(0.4, 0.7));
-    this.boundingRect = boundingRect;
-    this.collisionShape.radius = 20;
-    this.spriteBase = Sprite.from(Assets.get('asteroid_base'));
-    this.spriteBase.anchor.set(0.5);
+    this.collisionShape.radius = 14;
+    this.addBaseSprite();
+    this.addExplodeSprite();
+    this.addListeners();
+  }
 
+  private addBaseSprite(): void {
+    this.baseSprite = Sprite.from(Assets.get('asteroid_base'));
+    this.baseSprite.anchor.set(this.anchor);
+    this.addChild(this.baseSprite);
+  }
+
+  private addExplodeSprite(): void {
     const asteroidSheet = Assets.get('asteroid_explode');
-    this.spriteExplode = new AnimatedSprite(asteroidSheet.animations['explode']);
-    this.spriteExplode.anchor.set(0.5);
-    this.spriteExplode.visible = false;
-    this.spriteExplode.loop = false;
-    this.spriteExplode.animationSpeed = 0.4;
+    this.explodeSprite = new AnimatedSprite(asteroidSheet.animations['explode']);
+    this.explodeSprite.animationSpeed = this.speedAnimation;
+    this.explodeSprite.anchor.set(this.anchor);
+    this.explodeSprite.visible = false;
+    this.explodeSprite.loop = false;
+    this.addChild(this.explodeSprite);
+  }
 
+  private addListeners(): void {
     this.update = this.onUpdate;
     this.collide = this.onCollide;
-
-    this.addChild(this.spriteBase);
-    this.addChild(this.spriteExplode);
+    this.outofbounds = this.onOutOfBounds;
   }
 
-  protected onCollide(collisor: GameObject): void {
-    if (["mainship"].some(name => collisor.name.includes(name)))
-      this.explodeAndDestroy();
+  private onCollide(collisor: GameObject): void {
+    if (isValidCollisor([Entities.MAIN_SHIP], collisor)) return this.explodeAndDestroy();
   }
 
-  protected onUpdate(dt: number): void {
+  private onUpdate(dt: number): void {
     this.position.y += this.speed.y * dt;
     this.angle += this.rotate;
-    if (this.position.y >= this.boundingRect.bottom) {
-      this.destroy({ children: true });
-    }
+  }
+
+  private onOutOfBounds(): void {
+    return this.destroy({ children: true });
   }
 
   private explodeAndDestroy(): void {
-    this.tiker.stop();
-    this.spriteBase.visible = false;
-    this.spriteExplode.onComplete = () => this.destroy({
-      children: true,
-    });
-    this.spriteExplode.visible = true;
-    this.spriteExplode.play();
+    this.ticker.stop();
+    this.baseSprite.visible = false;
+    this.explodeSprite.visible = true;
+    this.explodeSprite.onComplete = () => {
+      this.destroy({ children: true, });
+    }
+    this.explodeSprite.play();
   }
 
 }

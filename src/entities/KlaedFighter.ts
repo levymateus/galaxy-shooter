@@ -1,238 +1,264 @@
-import * as M from "@pixi/math";
+import { Point } from "@pixi/math";
 import { AxisAlignedBounds, Projectile, Weapon } from "core";
 import GameObject from "core/GameObject";
 import Timer from "core/Timer";
-import { AnimatedSprite, Assets, Container, Point, RAD_TO_DEG, Sprite } from "pixi.js";
+import { AnimatedSprite, Assets, Container, Sprite } from "pixi.js";
+import { DOWN, angleBetween, dice, isValidCollisor, randf } from "utils/utils";
+import Entities from "./Entities";
 
 class KlaedBullet
   extends GameObject
   implements Projectile {
 
   public direction: Point;
-  private sprite: AnimatedSprite;
-  private axis: AxisAlignedBounds;
 
-  constructor(parent: Container, axis: AxisAlignedBounds) {
-    super("klaed_bullet");
+  private wrapper: Container;
+  private baseSprite: AnimatedSprite;
+  private bounds: AxisAlignedBounds;
 
-    this.angle = 180;
-    this.axis = axis;
+  constructor(wrapper: Container, bounds: AxisAlignedBounds) {
+    super(Entities.KLA_ED_BULLET);
+    this.wrapper = wrapper;
+    this.bounds = bounds;
     this.speed.y = 5;
     this.direction = new Point(0, 1);
     this.collisionShape.radius = 2;
-
-    const bulletSheet = Assets.get("klaed_bullet");
-    this.sprite = new AnimatedSprite(bulletSheet.animations["shoot"]);
-    this.sprite.anchor.set(0.5);
-    this.sprite.animationSpeed = 0.4;
-    this.sprite.visible = false;
-
-    this.addChild(this.sprite);
-    this.setParent(parent);
+    this.angle = this.direction.y * 180;
   }
 
-  protected onUpdate(dt: number): void {
-    const isOutOfBounds = this.y >= this.axis.bottom;
-    if (isOutOfBounds) this.destroy();
-    else this.position.y += this.speed.y * this.direction.y * dt;
+  private addBaseSprite(): void {
+    const spritesheet = Assets.get("klaed_bullet");
+    this.baseSprite = new AnimatedSprite(spritesheet.animations["shoot"]);
+    this.baseSprite.animationSpeed = this.speedAnimation;
+    this.baseSprite.anchor.set(this.anchor);
+    this.baseSprite.visible = true;
+    this.baseSprite.play();
+    this.setParent(this.wrapper);
+    this.addChild(this.baseSprite);
   }
 
   private onCollides(collisor: GameObject): void {
-    if (["mainship"].some(name => collisor.name.includes(name))) {
-      this.tiker.stop();
-      this.destroy();
-    }
+    if (isValidCollisor([Entities.MAIN_SHIP], collisor)) return this.destroy({ children: true });
+  }
+
+  private onOutOfBounds(): void {
+    return this.destroy({ children: true });
+  }
+
+  protected onUpdate(dt: number): void {
+    this.position.y += this.speed.y * this.direction.y * dt;
   }
 
   public shoot(): void {
-    this.sprite.visible = true;
+    this.addBaseSprite();
     this.update = this.onUpdate;
     this.collide = this.onCollides;
-    this.sprite.play();
+    this.outofbounds = this.onOutOfBounds;
   }
 
-  public clone(): Projectile {
-    return new KlaedBullet(this.parent, this.axis);
+  public clone() {
+    return new KlaedBullet(this.wrapper, this.bounds);
   }
 }
 
 class KlaedFighterWeapons implements Weapon {
 
   public ready: boolean = true;
-  private spriteShooting: AnimatedSprite;
+
+  private _countdown: number = 1000;
+  private shootingSprite: AnimatedSprite;
   private bullet: Projectile;
   private timer: Timer;
+  private wrapper: GameObject;
 
-  constructor(parent: Container, bullet: Projectile) {
+  constructor(wrapper: GameObject, bullet: Projectile) {
+    this.wrapper = wrapper;
     this.bullet = bullet.clone();
     this.timer = new Timer();
+  }
 
-    const weaponsSheet = Assets.get("klaed_fighter_weapons");
-    this.spriteShooting = new AnimatedSprite(weaponsSheet.animations["fire"]);
-    this.spriteShooting.name = "klaed_fighter_weapons"
-    this.spriteShooting.anchor.set(0.5);
-    this.spriteShooting.loop = false;
-    this.spriteShooting.animationSpeed = 0.4;
+  set countdown(ms: number) {
+    this._countdown = ms;
+    this.startCountdown();
+  }
 
-    this.spriteShooting.onComplete = () => {
-      this.spriteShooting.gotoAndStop(0);
-      this.timer.timeout(() => {
-        this.ready = true;
-      }, 1000);
+  private startCountdown(): void {
+    this.timer.timeout(() => {
+      this.ready = true;
+    }, this._countdown);
+  }
+
+  private addShootingSprite(): void {
+    const spritesheet = Assets.get("klaed_fighter_weapons");
+    this.shootingSprite = new AnimatedSprite(spritesheet.animations["fire"]);
+    this.shootingSprite.animationSpeed = this.wrapper.speedAnimation;
+    this.shootingSprite.name = "klaed_fighter_weapons";
+    this.shootingSprite.anchor.set(this.wrapper.anchor);
+    this.shootingSprite.loop = false;
+    this.shootingSprite.onComplete = () => {
+      this.shootingSprite.gotoAndStop(0);
+      this.startCountdown();
     };
-
-    this.spriteShooting.onFrameChange = (currentFrame: number) => {
-      if (currentFrame === 1) {
-        const clone = this.bullet.clone();
-        clone.x = this.spriteShooting.parent.position.x - 8;
-        clone.y = this.spriteShooting.parent.position.y + 12;
-        clone.shoot();
-      }
-      if (currentFrame === 2) {
-        const clone = this.bullet.clone();
-        clone.x = this.spriteShooting.parent.position.x + 8;
-        clone.y = this.spriteShooting.parent.position.y + 12;
-        clone.shoot();
-      }
+    this.shootingSprite.onFrameChange = (currentFrame: number) => {
+      if (currentFrame === 1) this.fireLeftWeapon();
+      if (currentFrame === 2) this.fireRightWeapon();
     };
+    this.shootingSprite.setParent(this.wrapper);
+  }
 
-    this.spriteShooting.setParent(parent);
+  private fireLeftWeapon(): void {
+    const clone = this.bullet.clone();
+    clone.x = this.shootingSprite.parent.position.x - 8;
+    clone.y = this.shootingSprite.parent.position.y + 12;
+    clone.shoot();
+  }
+
+  private fireRightWeapon(): void {
+    const clone = this.bullet.clone();
+    clone.x = this.shootingSprite.parent.position.x + 8;
+    clone.y = this.shootingSprite.parent.position.y + 12;
+    clone.shoot();
+  }
+
+  public equip(): void {
+    this.addShootingSprite();
+    this.startCountdown();
   }
 
   public fire(): boolean {
-    if (!this.spriteShooting.playing && this.ready) {
+    if (!this.shootingSprite.playing && this.ready) {
       this.ready = false;
-      this.spriteShooting.play();
+      this.shootingSprite.play();
       return true;
     }
     return false;
   }
 
-  public destroy(): void {
-    this.spriteShooting.removeFromParent();
-    this.spriteShooting.destroy({ children: true }); // da problema!!!!
+  public unequip(): void {
+    this.ready = false;
+    this.shootingSprite.visible = false;
   }
 }
 
-/**
- * Fighter é um camicase que tenta se explodir no jogador para causar dano.
- */
 export default class KlaedFighter extends GameObject {
 
+  public bounds: AxisAlignedBounds;
+
+  private static TARGET_MIN_DISTANCE: number = 256;
   private direction: Point;
-  private spriteBase: Sprite;
-  private spriteEngine: AnimatedSprite;
-  private spriteDestruction: AnimatedSprite;
+  private baseSprite: Sprite;
+  private engineSprite: AnimatedSprite;
+  private destructionSprite: AnimatedSprite;
   private target: GameObject | null = null;
   private weapons: KlaedFighterWeapons | null = null;
+  private wrapper: Container;
+  private isKamikaze: boolean = false;
 
-  public targetMinDistance: number = 256;
-  public axis: AxisAlignedBounds;
-
-  constructor(parent: Container, axis: AxisAlignedBounds, x: number, y: number) {
-    super("klaed_fighter");
-
-    this.angle = 180;
+  constructor(wrapper: Container, x?: number, y?: number) {
+    super(Entities.KLA_ED_FIGHTER);
+    this.wrapper = wrapper;
     this.position.set(x, y);
     this.speed.set(2, 2);
-    this.collisionShape.radius = 16;
-    this.direction = new Point(0, 1);
-    this.axis = axis;
-    this.spriteBase = Sprite.from(Assets.get("klaed_fighter_base"));
-    this.spriteBase.anchor.set(0.5);
+    this.collisionShape.radius = 14;
+    this.direction = DOWN;
+    this.angle = this.direction.y * 180;
+    this.addBaseSprite();
+    this.addEngineSprite();
+    this.addDestructionSprite();
+    this.addWeapons();
+    this.addListeners();
+  }
 
-    const engineSheet = Assets.get("klaed_fighter_engine");
-    this.spriteEngine = new AnimatedSprite(engineSheet.animations["engine"]);
-    this.spriteEngine.anchor.set(0.5);
-    this.spriteEngine.animationSpeed = 0.4;
+  private addBaseSprite(): void {
+    this.baseSprite = Sprite.from(Assets.get("klaed_fighter_base"));
+    this.baseSprite.anchor.set(this.anchor);
+    this.addChild(this.baseSprite);
+  }
 
-    const destructionSheet = Assets.get("klaed_fighter_destruction");
-    this.spriteDestruction = new AnimatedSprite(destructionSheet.animations["destruction"]);
-    this.spriteDestruction.anchor.set(0.5);
-    this.spriteDestruction.animationSpeed = 0.4;
-    this.spriteDestruction.loop = false;
-    this.spriteDestruction.visible = false;
+  private addEngineSprite(): void {
+    const spritesheet = Assets.get("klaed_fighter_engine");
+    this.engineSprite = new AnimatedSprite(spritesheet.animations["engine"]);
+    this.engineSprite.animationSpeed = this.speedAnimation;
+    this.engineSprite.anchor.set(this.anchor);
+    this.engineSprite.play();
+    this.addChild(this.engineSprite);
+  }
 
-    this.addChild(this.spriteBase);
-    this.addChild(this.spriteEngine);
-    this.addChild(this.spriteDestruction);
+  private addDestructionSprite(): void {
+    const spritesheet = Assets.get("klaed_fighter_destruction");
+    this.destructionSprite = new AnimatedSprite(spritesheet.animations["destruction"]);
+    this.destructionSprite.animationSpeed = this.speedAnimation;
+    this.destructionSprite.anchor.set(this.anchor);
+    this.destructionSprite.loop = false;
+    this.destructionSprite.visible = false;
+    this.addChild(this.destructionSprite);
+  }
 
-    this.weapons = Math.random() ? new KlaedFighterWeapons(this, new KlaedBullet(parent, axis)) : null;
-    this.update = Math.random() >= 0.5 ? this.sinMoving : this.kamikaze;
+  private addWeapons(): void {
+    const shouldEquipWeapons = dice(2).roll() >= 2;
+    if (shouldEquipWeapons) {
+      this.weapons = new KlaedFighterWeapons(this, new KlaedBullet(this.wrapper, this.bounds))
+      this.weapons.countdown = randf(300, 1000);
+      return this.weapons.equip();
+    }
+    return;
+  }
+
+  private addListeners(): void {
+    this.isKamikaze = dice(2).roll() >= 2;
+    this.update = this.isKamikaze ? this.kamikaze : this.sinMoving;
     this.collide = this.onCollide;
+    this.outofbounds = this.onOutOfBounds;
+  }
 
-    this.power();
+  private onOutOfBounds(bounds: AxisAlignedBounds): void {
+    if (this.isKamikaze) return this.destroy({ children: true });
+    if (this.y > bounds.bottom) return this.destroy({ children: true });
   }
 
   private kamikaze(dt: number): void {
     if (this.target) this.target = this.attack(this.target);
     this.position.y -= this.direction.y * this.speed.y * dt;
     this.position.x -= this.direction.x * this.speed.x * dt;
-    this.isInArea();
   }
 
   private attack(target: GameObject): GameObject | null {
-    const dist = new M.Point(this.x, this.y).subtract(target.position);
+    const dist = new Point(this.x, this.y).subtract(target.position);
     this.direction = dist.normalize();
-    if (dist.magnitude() <= this.targetMinDistance) {
-      this.spriteEngine.animationSpeed += 0.3;
+    if (dist.magnitude() <= KlaedFighter.TARGET_MIN_DISTANCE) {
+      this.engineSprite.animationSpeed += 0.3;
       this.speed = this.speed.add(new Point(3, 3));
       return null;
-    } else {
-      this.look(target.getGlobalPosition());
     }
+    this.angle = angleBetween(this.getGlobalPosition(), target.getGlobalPosition()) - 270;
     return target;
   }
 
-  private fire(): void {
-    this.weapons?.fire();
-  }
-
   private sinMoving(dt: number): void {
-    this.fire();
+    this.weapons?.fire();
     this.position.y += this.direction.y * this.speed.y * dt;
     this.position.x += Math.sin(this.position.y * 0.01);
-    this.isInArea();
-  }
-
-  private isInArea(): void {
-    const isOut = this.y >= this.axis.bottom + 64
-      || this.y <= this.axis.top - 64
-      || this.x >= this.axis.right + 64
-      || this.x <= this.axis.left - 64
-    if (isOut) return this.destroy({ children: true });
-  }
-
-  private look(target: Point): void {
-    const dist = new M.Point(target.x, target.y).subtract(this.getGlobalPosition());
-    const angle = Math.atan2(dist.y, dist.x) * RAD_TO_DEG - 270;
-    this.angle = angle;
   }
 
   protected onCollide(collisor: GameObject): void {
-    if (["mainship", "cannon_bullet"].some(name => collisor.name.includes(name))) {
+    if (isValidCollisor([Entities.MAIN_SHIP, Entities.CANNON_BULLET], collisor))
       return this.explodeAndDestroy();
-    }
   }
 
   public setTarget(target: GameObject): void {
     this.target = target;
   }
 
-  public power(): void {
-    this.spriteEngine.play();
-  }
-
   public explodeAndDestroy(): void {
-    this.tiker.stop();
-    this.weapons?.destroy();
+    this.ticker.stop();
+    this.weapons?.unequip();
     this.collisionTest = false;
-    this.spriteBase.visible = false;
-    this.spriteEngine.visible = false;
-    this.spriteDestruction.visible = true;
-    this.spriteDestruction.onComplete = () => {
+    this.baseSprite.visible = false;
+    this.engineSprite.visible = false;
+    this.destructionSprite.visible = true;
+    this.destructionSprite.onComplete = () => {
       super.destroy({ children: true });
     }
-    this.spriteDestruction.play();
+    this.destructionSprite.play();
   }
 }

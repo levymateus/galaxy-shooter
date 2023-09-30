@@ -1,34 +1,32 @@
-import { AxisAlignedBounds, Camera, Game, Rectangle } from "core";
-import CollisionTest from "core/CollisionTest";
+import { Camera, Game, Rectangle, Wrapper } from "core";
 import GameObject from "core/GameObject";
 import Timer from "core/Timer";
-import { ISceneGraph, KinematicBody, isKinematicBody } from "core/typings";
+import { ISceneGraph } from "core/typings";
 import { Asteroid } from "entities/Asteroid";
 import Background from "entities/Background";
+import Entities from "entities/Entities";
 import KlaedFighter from "entities/KlaedFighter";
 import MainShip from "entities/MainShip";
-import { Assets, Container } from "pixi.js";
+import { Assets } from "pixi.js";
 import { randf } from "utils/utils";
 
 export default class MainScene implements ISceneGraph {
 
+  private static ASTEROIDS_SPAWN_INTERVAL: number = 2000;
+  private static KAELD_FIGHTER_SPAWN_INTERVAL: number = 1000;
   private game: Game;
+  private wrapper: Wrapper;
   private mainShip: MainShip;
-  private axis: AxisAlignedBounds;
-  private collisionTest: CollisionTest;
-
   private asteroidsCount: number = 0;
   private klaedFighterCount: number = 0;
-
-  private ASTEROIDS_SPAWN_INTERVAL: number = 1000;
-  private KAELD_FIGHTER_SPAWN_INTERVAL: number = 500;
 
   constructor(game: Game) {
     this.game = game;
   }
 
-  async onStart(container: Container) {
-    container.name = "main_scene";
+  async onStart(wrapper: Wrapper) {
+    this.wrapper = wrapper;
+    this.wrapper.name = "main_scene";
 
     const width = this.game.WIDTH;
     const height = this.game.HEIGHT;
@@ -36,95 +34,69 @@ export default class MainScene implements ISceneGraph {
     await Assets.loadBundle([
       "enviroments_bundle",
       "mainship_bundle",
-      "klaed_fighter"
+      "klaed_fighter_bundle"
     ]);
 
     const background = new Background(new Rectangle(0, 0, width, height));
-    const cam = new Camera(container.pivot, this.game);
+    const cam = new Camera(wrapper.pivot, this.game);
 
-    this.collisionTest = new CollisionTest();
-    this.axis = new AxisAlignedBounds(0, 0, width, height);
-    this.axis.anchor.set(0.5);
-    this.mainShip = new MainShip(container, this.axis);
-    this.mainShip.y = this.axis.bottom + 64;
+    this.mainShip = new MainShip(wrapper);
 
     const klaedFighter = new KlaedFighter(
-      container,
-      this.axis,
-      randf(this.axis.top, this.axis.right),
-      this.axis.top + 64,
+      wrapper,
+      randf(wrapper.bounds.top, wrapper.bounds.right),
+      wrapper.bounds.top + 64,
     );
-    klaedFighter.axis = this.axis;
     klaedFighter.setTarget(this.mainShip);
 
-    this.collisionTest.add(klaedFighter);
-    this.collisionTest.add(this.mainShip);
+    wrapper.addChild(cam);
+    wrapper.addChild(background);
+    wrapper.addChild(this.mainShip);
+    wrapper.addChild(klaedFighter);
+    wrapper.sortChildren();
 
-    container.addChild(cam);
-    container.addChild(background);
-    container.addChild(this.mainShip);
-    container.addChild(klaedFighter);
-    container.sortChildren();
+    wrapper.on('childRemoved', this.handleChildRemoved, this);
 
-    container.on('childAdded', this.handleChildAdded, this);
-    container.on('childRemoved', this.handleChildRemoved, this);
-
-    this.spawnAsteroid(container);
-    this.spawnKlaedFighter(container);
+    this.spawnAsteroid(wrapper);
+    this.spawnKlaedFighter(wrapper);
   }
 
-  private spawnAsteroid(container: Container): void {
-    new Timer().interval(() => {
-      if (this.asteroidsCount < 3) {
-        const asteroid = new Asteroid(
-          randf(this.axis.left, this.axis.right),
-          this.axis.top,
-          this.axis,
-        );
-        container.addChild(asteroid);
-        this.asteroidsCount++;
-      }
-    }, this.ASTEROIDS_SPAWN_INTERVAL);
+  private spawnAsteroid(wrapper: Wrapper): void {
+    const spawn = () => {
+      if (this.asteroidsCount >= 3) return;
+      const x = randf(this.wrapper.bounds.left, this.wrapper.bounds.right);
+      const y = this.wrapper.bounds.top;
+      const asteroid = new Asteroid(x, y);
+      wrapper.addChild(asteroid);
+      this.asteroidsCount += 1;
+    }
+    new Timer().interval(spawn, MainScene.ASTEROIDS_SPAWN_INTERVAL);
   }
 
-  private spawnKlaedFighter(container: Container): void {
-    new Timer().interval(() => {
-      if (this.klaedFighterCount < 1) {
-        const klaedFighter = new KlaedFighter(
-          container,
-          this.axis,
-          randf(this.axis.top, this.axis.right),
-          this.axis.top,
-        );
-        klaedFighter.axis = this.axis;
-        klaedFighter.setTarget(this.mainShip);
-        container.addChild(klaedFighter);
-        this.klaedFighterCount++;
-      }
-    }, this.KAELD_FIGHTER_SPAWN_INTERVAL);
-  }
-
-  private handleChildAdded(child: GameObject): void {
-    this.collisionTest.add(child);
+  private spawnKlaedFighter(wrapper: Wrapper): void {
+    const spawn = () => {
+      if (this.klaedFighterCount >= 1) return;
+      const x = randf(this.wrapper.bounds.top, this.wrapper.bounds.right);
+      const y = wrapper.bounds.top;
+      const klaedFighter = new KlaedFighter(wrapper, x, y);
+      klaedFighter.setTarget(this.mainShip);
+      wrapper.addChild(klaedFighter);
+      this.klaedFighterCount += 1;
+    }
+    new Timer().interval(spawn, MainScene.KAELD_FIGHTER_SPAWN_INTERVAL);
   }
 
   private handleChildRemoved(child: GameObject): void {
-    if (child.name === "asteroid") {
+    if (child.name === Entities.ASTEROID) {
       this.asteroidsCount--;
     }
-    if (child.name === "klaed_fighter") {
+    if (child.name === Entities.KLA_ED_FIGHTER) {
       this.klaedFighterCount--;
     }
-    this.collisionTest.remove(child);
   }
 
   public onUpdate(): void {
-    const collsn = this.collisionTest.collisions();
-    collsn.forEach(([a, b]) => {
-      if (isKinematicBody(a) && isKinematicBody(b)) {
-        a.events.emit('onCollide', b as Container & KinematicBody);
-      }
-    });
+    // code ...
   }
 
   async onFinish(): Promise<void> {
