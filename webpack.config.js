@@ -46,6 +46,10 @@ module.exports = (props) => {
           {
             from: 'index.html',
             to: 'dist'
+          },
+          {
+            from: 'favicon.ico',
+            to: './'
           }
         ]
       }),
