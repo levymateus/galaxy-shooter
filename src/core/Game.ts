@@ -1,7 +1,8 @@
-import { GameOptions, ISceneGraph, Resolution, Settings } from "core";
-import { Application, Assets, Ticker, settings } from 'pixi.js';
-import { Wrapper } from 'core/Wrapper';
 import devtools from 'config';
+import { GameOptions, ISceneGraph, Resolution, Settings } from "core";
+import { Wrapper } from 'core/Wrapper';
+import { Application, Assets, Ticker, settings } from 'pixi.js';
+import VFXManager from 'vfx/VFXManager';
 
 export class Game {
 
@@ -52,6 +53,7 @@ export class Game {
       Ticker.shared.stop();
       this.app.ticker.stop();
       await this.currentScene.onFinish();
+      VFXManager.getInstance().destroy();
       this.app.stage.removeChildren();
     }
 
@@ -66,6 +68,8 @@ export class Game {
     await newScene.onStart(wrapper);
     this.app.stage.addChild(wrapper);
     this.currentScene = newScene;
+
+    new VFXManager(wrapper);
 
     Ticker.shared.start();
     this.app.ticker.start();

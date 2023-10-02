@@ -1,11 +1,11 @@
-import { Circle, Container, Point, ResolverManifest } from "pixi.js";
+import { Circle, Container, Point, AssetsManifest } from "pixi.js";
 import { AxisAlignedBounds } from "core/AxisAlignedBounds";
 import { EventEmitter } from "core/EventEmitter";
 import { Wrapper } from "core/Wrapper";
 
 // types
 export type GameOptions = {
-  manifest?: string | ResolverManifest;
+  manifest?: string | AssetsManifest;
 }
 
 export type Resolution = { w: number, h: number, ratio: [number, number] };

@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "module": "Node16",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "allowJs": true,
     "removeComments": true,
     "target": "ES6",
     "baseUrl": "./",
     "rootDirs": ["src", "assets"],
     "esModuleInterop": true,
-    "moduleResolution": "node16",
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "paths": {

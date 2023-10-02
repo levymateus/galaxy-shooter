@@ -66,6 +66,15 @@
           "srcs": "assets/sprites/asteroid/asteroid_explode.json"
         }
       ]
+    },
+    {
+      "name": "vfx_bundle",
+      "assets": [
+        {
+          "name": "particle_001",
+          "srcs": "assets/sprites/particles/particle_001.png"
+        }
+      ]
     }
   ]
 }

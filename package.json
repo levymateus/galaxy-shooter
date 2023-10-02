@@ -5,11 +5,10 @@
   "license": "MIT",
   "dependencies": {
     "@pixi-essentials/bounds": "^3.0.0",
-    "@pixi/layers": "^2.1.0",
     "@pixi/math": "^7.3.1",
     "@pixi/math-extras": "^7.3.1",
-    "pixi.js": "^7.2.4",
-    "uuid": "^9.0.1"
+    "@pixi/particle-emitter": "^5.0.8",
+    "pixi.js": "^7.3.1"
   },
   "scripts": {
     "dev": "webpack-dev-server --config webpack.config.dev.js",

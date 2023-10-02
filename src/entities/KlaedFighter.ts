@@ -4,6 +4,8 @@ import GameObject from "core/GameObject";
 import Timer from "core/Timer";
 import { AnimatedSprite, Assets, Container, Sprite } from "pixi.js";
 import { DOWN, angleBetween, dice, isValidCollisor, randf } from "utils/utils";
+import VFXManager from "vfx/VFXManager";
+import smallExplosion from "vfx/smallExplosion";
 import Entities from "./Entities";
 
 class KlaedBullet
@@ -38,11 +40,20 @@ class KlaedBullet
   }
 
   private onCollides(collisor: GameObject): void {
-    if (isValidCollisor([Entities.MAIN_SHIP], collisor)) return this.destroy({ children: true });
+    if (isValidCollisor([Entities.MAIN_SHIP], collisor)) {
+      this.explode();
+      return this.destroy({ children: true });
+    };
   }
 
   private onOutOfBounds(): void {
     return this.destroy({ children: true });
+  }
+
+  private explode(): void {
+    const config = smallExplosion();
+    config.pos.x = this.x; config.pos.y = this.y;
+    VFXManager.getInstance().emit(config);
   }
 
   protected onUpdate(dt: number): void {

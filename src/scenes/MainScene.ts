@@ -34,6 +34,7 @@ export default class MainScene implements ISceneGraph {
     await Assets.loadBundle([
       "enviroments_bundle",
       "mainship_bundle",
+      "vfx_bundle",
       "klaed_fighter_bundle"
     ]);
 
@@ -75,7 +76,7 @@ export default class MainScene implements ISceneGraph {
 
   private spawnKlaedFighter(wrapper: Wrapper): void {
     const spawn = () => {
-      if (this.klaedFighterCount >= 1) return;
+      if (this.klaedFighterCount >= 5) return;
       const x = randf(this.wrapper.bounds.top, this.wrapper.bounds.right);
       const y = wrapper.bounds.top;
       const klaedFighter = new KlaedFighter(wrapper, x, y);

@@ -62,17 +62,15 @@ export class Wrapper extends Container {
       top: 0,
     };
     this.children.forEach((child: GameObject) => {
-      if (isGameObject(child)) {
-        const childBounds = child;
-        const isOutOfBounds =
-          childBounds.x + padding.left < this.bounds.left
-          || childBounds.x + padding.right > this.bounds.right
-          || childBounds.y + padding.bottom > this.bounds.bottom
-          || childBounds.y + padding.top < this.bounds.top;
-        if (isOutOfBounds) {
-          child.events.emit('outOfWorldBounds', this.bounds);
-        }
-      }
+      const isValid = isGameObject(child) && child?.events?.emit
+      if (!isValid) return;
+      const childBounds = child;
+      const isOutOfBounds =
+        childBounds.x + padding.left < this.bounds.left
+        || childBounds.x + padding.right > this.bounds.right
+        || childBounds.y + padding.bottom > this.bounds.bottom
+        || childBounds.y + padding.top < this.bounds.top;
+      if (isOutOfBounds) child.events.emit('outOfWorldBounds', this.bounds);
     });
   }
 
