@@ -1,5 +1,5 @@
 import { AxisAlignedBounds, KinematicBody, isGameObject, isKinematicBody } from "core";
-import { Container, IDestroyOptions, Ticker } from 'pixi.js';
+import { Container, Graphics, IDestroyOptions, Ticker } from 'pixi.js';
 import CollisionTest from 'core/CollisionTest';
 import GameObject from 'core/GameObject';
 
@@ -21,6 +21,22 @@ export class Wrapper extends Container {
     this.ticker = Ticker.shared;
     this.collisionTest = new CollisionTest();
     this.addListeners();
+    this.addCanvasMask();
+  }
+
+  private addCanvasMask(): void {
+    const mask = new Graphics();
+    mask.name = "global_stage_mask";
+    mask.beginFill();
+    mask.drawRect(
+      this.bounds.x + 2,
+      this.bounds.y + 2,
+      this.bounds.width - 2,
+      this.bounds.height - 2
+    );
+    mask.endFill();
+    this.mask = mask;
+    this.addChild(mask);
   }
 
   private addListeners(): void {
