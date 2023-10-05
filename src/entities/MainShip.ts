@@ -131,7 +131,7 @@ class AutoCannon implements Weapon {
   private timer: Timer;
   private bullet: Projectile;
   private wrapper: GameObject;
-  private _countdown: number = 100;
+  private _countdown: number = 500;
   private shootingSprite: AnimatedSprite;
 
   constructor(parent: GameObject, bullet: Projectile) {
@@ -263,7 +263,6 @@ export default class MainShip extends GameObject {
     if (action === Actions.MOVE_LEFT) this.speed.x = 1;
     if (action === Actions.MOVE_RIGHT) this.speed.x = -1;
     if (action === Actions.MOVE_DOWN) this.speed.y = 1;
-    if (action === Actions.WEAPON_FIRE) this.weapon.fire();
   }
 
   private onActionReleased(action: Actions): void {
@@ -271,6 +270,7 @@ export default class MainShip extends GameObject {
   }
 
   private onUpdate(): void {
+    this.weapon.fire();
     if (Math.abs(this.speed.y) >= 1) this.engine.power();
     this.move(this.speed);
     this.speed.set(0, 0);
