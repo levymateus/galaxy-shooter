@@ -66,6 +66,10 @@
           "srcs": "assets/sprites/asteroid/asteroid_explode.json"
         },
         {
+          "name": "asteroid_flame",
+          "srcs": "assets/sprites/asteroid/asteroid_flame.json"
+        },
+        {
           "name": "starry_background_layer_02_shadows",
           "srcs": "assets/sprites/enviroment/starry_background_layer_02_shadows.png"
         },
