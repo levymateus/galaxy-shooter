@@ -5,10 +5,8 @@ import { Resolution } from "core";
  */
 class SettingsClass {
 
-  resolutions: [Resolution, Resolution, Resolution] = [
-    { w: 640, h: 360, ratio: [16, 9] },
-    { w: 960, h: 540, ratio: [16, 9] },
-    { w: 549, h: 540, ratio: [1, 1] },
+  resolutions: [Resolution] = [
+    { w: 360, h: 640, ratio: [9, 16] },
   ];
 
   private static instance: SettingsClass;

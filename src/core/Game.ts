@@ -17,7 +17,7 @@ export class Game {
     }
 
     settings.RESOLUTION = window.devicePixelRatio || 1;
-    this.surface = Settings.resolutions[2];
+    this.surface = Settings.resolutions[0];
 
     this.app = new Application({
       resizeTo: window,
@@ -29,13 +29,6 @@ export class Game {
 
     this.app.stage.name = "stage";
     Ticker.shared.autoStart = false;
-
-    window.addEventListener('resize', () => {
-      const aux = this.currentScene;
-      this.currentScene.onFinish();
-      this.app.resize();
-      this.gotoScene(aux);
-    });
 
     // @ts-ignore
     devtools(this.app);

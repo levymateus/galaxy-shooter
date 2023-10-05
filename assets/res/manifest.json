@@ -64,6 +64,42 @@
         {
           "name": "asteroid_explode",
           "srcs": "assets/sprites/asteroid/asteroid_explode.json"
+        },
+        {
+          "name": "starry_background_layer_02_shadows",
+          "srcs": "assets/sprites/enviroment/starry_background_layer_02_shadows.png"
+        },
+        {
+          "name": "starry_background_layer_02_shadows_02",
+          "srcs": "assets/sprites/enviroment/starry_background_layer_02_shadows_02.png"
+        },
+        {
+          "name": "starry_background_layer_02_shadows_03",
+          "srcs": "assets/sprites/enviroment/starry_background_layer_02_shadows_03.png"
+        },
+        {
+          "name": "starry_background_layer_03_stars",
+          "srcs": "assets/sprites/enviroment/starry_background_layer_03_stars.png"
+        },
+        {
+          "name": "starry_background_layer_x_big_star",
+          "srcs": "assets/sprites/enviroment/starry_background_layer_x_big_star.png"
+        },
+        {
+          "name": "starry_background_layer_x_big_star_02",
+          "srcs": "assets/sprites/enviroment/starry_background_layer_x_big_star_02.png"
+        },
+        {
+          "name": "starry_background_layer_x_black_hole",
+          "srcs": "assets/sprites/enviroment/starry_background_layer_x_black_hole.png"
+        },
+        {
+          "name": "starry_background_layer_x_rotary_star",
+          "srcs": "assets/sprites/enviroment/starry_background_layer_x_rotary_star.png"
+        },
+        {
+          "name": "starry_background_layer_x_rotary_star_02",
+          "srcs": "assets/sprites/enviroment/starry_background_layer_x_rotary_star_02.png"
         }
       ]
     },
