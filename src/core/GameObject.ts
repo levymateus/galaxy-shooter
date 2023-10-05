@@ -2,6 +2,7 @@ import { AxisAlignedBounds } from "core";
 import { EventEmitter } from "core";
 import { GameObjectEvents, KinematicBody } from "core/typings";
 import { Circle, Container, IDestroyOptions, Point, Ticker, TickerCallback } from "pixi.js";
+import { uid } from "utils/utils";
 
 /**
  * Receive a GameObject thats collides.
@@ -34,7 +35,7 @@ export default class GameObject extends Container implements KinematicBody {
 
   constructor(name: string) {
     super();
-    this.id = crypto.randomUUID();
+    this.id = uid();
     this.name = name;
     this.speed = new Point();
     this.collisionShape = new Circle(0, 0, 16);
