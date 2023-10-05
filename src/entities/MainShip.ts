@@ -1,7 +1,7 @@
 import { Actions, AxisAlignedBounds, Input, Projectile, Weapon, Wrapper } from "core";
 import GameObject from "core/GameObject";
 import Timer from "core/Timer";
-import { AnimatedSprite, Assets, Circle, Container, Point, Sprite } from "pixi.js";
+import { AnimatedSprite, Assets, Container, Point, Sprite } from "pixi.js";
 import Entities from "./Entities";
 import { isValidCollisor } from "utils/utils";
 
@@ -204,22 +204,17 @@ class AutoCannon implements Weapon {
 
 export default class MainShip extends GameObject {
 
-  public collisionShape: Circle;
-  public friction: number = 0.001;
-
   private wrapper: Container;
-  private motion: Point;
   private baseSprite: Sprite;
   private engine: SpaceshipEngine;
   private autoCannon: AutoCannon;
   private weapon: Weapon;
-  private maxY: number = 540;
+  private maxY: number = 640;
 
   constructor(wrapper: Container) {
     super(Entities.MAIN_SHIP);
     this.wrapper = wrapper;
     this.collisionShape.radius = 20;
-    this.motion = new Point();
     this.addEngine();
     this.addAutoCannon();
     this.addBaseSprite();
@@ -264,12 +259,10 @@ export default class MainShip extends GameObject {
   }
 
   private onActionPressed(action: Actions): void {
-    if (action === Actions.MOVE_UP) {
-      this.motion.y = -1;
-      this.engine.power();
-    }
-    if (action === Actions.MOVE_LEFT) this.motion.x = 1;
-    if (action === Actions.MOVE_RIGHT) this.motion.x = -1;
+    if (action === Actions.MOVE_UP) this.speed.y = -1;
+    if (action === Actions.MOVE_LEFT) this.speed.x = 1;
+    if (action === Actions.MOVE_RIGHT) this.speed.x = -1;
+    if (action === Actions.MOVE_DOWN) this.speed.y = 1;
     if (action === Actions.WEAPON_FIRE) this.weapon.fire();
   }
 
@@ -277,22 +270,10 @@ export default class MainShip extends GameObject {
     if (action === Actions.MOVE_UP) this.engine.idle();
   }
 
-  private onUpdate(dt: number): void {
-    const [MIN_X, MAX_X, MIN_Y, MAX_Y] = [
-      0.5, this.friction + 0.015, this.friction + 0.015, 0.5
-    ];
-    if (this.speed.y > MIN_Y && this.speed.y <= MAX_Y) this.speed.y -= this.friction;
-    if (this.speed.y >= MAX_Y) this.speed.y = MAX_Y;
-    if (this.speed.y < -MIN_Y && this.speed.y >= -MAX_Y) this.speed.y += this.friction;
-    if (this.speed.y <= -MAX_Y) this.speed.y = -MAX_Y;
-    if (this.speed.x > MAX_X && this.speed.x <= MIN_X) this.speed.x -= this.friction;
-    if (this.speed.x >= MIN_X) this.speed.x = MIN_X;
-    if (this.speed.x < -MAX_X && this.speed.x >= -MIN_X) this.speed.x += this.friction;
-    if (this.speed.x <= -MIN_X) this.speed.x = -MIN_X;
-    this.motion.x += this.speed.x * dt;
-    this.motion.y += this.speed.y * dt;
-    this.move(this.motion);
-    this.motion.set(0, 0.4);
+  private onUpdate(): void {
+    if (Math.abs(this.speed.y) >= 1) this.engine.power();
+    this.move(this.speed);
+    this.speed.set(0, 0);
   }
 
   private onCollide(collisor: GameObject): void {
