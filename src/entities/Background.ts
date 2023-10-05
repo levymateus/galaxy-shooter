@@ -1,4 +1,4 @@
-import { AnimatedSprite, Assets, Graphics, Point, Spritesheet, Ticker } from "pixi.js";
+import { AnimatedSprite, Assets, Graphics, Point, Spritesheet } from "pixi.js";
 import dataJson from "assets/sprites/enviroment/starry_background.json";
 import { Drawable, Rectangle } from "core";
 import GameObject from "core/GameObject";
@@ -9,7 +9,6 @@ import { randf } from "utils/utils";
  */
 export default class Background extends GameObject implements Drawable {
 
-  public ticker: Ticker;
   public color: number = 0x2e222f;
   public alpha: number = 1;
   private rect: Rectangle;
@@ -66,35 +65,36 @@ export default class Background extends GameObject implements Drawable {
 
     this.addSprite(
       "starry_background_layer_x_big_star",
-      "assets/sprites/enviroment/starry_background_layer_x_big_star.png",
+      "starry_background_layer_x_big_star",
       { x: randf(0, this.rect.width), y: 0, speed: 0.3 }
     );
 
     this.addSprite(
       "starry_background_layer_x_big_star_02",
-      "assets/sprites/enviroment/starry_background_layer_x_big_star_02.png",
+      "starry_background_layer_x_big_star_02",
       { x: randf(0, this.rect.width), y: -this.rect.height, speed: 0.3 }
     );
 
     this.addSprite(
       "starry_background_layer_x_black_hole",
-      "assets/sprites/enviroment/starry_background_layer_x_black_hole.png",
-      { x: 0, y: -this.rect.height * 2, speed: 0.3 }
+      "starry_background_layer_x_black_hole",
+      { x: randf(0, this.rect.width), y: -this.rect.height * 2, speed: 0.3 }
     );
 
     this.addSprite(
       "starry_background_layer_x_rotary_star",
-      "assets/sprites/enviroment/starry_background_layer_x_rotary_star.png",
+      "starry_background_layer_x_rotary_star",
       { x: randf(0, this.rect.width), y: -this.rect.height * 3, speed: 0.3 }
     );
 
     this.addSprite(
       "starry_background_layer_x_rotary_star_02",
-      "assets/sprites/enviroment/starry_background_layer_x_rotary_star_02.png",
+      "starry_background_layer_x_rotary_star_02",
       { x: randf(0, this.rect.width), y: -this.rect.height * 4, speed: 0.3 }
     );
   }
 
+  // this function reuse an atlas data animation json file for multiple spritesheets.
   private parseFrom(prefix: string, bundleName: string, atlasDataKey: string) {
     const data = Assets.get(atlasDataKey);
     const frames: Record<string, unknown> = {};
@@ -119,9 +119,10 @@ export default class Background extends GameObject implements Drawable {
     await spritesheet.parse();
 
     const animatedSprite = new AnimatedSprite(spritesheet.animations.animation as any);
+    animatedSprite.animationSpeed = this.speedAnimation;
     animatedSprite.position.set(props.x, props.y);
+    animatedSprite.anchor.set(this.anchor);
     animatedSprite.name = name;
-    animatedSprite.anchor.set(0.5);
     animatedSprite.angle = 270;
     animatedSprite.play();
 
