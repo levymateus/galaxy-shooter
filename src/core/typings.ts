@@ -1,14 +1,22 @@
-import { Circle, Container, Point, AssetsManifest } from "pixi.js";
 import { AxisAlignedBounds } from "core/AxisAlignedBounds";
 import { EventEmitter } from "core/EventEmitter";
-import { Wrapper } from "core/Wrapper";
+import { Scene } from "core/Scene";
+import { AssetsManifest, Circle, Container, Point, utils } from "pixi.js";
 
 // types
-export type GameOptions = {
+export type SceneOptions = {
   manifest?: string | AssetsManifest;
 }
 
-export type Resolution = { w: number, h: number, ratio: [number, number] };
+export type Resolution = {
+  width: number,
+  height: number,
+
+  /**
+   * Aspect ratio pair of values.
+   */
+  ratio: [number, number]
+};
 
 export type GameObjectEventEmmiter = EventEmitter<GameObjectEvents>;
 
@@ -35,8 +43,9 @@ export enum Actions {
 };
 
 // interfaces
-export interface ISceneGraph {
-  onStart(root: Wrapper): Promise<void>;
+export interface Activity<E extends utils.EventEmitter.ValidEventTypes> {
+  name: string;
+  onStart(root: Scene<E>): Promise<void>;
   onUpdate(delta: number): void;
   onFinish(): Promise<void>;
 }
@@ -100,5 +109,3 @@ export function isKinematicBody(object: unknown): object is KinematicBody {
   const asKinematic = (object as KinematicBody);
   return !!(asKinematic?.collisionShape || asKinematic?.events);
 }
-
-

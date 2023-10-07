@@ -1,7 +1,7 @@
-import GameObject from "core/GameObject";
 import { AnimatedSprite, Assets, Sprite } from "pixi.js";
 import { dice, isValidCollisor, randf } from "utils/utils";
-import Entities from "./Entities";
+import { Entities } from "entities/typings";
+import { GameObject } from "core";
 
 enum AsteroidType {
   DEFAULT = 0,
@@ -9,7 +9,6 @@ enum AsteroidType {
 }
 
 export class Asteroid extends GameObject {
-
   public type: AsteroidType = AsteroidType.DEFAULT;
   private baseSprite: Sprite;
   private explodeSprite: AnimatedSprite;
@@ -86,7 +85,7 @@ export class Asteroid extends GameObject {
 
   private explodeAndDestroy(): void {
     this.ticker.stop();
-    this.flameSprite?.visible ?? false;
+    if (this.flameSprite) this.flameSprite.visible = false;
     this.baseSprite.visible = false;
     this.explodeSprite.visible = true;
     this.explodeSprite.onComplete = () => {

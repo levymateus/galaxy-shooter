@@ -1,23 +1,23 @@
-import { AxisAlignedBounds, KinematicBody, isGameObject, isKinematicBody } from "core";
-import { Container, Graphics, IDestroyOptions, Ticker } from 'pixi.js';
+import { AxisAlignedBounds, EventEmitter, GameObject, SceneManager } from "core";
 import CollisionTest from 'core/CollisionTest';
-import GameObject from 'core/GameObject';
+import { KinematicBody, isGameObject, isKinematicBody } from "core/typings";
+import { Container, Graphics, IDestroyOptions, Ticker, utils } from 'pixi.js';
 
 /**
- * Wrapper class is the main container of the current scene.
+ * Scene class is the main container of the current Scene.
  * Controls the bounds, notify the direct children.
  */
-export class Wrapper extends Container {
-
+export class Scene<E extends utils.EventEmitter.ValidEventTypes> extends Container {
+  private static BOUNDING_RECT_PADDING = 2;
+  public sceneManager: SceneManager<E>;
   public bounds: AxisAlignedBounds;
-
+  public emitter: EventEmitter<E>;
   private ticker: Ticker;
   private collisionTest: CollisionTest;
 
-  constructor(width: number, height: number) {
+  constructor(bounds: AxisAlignedBounds) {
     super();
-    this.bounds = new AxisAlignedBounds(0, 0, width, height);
-    this.bounds.anchor.set(0.5);
+    this.bounds = bounds;
     this.ticker = Ticker.shared;
     this.collisionTest = new CollisionTest();
     this.addListeners();
@@ -29,10 +29,10 @@ export class Wrapper extends Container {
     mask.name = "global_stage_mask";
     mask.beginFill();
     mask.drawRect(
-      this.bounds.x + 2,
-      this.bounds.y + 2,
-      this.bounds.width - 2,
-      this.bounds.height - 2
+      this.bounds.x + Scene.BOUNDING_RECT_PADDING,
+      this.bounds.y + Scene.BOUNDING_RECT_PADDING,
+      this.bounds.width - Scene.BOUNDING_RECT_PADDING,
+      this.bounds.height - Scene.BOUNDING_RECT_PADDING
     );
     mask.endFill();
     this.mask = mask;
@@ -76,9 +76,9 @@ export class Wrapper extends Container {
 
   private forEachChildTestCollision() {
     const collsn = this.collisionTest.collisions();
-    collsn.forEach(([a, b]) => {
-      if (isKinematicBody(a) && isKinematicBody(b)) {
-        a.events.emit('onCollide', b as Container & KinematicBody);
+    collsn.forEach(([objA, objB]) => {
+      if (isKinematicBody(objA) && isKinematicBody(objB)) {
+        objA.events.emit('onCollide', objB as Container & KinematicBody);
       }
     });
   }

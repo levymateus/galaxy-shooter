@@ -15,7 +15,7 @@
       "*": ["src/*"],
       "assets/*": ["assets/*"],
       "res/*": ["assets/res/*"],
-      "sprites/*": ["assets/sprites/*"]
+      "sprites/*": ["assets/sprites/*"],
     },
     "sourceMap": true,
     "sourceRoot": "/",

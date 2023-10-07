@@ -6,8 +6,7 @@ enum TimerStatus {
 
 type TimeHandler = (() => void);
 
-export default class Timer {
-
+export class Timer {
   private status: TimerStatus;
   private id: null | number;
 
@@ -41,22 +40,20 @@ export default class Timer {
 
   tick(callback: TimeHandler, tick: number, total: number): Timer {
     this.stop();
-
     const interval = new Timer();
     interval.interval(() => callback(), tick);
-
     this.timeout(() => {
       this.status = TimerStatus.COMPLETE;
       callback();
       interval.clear();
     }, total);
-
     return this;
   }
 
   clear(): void {
     if (this.id) {
-      window.clearInterval(this.id); window.clearTimeout(this.id);
+      window.clearInterval(this.id);
+      window.clearTimeout(this.id);
     }
   }
 

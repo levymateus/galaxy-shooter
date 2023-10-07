@@ -1,5 +1,4 @@
-import { AxisAlignedBounds } from "core";
-import { EventEmitter } from "core";
+import { AxisAlignedBounds, EventEmitter } from "core";
 import { GameObjectEvents, KinematicBody } from "core/typings";
 import { Circle, Container, IDestroyOptions, Point, Ticker, TickerCallback } from "pixi.js";
 import { uid } from "utils/utils";
@@ -11,14 +10,12 @@ type CollideCallback = ((go: GameObject) => void);
 
 type OutOfBoundsCallback = (bounds: AxisAlignedBounds) => void;
 
-export default class GameObject extends Container implements KinematicBody {
-
+export class GameObject extends Container implements KinematicBody {
   public id: string;
   public name: string;
   public speed: Point;
   public anchor: number = 0.5;
   public speedAnimation: number = 0.4;
-
   /**
    * enable or disable collision test.
    * Default is `true`.

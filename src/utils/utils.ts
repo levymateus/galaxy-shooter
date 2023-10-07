@@ -1,5 +1,6 @@
 import { Point, RAD_TO_DEG } from "@pixi/math";
-import GameObject from "core/GameObject";
+import { GameObject, Surface } from "core";
+import { Container } from "pixi.js";
 
 export function randi(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -40,8 +41,12 @@ export const uid = (): string => {
       .toString(16)
       .substring(1);
   }
-  //return id of format 'aaaaaaaa'-'aaaa'-'aaaa'-'aaaa'-'aaaaaaaaaaaa'
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
+export const centralize = (container: Container, surface: Surface) => {
+  container.pivot.x -= surface.width * 0.5;
+  container.pivot.y -= surface.height * 0.5;
 }
 
 export const DOWN = new Point(0, 1);

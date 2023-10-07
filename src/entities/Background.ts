@@ -1,14 +1,13 @@
-import { AnimatedSprite, Assets, Graphics, Point, Spritesheet } from "pixi.js";
 import dataJson from "assets/sprites/enviroment/starry_background.json";
-import { Drawable, Rectangle } from "core";
-import GameObject from "core/GameObject";
+import { GameObject, Rectangle } from "core";
+import { Drawable } from "core/typings";
+import { AnimatedSprite, Assets, Graphics, Point, Spritesheet } from "pixi.js";
 import { randf } from "utils/utils";
 
 /**
  * Scene background root node.
  */
 export default class Background extends GameObject implements Drawable {
-
   public color: number = 0x2e222f;
   public alpha: number = 1;
   private rect: Rectangle;

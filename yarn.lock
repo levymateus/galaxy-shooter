@@ -1175,6 +1175,11 @@
   resolved "https://registry.yarnpkg.com/@pixi/graphics/-/graphics-7.3.1.tgz#cd95a0ed7eac7b3a3e777c5dad7f810a158219c4"
   integrity sha512-e1GfhN0fCtq1VDPSgd7nm034ml79SqmP0+IqX3CoilfT7Qoy+IimEYZ4R50SczGBcUGE4egDRIFYv+TgdBuQ2g==
 
+"@pixi/layers@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@pixi/layers/-/layers-2.1.0.tgz#aa0b9ef715135fe8549ba12fdbca2d565d2bd708"
+  integrity sha512-e3p3xaHSkVF1jLTfiTEsFGNzGRPffTO0UkKbwA9pfBzRHIBOFM2mCbVqcdhgHSMXRFYr2FoOp1+zK9jJifEUug==
+
 "@pixi/math-extras@^7.3.1":
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/@pixi/math-extras/-/math-extras-7.3.1.tgz#3660e0c17222f25de59a862def8fdaadd55d0a2f"

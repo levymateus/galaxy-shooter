@@ -8,6 +8,18 @@
           "srcs": "assets/sprites/mainship/bases/mainship_base_full_health.png"
         },
         {
+          "name": "mainship_base_damaged",
+          "srcs": "assets/sprites/mainship/bases/mainship_base_damaged.png"
+        },
+        {
+          "name": "mainship_base_slight_damaged",
+          "srcs": "assets/sprites/mainship/bases/mainship_base_slight_damaged.png"
+        },
+        {
+          "name": "mainship_base_very_damaged",
+          "srcs": "assets/sprites/mainship/bases/mainship_base_very_damaged.png"
+        },
+        {
           "name": "mainship_base_engine",
           "srcs": "assets/sprites/mainship/engines/mainship_base_engine.png"
         },

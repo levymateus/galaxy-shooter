@@ -1,24 +1,22 @@
-import { Resolution } from "core";
+import { Resolution } from "core/typings";
 
 /**
  * Global game settings parser.
  */
-class SettingsClass {
-
-  resolutions: [Resolution] = [
-    { w: 360, h: 640, ratio: [9, 16] },
+export class Settings {
+  public static RESOLUTIONS: [Resolution] = [
+    { width: 360, height: 640, ratio: [9, 16] },
   ];
+  private static instance: Settings;
 
-  private static instance: SettingsClass;
-
-  public static getInstance(): SettingsClass {
-    if (!SettingsClass.instance) {
-      SettingsClass.instance = new SettingsClass();
+  public static getInstance(): Settings {
+    if (!Settings.instance) {
+      Settings.instance = new Settings();
     }
-    return SettingsClass.instance;
+    return Settings.instance;
+  }
+
+  public getDefaultResolution(): Resolution {
+    return Settings.RESOLUTIONS[0];
   }
 }
-
-const Settings = SettingsClass.getInstance();
-
-export { Settings }
