@@ -2,10 +2,9 @@ import "@pixi/math-extras";
 import "styles.css";
 
 import { app } from "app";
-import devtools from "config";
 import { AxisAlignedBounds, EventEmitter, Settings, Surface, Timer } from "core";
 import { SceneManager } from "core/SceneManager";
-import { Assets, settings } from "pixi.js";
+import { Assets } from "pixi.js";
 import manifest from "res/manifest.json";
 import GameOverScene from "scenes/GameOverScene";
 import LoadingScene from "scenes/LoadingScene";
@@ -22,16 +21,11 @@ Assets.setPreferences({
 
 const emitter = new EventEmitter<SpaceShooterEvents>();
 const appSettings = Settings.getInstance();
-const view: Node = (app.view as unknown) as Node;
 const res = appSettings.getDefaultResolution();
 const surface = new Surface(app.screen, res);
 
 const bounds = new AxisAlignedBounds(0, 0, surface.width, surface.height);
 bounds.anchor.set(0.5);
-
-devtools(app);
-settings.RESOLUTION = window.devicePixelRatio || 1;
-document.body.appendChild(view);
 
 const hud = new HUD();
 const vfxManager = new VFXManager<SpaceShooterEvents>(app, surface, bounds, emitter);
