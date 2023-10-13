@@ -1,7 +1,7 @@
 import { AxisAlignedBounds, CollisionTest, Context, EventEmitter, GameObject, Surface } from 'core';
 import { Manager } from "core/Manager";
 import { Activity as ActivityInterface, isGameObject, isKinematicBody } from 'core/typings';
-import { Application, Graphics, utils } from 'pixi.js';
+import { Application, utils } from 'pixi.js';
 
 export class SceneManager<E extends utils.EventEmitter.ValidEventTypes> extends Manager<E> {
   constructor(app: Application, surface: Surface, bounds: AxisAlignedBounds, emitter: EventEmitter<E>) {
@@ -14,7 +14,6 @@ export class SceneManager<E extends utils.EventEmitter.ValidEventTypes> extends 
  * Control the bounds, notify the direct children.
  */
 export class Activity<E extends utils.EventEmitter.ValidEventTypes> implements ActivityInterface<E> {
-  private static _BOUNDING_RECT_PADDING = 2;
   public ct: CollisionTest;
   protected context: Context<E>;
 
@@ -50,24 +49,7 @@ export class Activity<E extends utils.EventEmitter.ValidEventTypes> implements A
 
   async onStart(context: Context<E>) {
     this.context = context;
-    const bounds = this.context.bounds;
-
     this.ct = new CollisionTest();
-
-    // add mask
-    const mask = new Graphics();
-    mask.name = "global_stage_mask";
-    mask.beginFill();
-    mask.drawRect(
-      bounds.x + Activity._BOUNDING_RECT_PADDING,
-      bounds.y + Activity._BOUNDING_RECT_PADDING,
-      bounds.width - Activity._BOUNDING_RECT_PADDING,
-      bounds.height - Activity._BOUNDING_RECT_PADDING
-    );
-    mask.endFill();
-    this.context.mask = mask;
-    this.context.addChild(mask);
-
     this.context.manager.ticker.add(this.childrenIsInBounds, this);
     this.context.manager.ticker.add(this.childrenIsColliding, this);
 

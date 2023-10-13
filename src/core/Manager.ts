@@ -1,4 +1,4 @@
-import { Application, Ticker, utils } from "pixi.js";
+import { Application, Graphics, Ticker, utils } from "pixi.js";
 import { Surface, EventEmitter, AxisAlignedBounds, Context } from "core";
 import { Activity } from "core/typings";
 
@@ -61,6 +61,19 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
 
     this.context.pivot.x -= this.surface.width * 0.5;
     this.context.pivot.y -= this.surface.height * 0.5;
+
+    const mask = new Graphics();
+    mask.name = `${name}_mask`;
+    mask.beginFill();
+    mask.drawRect(
+      this.bounds.x,
+      this.bounds.y,
+      this.bounds.width,
+      this.bounds.height
+    );
+    mask.endFill();
+    this.context.mask = mask;
+    this.context.addChild(mask);
 
     await newActivity.onStart(this.context);
     this.activity = newActivity;
