@@ -3,16 +3,18 @@ import "styles.css";
 
 import { app } from "app";
 import devtools from "config";
-import { AxisAlignedBounds, EventEmitter, SceneManager, Settings, Surface, Timer } from "core";
+import { AxisAlignedBounds, EventEmitter, Settings, Surface, Timer } from "core";
+import { SceneManager } from "core/SceneManager";
 import { Assets, settings } from "pixi.js";
 import manifest from "res/manifest.json";
 import GameOverScene from "scenes/GameOverScene";
 import LoadingScene from "scenes/LoadingScene";
 import MainScene from "scenes/MainScene";
+import VFX from "scenes/VFX";
+import VFXManager from "vfx/VFXManager";
 import { SpaceShooterEvents } from "typings";
 import { GUIManager } from "ui/GUIManager";
 import HUD from "ui/HUD";
-import VFXManager from "vfx/VFXManager";
 
 Assets.setPreferences({
   preferWorkers: true,
@@ -35,12 +37,14 @@ const hud = new HUD();
 const vfxManager = new VFXManager<SpaceShooterEvents>(app, surface, bounds, emitter);
 const sceneManager = new SceneManager<SpaceShooterEvents>(app, surface, bounds, emitter);
 const guiManager = new GUIManager<SpaceShooterEvents>(app, surface, bounds, emitter);
-const mainScene = new MainScene(surface);
+const mainScene = new MainScene();
 const gameOverScene = new GameOverScene();
+
+vfxManager.gotoScene(new VFX(), "VFX");
 
 export const gotoMainScene = () => {
   vfxManager.play();
-  guiManager.render(hud, "HUD");
+  guiManager.gotoScene(hud, "HUD");
   sceneManager.gotoScene(mainScene, MainScene.SCENE_NAME);
 }
 
@@ -56,7 +60,10 @@ const bundleIds = [
   "vfx_bundle",
   "klaed_fighter_bundle"
 ];
-const loadingScene = new LoadingScene(surface, bundleIds, manifest, gotoMainScene);
+const loadingScene = new LoadingScene();
+loadingScene.bundleIds = bundleIds;
+loadingScene.manifest = manifest;
+loadingScene.next = gotoMainScene;
 
 export const gotoLoadingScene = () => {
   vfxManager.stop();

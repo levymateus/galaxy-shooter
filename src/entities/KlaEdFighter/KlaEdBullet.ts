@@ -1,5 +1,5 @@
 import { Point } from "@pixi/math";
-import { AxisAlignedBounds, GameObject, Scene } from "core";
+import { AxisAlignedBounds, Context, GameObject } from "core";
 import { Projectile } from "core/typings";
 import { Entities, Entity, KlaedBulletAttributes } from "entities/typings";
 import { AnimatedSprite, Assets } from "pixi.js";
@@ -12,13 +12,13 @@ export default class KlaedBullet extends GameObject implements Projectile, Entit
     damage: 10,
   };
   public direction: Point;
-  private scene: Scene<SpaceShooterEvents>;
+  private context: Context<SpaceShooterEvents>;
   private baseSprite: AnimatedSprite;
   private bounds: AxisAlignedBounds;
 
-  constructor(scene: Scene<SpaceShooterEvents>, bounds: AxisAlignedBounds) {
+  constructor(context: Context<SpaceShooterEvents>, bounds: AxisAlignedBounds) {
     super(Entities.KLA_ED_BULLET);
-    this.scene = scene;
+    this.context = context;
     this.bounds = bounds;
     this.speed.y = 5;
     this.direction = new Point(0, 1);
@@ -33,7 +33,7 @@ export default class KlaedBullet extends GameObject implements Projectile, Entit
     this.baseSprite.anchor.set(this.anchor);
     this.baseSprite.visible = true;
     this.baseSprite.play();
-    this.setParent(this.scene);
+    this.setParent(this.context);
     this.addChild(this.baseSprite);
   }
 
@@ -52,7 +52,7 @@ export default class KlaedBullet extends GameObject implements Projectile, Entit
     const config = smallExplosion();
     config.pos.x = this.x;
     config.pos.y = this.y;
-    this.scene.emitter.emit("dispathVFX", config);
+    this.context.emitter.emit("dispathVFX", config);
   }
 
   protected onUpdate(dt: number): void {
@@ -67,6 +67,6 @@ export default class KlaedBullet extends GameObject implements Projectile, Entit
   }
 
   public clone() {
-    return new KlaedBullet(this.scene, this.bounds);
+    return new KlaedBullet(this.context, this.bounds);
   }
 }

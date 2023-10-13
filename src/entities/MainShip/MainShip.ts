@@ -1,36 +1,35 @@
-import { AxisAlignedBounds, GameObject, Input, Scene, Settings } from "core";
+import { AxisAlignedBounds, Context, GameObject, Input } from "core";
 import { Actions, Weapon } from "core/typings";
 import { Entities, Entity, KlaedBulletAttributes, MainShipAttributes, isEntity } from "entities/typings";
 import { Point } from "pixi.js";
-import { isValidCollisor } from "utils/utils";
 import { SpaceShooterEvents } from "typings";
+import { isValidCollisor } from "utils/utils";
 
+import bigExplosion from "vfx/bigExplosion";
 import AutoCannon from "./AutoCannon";
 import AutoCannonBullet from "./AutoCannonBullet";
-import SpaceshipEngine from "./SpaceShipEngine";
 import MainShipBase from "./MainShipBase";
-import bigExplosion from "vfx/bigExplosion";
+import SpaceshipEngine from "./SpaceShipEngine";
 
 export default class MainShip extends GameObject implements Entity<MainShipAttributes> {
   public attributes = {
-    maxHealth: 100,
+    maxHealth: 1,
     minHealth: 0,
-    health: 100,
+    health: 1,
   };
   public isDead: boolean = false;
-  private scene: Scene<SpaceShooterEvents>;
+  private context: Context<SpaceShooterEvents>;
   private base: MainShipBase;
   private engine: SpaceshipEngine;
   private autoCannon: AutoCannon;
   private weapon: Weapon;
   private maxY: number;
 
-  constructor(scene: Scene<SpaceShooterEvents>) {
+  constructor(context: Context<SpaceShooterEvents>) {
     super(Entities.MAIN_SHIP);
-    const rect = Settings.getInstance().getDefaultResolution();
-    this.scene = scene;
+    this.context = context;
     this.collisionShape.radius = 20;
-    this.maxY = rect.width;
+    this.maxY = context.surface.height;
     this.addEngine();
     this.addAutoCannon();
     this.addBaseSprite();
@@ -44,7 +43,7 @@ export default class MainShip extends GameObject implements Entity<MainShipAttri
   }
 
   private addAutoCannon(): void {
-    this.autoCannon = new AutoCannon(this, new AutoCannonBullet(this.scene));
+    this.autoCannon = new AutoCannon(this, new AutoCannonBullet(this.context));
     this.equipWeapon(this.autoCannon);
   }
 
@@ -67,8 +66,8 @@ export default class MainShip extends GameObject implements Entity<MainShipAttri
     Input.on('onActionReleased', this.onActionReleased, this);
   }
 
-  private onEnterScene(scene: Scene<SpaceShooterEvents>): void {
-    this.maxY = scene.bounds.bottom;
+  private onEnterScene(context: Context<SpaceShooterEvents>): void {
+    this.maxY = context.bounds.bottom;
     this.position.y = this.maxY - 64;
   }
 
@@ -151,10 +150,10 @@ export default class MainShip extends GameObject implements Entity<MainShipAttri
 
     const config = bigExplosion();
     config.pos.x = this.x; config.pos.y = this.y;
-    this.scene.emitter.emit("dispathVFX", config);
+    this.context.emitter.emit("dispathVFX", config);
 
     this.ticker.stop();
     this.weapon?.unequip();
-    this.scene.emitter.emit("gameOver");
+    this.context.emitter.emit("gameOver");
   }
 }

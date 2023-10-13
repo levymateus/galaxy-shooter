@@ -23,7 +23,7 @@ class GameInputHandler extends EventEmitter<InputEvents> {
     this.mouseInput = new MouseInput();
     this.mouseInput.scan();
 
-    this.ticker = new Ticker();
+    this.ticker = Ticker.shared;
     this.ticker.add(() => {
       for (let act in Actions) {
         this.isActionPressed(act as Actions);

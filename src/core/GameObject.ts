@@ -59,6 +59,8 @@ export class GameObject extends Container implements KinematicBody {
 
   public destroy(options?: boolean | IDestroyOptions | undefined): void {
     this.events.removeAllListeners();
+    this.ticker.stop();
+    this.ticker.remove(this._update, this);
     this.ticker.destroy();
     super.destroy(options);
   }

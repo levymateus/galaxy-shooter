@@ -4,7 +4,7 @@ import { Circle } from "pixi.js";
 
 type Collision<A, B> = [A, B];
 
-export default class CollisionTest<T extends GameObject = GameObject> {
+export class CollisionTest<T extends GameObject = GameObject> {
   private candidatesSet: Set<T>;
   private collisionMap: Map<string, string>;
 

@@ -1,6 +1,6 @@
+import { Context } from "core";
 import { AxisAlignedBounds } from "core/AxisAlignedBounds";
 import { EventEmitter } from "core/EventEmitter";
-import { Scene } from "core/Scene";
 import { AssetsManifest, Circle, Container, Point, utils } from "pixi.js";
 
 // types
@@ -44,8 +44,7 @@ export enum Actions {
 
 // interfaces
 export interface Activity<E extends utils.EventEmitter.ValidEventTypes> {
-  name: string;
-  onStart(root: Scene<E>): Promise<void>;
+  onStart(context: Context<E>): Promise<void>; // posso substituir os contrutores por esse metodos e usar ele para passar agumentos?
   onUpdate(delta: number): void;
   onFinish(): Promise<void>;
 }

@@ -1,26 +1,20 @@
-import { Container } from "pixi.js";
+import { Context } from "core";
+import { Activity } from "core/SceneManager";
 import { SpaceShooterEvents } from "typings";
-import GUI from "ui/GUI";
 import Score from "ui/Score";
-import { Activity } from "ui/typings";
 
-export default class HUD extends Container implements Activity<SpaceShooterEvents> {
-  public name: string;
+export default class HUD extends Activity<SpaceShooterEvents> {
   private score: Score;
-  private gui: GUI<SpaceShooterEvents>;
 
-  private addScore(): void {
+  public async onStart(context: Context<SpaceShooterEvents>): Promise<void> {
+    this.context = context;
+    this.context.zIndex = 1000;
     this.score = new Score();
     this.score.text.anchor.set(1);
-    this.score.x += this.gui.bounds.width - 8;
-    this.score.y += this.score.text.height + 8;
-    this.gui.emitter.on("scoreIncrement", this.score.inc, this.score);
-    this.gui.addChild(this.score);
-  }
-
-  public async onStart(gui: GUI<SpaceShooterEvents>): Promise<void> {
-    this.gui = gui;
-    this.addScore();
+    this.score.x = this.context.bounds.right - 8;
+    this.score.y = this.context.bounds.y + this.score.text.height + 8;
+    this.context.emitter.on("scoreIncrement", this.score.inc, this.score);
+    this.context.addChild(this.score);
   }
 
   onUpdate(): void {

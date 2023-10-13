@@ -1,92 +1,77 @@
-import { GameObject, Rectangle, Scene, Surface, Timer } from "core";
-import { Activity } from "core/typings";
+import {
+  Context,
+  GameObject,
+  Rectangle,
+  Timer
+} from "core";
+import { Activity } from "core/SceneManager";
 import { Asteroid } from "entities/Asteroid";
-import Background from "entities/Background";
+import ParallaxStarryBackground from "entities/ParallaxStarryBackground";
 import KlaEdFighter from "entities/KlaEdFighter/KlaEdFighter";
 import MainShip from "entities/MainShip/MainShip";
 import { Entities } from "entities/typings";
 import { SpaceShooterEvents } from "typings";
 import { randf } from "utils/utils";
 
-export default class MainScene implements Activity<SpaceShooterEvents> {
+export default class MainScene extends Activity<SpaceShooterEvents> {
   public static SCENE_NAME = "main_scene";
-  private static ASTEROIDS_SPAWN_INTERVAL: number = 2000;
-  private static KAELD_FIGHTER_SPAWN_INTERVAL: number = 1000;
-  public name: string;
-  private surface: Surface;
+  private static ASTEROIDS_SPAWN_INTERVAL: number = 1;
+  private static KAELD_FIGHTER_SPAWN_INTERVAL: number = 1;
+
   private mainShip: MainShip;
-  private asteroidsCount: number = 0;
-  private klaedFighterCount: number = 0;
-  private scene: Scene<SpaceShooterEvents>;
+  private asteroidsCount: number;
+  private klaedFighterCount: number;
 
-  constructor(surface: Surface) {
-    this.surface = surface;
-  }
+  private timer1: Timer;
+  private timer2: Timer;
 
-  async onStart(scene: Scene<SpaceShooterEvents>) {
-    scene = scene;
-    scene.name = MainScene.SCENE_NAME;
-    this.name = MainScene.SCENE_NAME;
-    this.scene = scene;
-    const width = this.surface.width;
-    const height = this.surface.height;
-    this.addBackground(width, height);
-    this.addPlayer();
-    this.addListeners();
-    this.addAsteroids();
-    this.addKlaedFighters();
-    scene.sortChildren();
-  }
+  async onStart(context: Context<SpaceShooterEvents>) {
+    super.onStart(context);
 
-  private async addBackground(width: number, height: number) {
-    const background = new Background(new Rectangle(0, 0, width, height));
-    this.scene.addChild(background);
-  }
+    this.asteroidsCount = 0;
+    this.klaedFighterCount = 0;
 
-  private addListeners(): void {
-    this.scene.on('childRemoved', this.handleChildRemoved, this);
-  }
+    const width = context.surface.width;
+    const height = context.surface.height;
+    const background = new ParallaxStarryBackground(new Rectangle(0, 0, width, height));
+    this.context.addChild(background);
 
-  private addAsteroids(): void {
-    const spawn = () => {
-      if (this.asteroidsCount >= 3) return;
-      const x = randf(this.scene.bounds.left, this.scene.bounds.right);
-      const y = this.scene.bounds.top;
+    this.mainShip = new MainShip(this.context);
+    this.context.addChild(this.mainShip);
+
+    const spawnAsteroid = () => {
+      if (this.asteroidsCount >= 32) return;
+      const x = randf(this.context.bounds.left, this.context.bounds.right);
+      const y = this.context.bounds.top;
       const asteroid = new Asteroid(x, y);
-      this.scene.addChild(asteroid);
+      this.context.addChild(asteroid);
       this.asteroidsCount += 1;
     }
-    new Timer().interval(spawn, MainScene.ASTEROIDS_SPAWN_INTERVAL);
-  }
+    this.timer1 = new Timer();
+    this.timer1.interval(spawnAsteroid, MainScene.ASTEROIDS_SPAWN_INTERVAL);
 
-  private addPlayer(): void {
-    this.mainShip = new MainShip(this.scene);
-    this.scene.addChild(this.mainShip);
-  }
-
-  private addKlaedFighters(): void {
-    const spawn = () => {
-      if (this.klaedFighterCount >= 5) return;
-      const x = randf(this.scene.bounds.top, this.scene.bounds.right);
-      const y = this.scene.bounds.top;
-      const fighter = new KlaEdFighter(this.scene, x, y);
+    const spawnKlaEdFighter = () => {
+      if (this.klaedFighterCount >= 32) return;
+      const x = randf(this.context.bounds.top, this.context.bounds.right);
+      const y = this.context.bounds.top;
+      const fighter = new KlaEdFighter(this.context, x, y);
       if (!this.mainShip.isDead) fighter.setTarget(this.mainShip);
-      this.scene.addChild(fighter);
+      this.context.addChild(fighter);
       this.klaedFighterCount += 1;
     }
-    new Timer().interval(spawn, MainScene.KAELD_FIGHTER_SPAWN_INTERVAL);
-  }
+    this.timer2 = new Timer();
+    this.timer2.interval(spawnKlaEdFighter, MainScene.KAELD_FIGHTER_SPAWN_INTERVAL);
 
-  private handleChildRemoved(child: GameObject): void {
-    if (child.name === Entities.ASTEROID) this.asteroidsCount--;
-    if (child.name === Entities.KLA_ED_FIGHTER) this.klaedFighterCount--;
+    const handleChildRemoved = (child: GameObject) => {
+      if (child.name === Entities.ASTEROID) this.asteroidsCount--;
+      if (child.name === Entities.KLA_ED_FIGHTER) this.klaedFighterCount--;
+    }
+
+    context.on('childRemoved', handleChildRemoved);
+    context.sortChildren();
   }
 
   public onUpdate(): void {
     // code ...
-  }
-
-  async onFinish(): Promise<void> {
-    return;
   }
 }

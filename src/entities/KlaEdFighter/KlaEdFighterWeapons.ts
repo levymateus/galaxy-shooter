@@ -8,10 +8,10 @@ export default class KlaedFighterWeapons implements Weapon {
   private shootingSprite: AnimatedSprite;
   private bullet: Projectile;
   private timer: Timer;
-  private scene: GameObject;
+  private wrapper: GameObject;
 
-  constructor(scene: GameObject, bullet: Projectile) {
-    this.scene = scene;
+  constructor(wrapper: GameObject, bullet: Projectile) {
+    this.wrapper = wrapper;
     this.bullet = bullet.clone();
     this.timer = new Timer();
   }
@@ -30,9 +30,9 @@ export default class KlaedFighterWeapons implements Weapon {
   private addShootingSprite(): void {
     const spritesheet = Assets.get("klaed_fighter_weapons");
     this.shootingSprite = new AnimatedSprite(spritesheet.animations["fire"]);
-    this.shootingSprite.animationSpeed = this.scene.speedAnimation;
+    this.shootingSprite.animationSpeed = this.wrapper.speedAnimation;
     this.shootingSprite.name = "klaed_fighter_weapons";
-    this.shootingSprite.anchor.set(this.scene.anchor);
+    this.shootingSprite.anchor.set(this.wrapper.anchor);
     this.shootingSprite.loop = false;
     this.shootingSprite.onComplete = () => {
       this.shootingSprite.gotoAndStop(0);
@@ -42,7 +42,7 @@ export default class KlaedFighterWeapons implements Weapon {
       if (currentFrame === 1) this.fireLeftWeapon();
       if (currentFrame === 2) this.fireRightWeapon();
     };
-    this.shootingSprite.setParent(this.scene);
+    this.shootingSprite.setParent(this.wrapper);
   }
 
   private fireLeftWeapon(): void {

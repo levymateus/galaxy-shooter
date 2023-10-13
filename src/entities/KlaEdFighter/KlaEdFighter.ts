@@ -1,5 +1,5 @@
 import { Point } from "@pixi/math";
-import { AxisAlignedBounds, GameObject, Scene } from "core";
+import { AxisAlignedBounds, Context, GameObject } from "core";
 import { Entities } from "entities/typings";
 import { AnimatedSprite, Assets, Sprite } from "pixi.js";
 import { SpaceShooterEvents } from "typings";
@@ -18,12 +18,12 @@ export default class KlaedFighter extends GameObject {
   private destructionSprite: AnimatedSprite;
   private target: GameObject | null = null;
   private weapons: KlaedFighterWeapons | null = null;
-  private scene: Scene<SpaceShooterEvents>;
+  private context: Context<SpaceShooterEvents>;
   private isKamikaze: boolean = false;
 
-  constructor(scene: Scene<SpaceShooterEvents>, x?: number, y?: number) {
+  constructor(context: Context<SpaceShooterEvents>, x?: number, y?: number) {
     super(Entities.KLA_ED_FIGHTER);
-    this.scene = scene;
+    this.context = context;
     this.position.set(x, y);
     this.speed.set(2, 2);
     this.collisionShape.radius = 14;
@@ -64,7 +64,7 @@ export default class KlaedFighter extends GameObject {
   private addWeapons(): void {
     const shouldEquipWeapons = dice(2).roll() >= 2;
     if (shouldEquipWeapons) {
-      this.weapons = new KlaedFighterWeapons(this, new KlaEdBullet(this.scene, this.bounds))
+      this.weapons = new KlaedFighterWeapons(this, new KlaEdBullet(this.context, this.bounds))
       this.weapons.countdown = randf(300, 1000);
       return this.weapons.equip();
     }
@@ -76,7 +76,7 @@ export default class KlaedFighter extends GameObject {
     this.update = this.isKamikaze ? this.kamikaze : this.sinMoving;
     this.collide = this.onCollide;
     this.outofbounds = this.onOutOfBounds;
-    this.scene.emitter.on("gameOver", this.cleanup, this);
+    this.context.emitter.on("gameOver", this.cleanup, this);
   }
 
   private cleanup(): void {
@@ -115,7 +115,7 @@ export default class KlaedFighter extends GameObject {
 
   protected onCollide(collisor: GameObject): void {
     if (isValidCollisor([Entities.MAIN_SHIP, Entities.CANNON_BULLET], collisor)) {
-      this.scene.emitter.emit("scoreIncrement", this.attributes.score);
+      this.context.emitter.emit("scoreIncrement", this.attributes.score);
       return this.explodeAndDestroy();
     }
   }

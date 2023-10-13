@@ -7,7 +7,7 @@ import { randf } from "utils/utils";
 /**
  * Scene background root node.
  */
-export default class Background extends GameObject implements Drawable {
+export default class ParallaxStarryBackground extends GameObject implements Drawable {
   public color: number = 0x2e222f;
   public alpha: number = 1;
   private rect: Rectangle;
