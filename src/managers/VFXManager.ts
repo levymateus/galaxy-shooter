@@ -1,22 +1,33 @@
 import { Emitter, EmitterConfigV3 } from "@pixi/particle-emitter";
 import { AxisAlignedBounds, EventEmitter, Surface } from "core";
 import { Manager } from "core/Manager";
-import { Activity } from "core/SceneManager";
-import { Application, utils } from "pixi.js";
+import { Container, Rectangle, Ticker } from "pixi.js";
+import { Scene } from "./SceneManager";
+import { SpaceShooterEvents } from "typings";
 
-export default class VFXManager<E extends utils.EventEmitter.ValidEventTypes> extends Manager<E> {
+/**
+ * Game Visual Effects Manager.
+ */
+export default class VFXManager extends Manager<SpaceShooterEvents> {
   /**
    * `stopped` pause the particle emitter when `true`.
    * the default values is `true`.
    */
-  public stopped: boolean;
+  stopped: boolean;
 
-  constructor(app: Application, surface: Surface, bounds: AxisAlignedBounds, emitter: EventEmitter<E>) {
-    super(app, surface, bounds, emitter);
+  constructor(
+    ticker: Ticker,
+    stage: Container,
+    screen: Rectangle,
+    surface: Surface,
+    bounds: AxisAlignedBounds,
+    emitter: EventEmitter<SpaceShooterEvents>,
+  ) {
+    super(ticker, stage, screen, surface, bounds, emitter);
     this.stopped = true;
   }
 
-  async gotoScene(newActivity: Activity<E>, name: string): Promise<void> {
+  async gotoScene(newActivity: Scene, name: string): Promise<void> {
     await super.gotoScene(newActivity, name);
     /**
      * An error `Uncaught TypeError: currentTarget.isInteractive is not a function` occur
@@ -29,7 +40,7 @@ export default class VFXManager<E extends utils.EventEmitter.ValidEventTypes> ex
     }
   }
 
-  public emit(config: EmitterConfigV3): void {
+  emit(config: EmitterConfigV3): void {
     if (this.stopped || !this.context) return;
     const emitter = new Emitter(this.context, config)
     const update = (dt: number) => emitter.update(dt * 0.01);
@@ -38,12 +49,12 @@ export default class VFXManager<E extends utils.EventEmitter.ValidEventTypes> ex
     this.ticker.add(update, this);
   }
 
-  public stop(): void {
+  stop(): void {
     this.stopped = true;
     this.ticker.stop();
   }
 
-  public play(): void {
+  play(): void {
     this.stopped = false;
     this.ticker.start();
   }

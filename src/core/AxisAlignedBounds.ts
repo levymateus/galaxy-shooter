@@ -2,7 +2,7 @@ import { AxisAlignedBounds as PixiAxisAlignedBounds } from "@pixi-essentials/bou
 import { ObservablePoint } from "pixi.js";
 
 export class AxisAlignedBounds extends PixiAxisAlignedBounds {
-  public anchor: ObservablePoint;
+  anchor: ObservablePoint;
 
   constructor(x?: number, y?: number, width?: number, height?: number) {
     super(x, y, width, height);

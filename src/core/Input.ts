@@ -33,7 +33,7 @@ class GameInputHandler extends EventEmitter<InputEvents> {
     this.ticker.start();
   }
 
-  public static getInstance(): GameInputHandler {
+  static getInstance(): GameInputHandler {
     if (!GameInputHandler.instance) {
       GameInputHandler.instance = new GameInputHandler();
     }
@@ -45,7 +45,7 @@ class GameInputHandler extends EventEmitter<InputEvents> {
    * @param action The previus configured action name string
    * @returns `true` if is pressed or `false`.
    */
-  public isActionPressed(action: Actions): boolean {
+  isActionPressed(action: Actions): boolean {
     const key = settings?.Keyboard[action];
     const isKeyDown = this.keyboardInput.isKeyDown(key);
     const button = settings?.Mouse[action];
@@ -61,7 +61,7 @@ class GameInputHandler extends EventEmitter<InputEvents> {
   * @param action The previus configured action name string
   * @returns `true` if is released or `false`.
   */
-  public isActionReleased(action: Actions): boolean {
+  isActionReleased(action: Actions): boolean {
     const key = settings?.Keyboard[action];
     const isKeyUp = this.keyboardInput.isKeyUp(key);
     const button = settings?.Mouse[action];

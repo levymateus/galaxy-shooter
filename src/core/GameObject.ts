@@ -1,71 +1,60 @@
-import { AxisAlignedBounds, EventEmitter } from "core";
-import { GameObjectEvents, KinematicBody } from "core/typings";
-import { Circle, Container, IDestroyOptions, Point, Ticker, TickerCallback } from "pixi.js";
+import { Context } from "core/Context";
+import { GameObject as GameObjectInterface } from "core/typings";
+import { Circle, Container, IDestroyOptions, ObservablePoint, utils } from "pixi.js";
 import { uid } from "utils/utils";
+import { EventEmitter } from "./EventEmitter";
 
-/**
- * Receive a GameObject thats collides.
- */
-type CollideCallback = ((go: GameObject) => void);
+export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
+extends Container implements GameObjectInterface<E> {
+  readonly name: string;
+  readonly id: string;
+  readonly emitter: EventEmitter<E>;
 
-type OutOfBoundsCallback = (bounds: AxisAlignedBounds) => void;
-
-export class GameObject extends Container implements KinematicBody {
-  public id: string;
-  public name: string;
-  public speed: Point;
-  public anchor: number = 0.5;
-  public speedAnimation: number = 0.4;
   /**
    * enable or disable collision test.
    * Default is `true`.
    */
-  public collisionTest: boolean = true;
-  public collisionShape: Circle;
-  public events: EventEmitter<GameObjectEvents>;
-  public rotate: number;
-  public ticker: Ticker;
+  collisionTest: boolean;
+  collisionShape: Circle;
+  anchor: ObservablePoint;
 
-  private _update: TickerCallback<GameObject>;
-  private _collide: CollideCallback;
-  private _outofbounds: OutOfBoundsCallback;
+  protected context: Context<E>;
 
-  constructor(name: string) {
+  constructor(context: Context<E>, name: string) {
     super();
     this.id = uid();
     this.name = name;
-    this.speed = new Point();
+    this.collisionTest = true;
     this.collisionShape = new Circle(0, 0, 16);
-    this.events = new EventEmitter();
-    this.rotate = 0;
-    this.ticker = new Ticker();
-    this.ticker.start();
+    this.context = context;
+    this.emitter = new EventEmitter();
+    this.anchor = new ObservablePoint(
+      this.onAnchorUpdate,
+      this,
+      this.x,
+      this.y,
+    );
   }
 
-  set update(callback: TickerCallback<GameObject>) {
-    this._update = callback;
-    this.ticker.add(this._update, this);
+  private onAnchorUpdate() {
+    this.x = -this.width * this.anchor.x;
+    this.y = -this.height * this.anchor.y;
   }
 
-  set collide(callback: CollideCallback) {
-    this._collide = callback;
-    this.events.on('onCollide', this._collide, this);
+  onStart(_: Context<E>): Promise<void> {
+    throw new Error("Method not implemented.");
   }
 
-  set outofbounds(callback: OutOfBoundsCallback) {
-    this._outofbounds = callback;
-    this.events.on('outOfWorldBounds', this._outofbounds, this);
+  onUpdate(_: number): void {
+    throw new Error("Method not implemented.");
   }
 
-  public destroy(options?: boolean | IDestroyOptions | undefined): void {
-    this.events.removeAllListeners();
-    this.ticker.stop();
-    this.ticker.remove(this._update, this);
-    this.ticker.destroy();
-    super.destroy(options);
+  destroy(options?: boolean | IDestroyOptions | undefined): void {
+    this.emitter.removeAllListeners();
+    this.context.removeChild(this)?.destroy(options);
   }
 
-  public clone(): GameObject {
-    return new GameObject(this.name);
+  clone(): GameObject<E> {
+    return new GameObject(this.context, this.name);
   }
 }

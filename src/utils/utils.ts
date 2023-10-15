@@ -1,6 +1,5 @@
 import { Point, RAD_TO_DEG } from "@pixi/math";
-import { GameObject, Surface } from "core";
-import { Container } from "pixi.js";
+// import { GameObject } from "core";
 
 export function randi(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -32,8 +31,8 @@ export function dice(sides: number) {
  * @param collisor - The testing collisor.
  * @returns `true` for valid or `false`.
  */
-export const isValidCollisor = (names: string[], collisor: GameObject): boolean =>
-  names.some(name => collisor.name.includes(name));
+// export const isValidCollisor = (names: string[], collisor: GameObject): boolean =>
+//   names.some(name => collisor.name.includes(name));
 
 export const uid = (): string => {
   const s4 = () => {
@@ -42,11 +41,6 @@ export const uid = (): string => {
       .substring(1);
   }
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-}
-
-export const centralize = (container: Container, surface: Surface) => {
-  container.pivot.x -= surface.width * 0.5;
-  container.pivot.y -= surface.height * 0.5;
 }
 
 export const DOWN = new Point(0, 1);

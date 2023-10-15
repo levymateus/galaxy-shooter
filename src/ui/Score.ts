@@ -1,10 +1,10 @@
-import { Text } from "ui";
 import { Container } from "pixi.js";
+import { Text } from "ui";
 
 export default class Score extends Container {
   private static MASK = "00000000";
   private count: number;
-  public text: Text;
+  text: Text;
 
   constructor() {
     super();
@@ -19,11 +19,11 @@ export default class Score extends Container {
     return strValue.substring(strValue.length - size);
   }
 
-  public setValue(value: number) {
+  setValue(value: number) {
     this.text.text = this.pad(value, Score.MASK.length);
   }
 
-  public inc(amount: number): number {
+  inc(amount: number): number {
     this.count = this.count + amount;
     this.setValue(this.count);
     return this.count;

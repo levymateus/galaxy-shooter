@@ -2,11 +2,11 @@ import { Context, Timer } from "core";
 import { SpaceShooterEvents } from "typings";
 import { Text } from "ui";
 import { gotoMainScene } from "..";
-import { Activity } from "core/SceneManager";
+import { Scene } from "../managers/SceneManager";
 
-export default class GameOverScene extends Activity<SpaceShooterEvents> {
-  public static SCENE_NAME = "game_over_scene";
-  public static SCENE_TIMEOUT = 1000;
+export default class GameOverScene extends Scene {
+  static SCENE_NAME = "game_over_scene";
+  static SCENE_TIMEOUT = 1000;
 
   async onStart(context: Context<SpaceShooterEvents>) {
     this.context = context;

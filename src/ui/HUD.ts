@@ -1,12 +1,13 @@
 import { Context } from "core";
-import { Activity } from "core/SceneManager";
+import { Scene } from "managers/SceneManager";
 import { SpaceShooterEvents } from "typings";
 import Score from "ui/Score";
 
-export default class HUD extends Activity<SpaceShooterEvents> {
+export default class HUD extends Scene {
+  static GUI_NAME = "HUD";
   private score: Score;
 
-  public async onStart(context: Context<SpaceShooterEvents>): Promise<void> {
+  async onStart(context: Context<SpaceShooterEvents>): Promise<void> {
     this.context = context;
     this.context.zIndex = 1000;
     this.score = new Score();
@@ -22,6 +23,6 @@ export default class HUD extends Activity<SpaceShooterEvents> {
   }
 
   async onFinish(): Promise<void> {
-    // throw new Error("Method not implemented.");
+    // this.context.removeAllListeners();
   }
 }

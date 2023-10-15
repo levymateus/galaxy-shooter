@@ -1,7 +1,7 @@
 import { ObservablePoint, Rectangle as PixiRectangle } from "pixi.js";
 
 export class Rectangle extends PixiRectangle {
-  public anchor: ObservablePoint;
+  anchor: ObservablePoint;
 
   constructor(x?: number, y?: number, width?: number, height?: number) {
     super(x, y, width, height);

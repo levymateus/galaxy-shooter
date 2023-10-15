@@ -1,27 +1,29 @@
 import dataJson from "assets/sprites/enviroment/starry_background.json";
-import { GameObject, Rectangle } from "core";
-import { Drawable } from "core/typings";
-import { AnimatedSprite, Assets, Graphics, Point, Spritesheet } from "pixi.js";
+import { Context, Rectangle } from "core";
+import { AnimatedSprite, Assets, Graphics, Spritesheet } from "pixi.js";
+import { SpaceShooterEvents } from "typings";
+import { Activity } from "ui/typings";
 import { randf } from "utils/utils";
 
 /**
  * Scene background root node.
  */
-export default class ParallaxStarryBackground extends GameObject implements Drawable {
-  public color: number = 0x2e222f;
-  public alpha: number = 1;
-  private rect: Rectangle;
+export default class ParallaxStarryBackground implements Activity<SpaceShooterEvents>  {
+  context: Context<SpaceShooterEvents>;
+  private sprites: AnimatedSprite[];
 
-  constructor(rect: Rectangle) {
-    super("background");
-    this.rect = rect;
-    this.rect.anchor.set(0.5);
-    this.load();
-    this.draw();
-  }
+  async onStart(ctx: Context<SpaceShooterEvents>): Promise<void> {
+    this.context = ctx;
+    this.sprites = [];
 
-  private async load() {
     Assets.cache.set("starry_background", dataJson);
+
+    const rect = new Rectangle(0, 0, ctx.width, ctx.height);
+    const gr = new Graphics()
+    .beginFill(0x2e222f, 1)
+    .drawRect(rect.x, rect.y, rect.width, rect.height)
+    .endFill();
+    ctx.addChild(gr);
 
     this.addSprite(
       "shadows",
@@ -34,10 +36,11 @@ export default class ParallaxStarryBackground extends GameObject implements Draw
       "starry_background_layer_02_shadows_02",
       { x: 0, y: 0, speed: 1 }
     );
+
     this.addSprite(
       "shadows_02_copy",
       "starry_background_layer_02_shadows_02",
-      { x: 0, y: -this.rect.height, speed: 1 }
+      { x: 0, y: -rect.height, speed: 1 }
     );
 
     this.addSprite(
@@ -45,10 +48,11 @@ export default class ParallaxStarryBackground extends GameObject implements Draw
       "starry_background_layer_02_shadows_03",
       { x: 0, y: 0, speed: 0.4 }
     );
+
     this.addSprite(
       "shadows_03_copy",
       "starry_background_layer_02_shadows_03",
-      { x: 0, y: -this.rect.height, speed: 0.4 }
+      { x: 0, y: -rect.height, speed: 0.4 }
     );
 
     this.addSprite(
@@ -56,41 +60,56 @@ export default class ParallaxStarryBackground extends GameObject implements Draw
       "starry_background_layer_03_stars",
       { x: 0, y: 0, speed: 0.5 }
     );
+
     this.addSprite(
       "stars_copy",
       "starry_background_layer_03_stars",
-      { x: 0, y: -this.rect.height, speed: 0.5 }
+      { x: 0, y: -rect.height, speed: 0.5 }
     );
 
     this.addSprite(
       "starry_background_layer_x_big_star",
       "starry_background_layer_x_big_star",
-      { x: randf(0, this.rect.width), y: 0, speed: 0.3 }
+      { x: randf(0, rect.width), y: 0, speed: 0.3 }
     );
 
     this.addSprite(
       "starry_background_layer_x_big_star_02",
       "starry_background_layer_x_big_star_02",
-      { x: randf(0, this.rect.width), y: -this.rect.height, speed: 0.3 }
+      { x: randf(0, rect.width), y: -rect.height, speed: 0.3 }
     );
 
     this.addSprite(
       "starry_background_layer_x_black_hole",
       "starry_background_layer_x_black_hole",
-      { x: randf(0, this.rect.width), y: -this.rect.height * 2, speed: 0.3 }
+      { x: randf(0, rect.width), y: -rect.height * 2, speed: 0.3 }
     );
 
     this.addSprite(
       "starry_background_layer_x_rotary_star",
       "starry_background_layer_x_rotary_star",
-      { x: randf(0, this.rect.width), y: -this.rect.height * 3, speed: 0.3 }
+      { x: randf(0, rect.width), y: -rect.height * 3, speed: 0.3 }
     );
 
     this.addSprite(
       "starry_background_layer_x_rotary_star_02",
       "starry_background_layer_x_rotary_star_02",
-      { x: randf(0, this.rect.width), y: -this.rect.height * 4, speed: 0.3 }
+      { x: randf(0, rect.width), y: -rect.height * 4, speed: 0.3 }
     );
+  }
+
+  //@ts-ignore
+  onUpdate(dt: number): void {
+    // const initialPosition = new Point();
+    // animatedSprite.y += dt * 1;
+    // if (animatedSprite.y >= this.rect.height) {
+    //   animatedSprite.position.set(initialPosition.x, initialPosition.y - this.rect.height);
+    // }
+  }
+
+
+  async onFinish(): Promise<void> {
+    // throw new Error("Method not implemented.");
   }
 
   // this function reuse an atlas data animation json file for multiple spritesheets.
@@ -112,36 +131,17 @@ export default class ParallaxStarryBackground extends GameObject implements Draw
     x: 0, y: 0, speed: 1
   }) {
     const data = this.parseFrom(name, bundleName, "starry_background");
-
-    const baseTexture = Assets.get(bundleName);
-    const spritesheet = new Spritesheet(baseTexture, data);
+    const texture = Assets.get(bundleName);
+    const spritesheet = new Spritesheet(texture, data);
     await spritesheet.parse();
-
-    const animatedSprite = new AnimatedSprite(spritesheet.animations.animation as any);
-    animatedSprite.animationSpeed = this.speedAnimation;
-    animatedSprite.position.set(props.x, props.y);
-    animatedSprite.anchor.set(this.anchor);
-    animatedSprite.name = name;
-    animatedSprite.angle = 270;
-    animatedSprite.play();
-
-    const initialPosition = new Point();
-    const update = (dt: number) => {
-      animatedSprite.y += dt * props.speed;
-      if (animatedSprite.y >= this.rect.height) {
-        animatedSprite.position.set(initialPosition.x, initialPosition.y - this.rect.height);
-      }
-    }
-
-    this.ticker.add(update, this);
-    this.addChild(animatedSprite);
-  }
-
-  public draw(): void {
-    const gr = new Graphics()
-      .beginFill(this.color, this.alpha)
-      .drawRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
-      .endFill();
-    this.addChild(gr);
+    const sprite = new AnimatedSprite(spritesheet.animations.animation as any);
+    sprite.animationSpeed = 0.4;
+    sprite.position.set(props.x, props.y);
+    sprite.anchor.set(0.5);
+    sprite.name = name;
+    sprite.angle = 270;
+    sprite.play();
+    this.context.addChild(sprite);
+    this.sprites.push(sprite);
   }
 }

@@ -1,52 +1,49 @@
 
-import { GameObject } from "core";
-import { Circle } from "pixi.js";
+import { Circle, utils } from "pixi.js";
+import { GameObject } from "core/GameObject";
 
-type Collision<A, B> = [A, B];
-
-export class CollisionTest<T extends GameObject = GameObject> {
-  private candidatesSet: Set<T>;
-  private collisionMap: Map<string, string>;
+export class CollisionTest<E extends utils.EventEmitter.ValidEventTypes, T extends GameObject<E>> {
+  private set: Set<T>;
+  private map: Map<string, string>;
 
   constructor() {
-    this.candidatesSet = new Set();
-    this.collisionMap = new Map();
+    this.set = new Set();
+    this.map = new Map();
   }
 
-  private test(objA: T, objB: T): boolean {
-    if (!objA.collisionTest || !objB.collisionTest) return false;
-    if (objA.collisionShape instanceof Circle && objB.collisionShape instanceof Circle) {
-      const dist = Math.sqrt(Math.pow(objA.x - objB.x, 2) + Math.pow(objA.y - objB.y, 2))
-      return (dist <= objA.collisionShape.radius + objB.collisionShape.radius);
+  private test(left: T, right: T): boolean {
+    if (!left.collisionTest || !right.collisionTest) return false;
+    if (left.collisionShape instanceof Circle && right.collisionShape instanceof Circle) {
+      const dist = Math.sqrt(Math.pow(left.x - right.x, 2) + Math.pow(left.y - right.y, 2))
+      return (dist <= left.collisionShape.radius + right.collisionShape.radius);
     }
     return false;
   }
 
-  collisions(): Collision<T, T>[] {
-    const cols: Collision<T, T>[] = [];
-    for (const objA of this.candidatesSet) {
-      for (const objB of this.candidatesSet) {
+  from(left: T): T[] {
+    const cols: T[] = [];
+    for (const right of this.set) {
+      const collides = this.map.get(left.id) === right.id
+        || this.map.get(right.id) === left.id;
 
-        const collides = this.collisionMap.get(objA.id) === objB.id
-          || this.collisionMap.get(objB.id) === objA.id;
-
-        if (!collides && objA.id !== objB.id && this.test(objA, objB)) {
-          // on enter / on starts collide
-          this.collisionMap.set(objA.id, objB.id); this.collisionMap.set(objB.id, objA.id);
-          cols.push([objA, objB]); cols.push([objB, objA]);
-          continue;
+      if (!collides && left.id !== right.id && this.test(left, right)) {
+        // on enter / on starts collide
+        this.map.set(left.id, right.id);
+        this.map.set(right.id, left.id);
+        cols.push(right);
+        // cols.push([right, left]);
+        continue;
+      }
+      if (collides && !this.test(left, right)) {
+        // on exit / on stop collide
+        let collision = this.map.get(left.id);
+        if (collision === right.id) {
+          this.map.delete(left.id);
         }
-        if (collides && !this.test(objA, objB)) {
-          // on exit / on stop collide
-          let collision = this.collisionMap.get(objA.id);
-          if (collision === objB.id) {
-            this.collisionMap.delete(objA.id);
-          }
 
-          collision = this.collisionMap.get(objB.id);
-          if (collision === objA.id) {
-            this.collisionMap.delete(objB.id);
-          }
+        collision = this.map.get(right.id);
+        if (collision === left.id) {
+          this.map.delete(right.id);
         }
       }
     }
@@ -54,10 +51,10 @@ export class CollisionTest<T extends GameObject = GameObject> {
   }
 
   add(candidate: T): void {
-    this.candidatesSet.add(candidate);
+    this.set.add(candidate);
   }
 
   remove(candidate: T): void {
-    this.candidatesSet.delete(candidate);
+    this.set.delete(candidate);
   }
 }

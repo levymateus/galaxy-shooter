@@ -1,16 +1,16 @@
 import { Context, Timer } from "core";
 import { Assets, AssetsManifest } from "pixi.js";
-import { Activity } from "core/SceneManager";
 import { SpaceShooterEvents } from "typings";
 import { Text } from "ui";
+import { Scene } from "../managers/SceneManager";
 
-export default class LoadingScene extends Activity<SpaceShooterEvents> {
-  public static SCENE_NAME = "loading_scene";
-  public static SCENE_TIMEOUT = 1000;
+export default class LoadingScene extends Scene {
+  static SCENE_NAME = "loading_scene";
+  static SCENE_TIMEOUT = 1000;
 
-  public bundleIds?: string[];
-  public next?: (() => void);
-  public manifest?: string | AssetsManifest;
+  bundleIds?: string[];
+  next?: (() => void);
+  manifest?: string | AssetsManifest;
 
   async onStart(context: Context<SpaceShooterEvents>) {
     this.context = context;
@@ -28,5 +28,5 @@ export default class LoadingScene extends Activity<SpaceShooterEvents> {
 
   onUpdate(_: number): void { }
   async onFinish(): Promise<void> { }
-  public destroy(): void { }
+  destroy(): void { }
 }

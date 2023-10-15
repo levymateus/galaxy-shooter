@@ -1,7 +1,5 @@
-import { Context } from "core";
-import { AxisAlignedBounds } from "core/AxisAlignedBounds";
-import { EventEmitter } from "core/EventEmitter";
-import { AssetsManifest, Circle, Container, Point, utils } from "pixi.js";
+import { Context, GameObject as ConcreteGameObject } from "core";
+import { AssetsManifest, Circle, Point, utils } from "pixi.js";
 
 // types
 export type SceneOptions = {
@@ -17,8 +15,6 @@ export type Resolution = {
    */
   ratio: [number, number]
 };
-
-export type GameObjectEventEmmiter = EventEmitter<GameObjectEvents>;
 
 export type GameSettings = {
   Keyboard: {
@@ -44,67 +40,28 @@ export enum Actions {
 
 // interfaces
 export interface Activity<E extends utils.EventEmitter.ValidEventTypes> {
-  onStart(context: Context<E>): Promise<void>; // posso substituir os contrutores por esse metodos e usar ele para passar agumentos?
+  onStart(context: Context<E>): Promise<void>;
   onUpdate(delta: number): void;
   onFinish(): Promise<void>;
 }
 
-export interface GameObject {
-  id: string;
-  x: number;
-  y: number;
-  name: string;
-  rotate: number;
-  events: GameObjectEventEmmiter;
+export interface GameObject<E extends utils.EventEmitter.ValidEventTypes> {
+  onStart(context: Context<E>): Promise<void>;
+  onUpdate(delta: number): void;
   destroy(): void;
 }
 
-export interface KinematicBody extends GameObject {
+export interface GameObjectConstructor<E extends utils.EventEmitter.ValidEventTypes> {
+  new(ctx: Context<E>, name: string): ConcreteGameObject<E>;
+}
+
+export interface KinematicBody extends GameObject<object> {
   speed: Point;
   collisionShape: Circle;
-  clone(): GameObject;
-}
-
-export interface Drawable {
-  color: number;
-  alpha: number;
-  draw(): void;
-}
-
-export interface Item {
-  equip(): void;
-  unequip(): void;
-}
-
-export interface Weapon extends Item {
-  fire(): boolean;
-}
-
-export interface Projectile extends GameObject {
-  shoot(): void;
-  clone(): Projectile;
-}
-
-export interface GameObjectEvents {
-  collide: [container: Container & KinematicBody];
-  onCollide: [container: Container & KinematicBody];
-  outOfWorldBounds: [bounds: AxisAlignedBounds];
+  clone(): GameObject<object>;
 }
 
 export interface InputEvents {
   onActionPressed: [action: Actions];
   onActionReleased: [action: Actions];
-}
-
-// functions
-export function isGameObject(object: unknown): object is GameObject {
-  const asGameObject = (object as GameObject);
-  return !!asGameObject?.id !== undefined
-    && !!asGameObject?.name !== undefined
-    && !!asGameObject?.events !== undefined;
-}
-
-export function isKinematicBody(object: unknown): object is KinematicBody {
-  const asKinematic = (object as KinematicBody);
-  return !!(asKinematic?.collisionShape || asKinematic?.events);
 }

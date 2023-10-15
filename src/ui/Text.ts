@@ -4,9 +4,9 @@ import { HTMLText, TextStyleFontWeight, getFontFamilyName } from "pixi.js";
  * Pre-configured and styled text for the Space Shooter Game.
  */
 export class Text extends HTMLText {
-  public static PIXELOID_MONO = "assets/fonts/PixeloidMono.ttf";
-  public static PIXELOID_SANS_BOLD = "assets/fonts/PixeloidSansBold.ttf";
-  public src: string;
+  static PIXELOID_MONO = "assets/fonts/PixeloidMono.ttf";
+  static PIXELOID_SANS_BOLD = "assets/fonts/PixeloidSansBold.ttf";
+  src: string;
 
   constructor(text?: string, src?: string) {
     super(text);
@@ -16,7 +16,7 @@ export class Text extends HTMLText {
     this.weight("normal");
   }
 
-  public async weight(weight: TextStyleFontWeight) {
+  async weight(weight: TextStyleFontWeight) {
     switch (weight) {
       case "bold":
         this.src = Text.PIXELOID_SANS_BOLD;
