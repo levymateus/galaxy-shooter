@@ -1,43 +1,43 @@
-import { EventEmitter } from "core/EventEmitter";
-import { KeyboardInput } from "core/KeyboardInput";
-import { MouseInput } from "core/MouseInput";
-import { Actions, InputEvents } from "core/typings";
-import { Ticker } from "pixi.js";
-import settings from "res/settings.json";
+import { EventEmitter } from "core/EventEmitter"
+import { KeyboardInput } from "core/KeyboardInput"
+import { MouseInput } from "core/MouseInput"
+import { Actions, InputEvents } from "core/typings"
+import { Ticker } from "pixi.js"
+import settings from "res/settings.json"
 
 /**
  * Global game input handling for any type of input (keyboard, controler).
  */
 class GameInputHandler extends EventEmitter<InputEvents> {
-  private static instance: GameInputHandler;
-  private keyboardInput: KeyboardInput;
-  private mouseInput: MouseInput;
-  private ticker: Ticker;
+  private static instance: GameInputHandler
+  private keyboardInput: KeyboardInput
+  private mouseInput: MouseInput
+  private ticker: Ticker
 
   constructor() {
-    super();
+    super()
 
-    this.keyboardInput = new KeyboardInput();
-    this.keyboardInput.scan();
+    this.keyboardInput = new KeyboardInput()
+    this.keyboardInput.scan()
 
-    this.mouseInput = new MouseInput();
-    this.mouseInput.scan();
+    this.mouseInput = new MouseInput()
+    this.mouseInput.scan()
 
-    this.ticker = Ticker.shared;
+    this.ticker = Ticker.shared
     this.ticker.add(() => {
-      for (let act in Actions) {
-        this.isActionPressed(act as Actions);
-        this.isActionReleased(act as Actions);
+      for (const act in Actions) {
+        this.isActionPressed(act as Actions)
+        this.isActionReleased(act as Actions)
       }
-    });
-    this.ticker.start();
+    })
+    this.ticker.start()
   }
 
   static getInstance(): GameInputHandler {
     if (!GameInputHandler.instance) {
-      GameInputHandler.instance = new GameInputHandler();
+      GameInputHandler.instance = new GameInputHandler()
     }
-    return GameInputHandler.instance;
+    return GameInputHandler.instance
   }
 
   /**
@@ -46,14 +46,14 @@ class GameInputHandler extends EventEmitter<InputEvents> {
    * @returns `true` if is pressed or `false`.
    */
   isActionPressed(action: Actions): boolean {
-    const key = settings?.Keyboard[action];
-    const isKeyDown = this.keyboardInput.isKeyDown(key);
-    const button = settings?.Mouse[action];
-    const isMouseDown = button !== null && this.mouseInput.isKeyDown(button);
+    const key = settings?.Keyboard[action]
+    const isKeyDown = this.keyboardInput.isKeyDown(key)
+    const button = settings?.Mouse[action]
+    const isMouseDown = button !== null && this.mouseInput.isKeyDown(button)
     if (isKeyDown || isMouseDown) {
-      this.emit('onActionPressed', action);
+      this.emit('onActionPressed', action)
     }
-    return isKeyDown;
+    return isKeyDown
   }
 
   /**
@@ -62,16 +62,17 @@ class GameInputHandler extends EventEmitter<InputEvents> {
   * @returns `true` if is released or `false`.
   */
   isActionReleased(action: Actions): boolean {
-    const key = settings?.Keyboard[action];
-    const isKeyUp = this.keyboardInput.isKeyUp(key);
-    const button = settings?.Mouse[action];
-    const isMouseUp = button !== null && this.mouseInput.isKeyUp(button);
+    const key = settings?.Keyboard[action]
+    const isKeyUp = this.keyboardInput.isKeyUp(key)
+    const button = settings?.Mouse[action]
+    const isMouseUp = button !== null && this.mouseInput.isKeyUp(button)
     if (isKeyUp || isMouseUp) {
-      this.emit('onActionReleased', action);
+      this.emit('onActionReleased', action)
     }
-    return isKeyUp;
+    return isKeyUp
   }
 }
 
-const Input = GameInputHandler.getInstance();
-export { Input };
+const Input = GameInputHandler.getInstance()
+export { Input }
+

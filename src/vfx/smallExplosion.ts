@@ -1,5 +1,5 @@
-import { EmitterConfigV3 } from "@pixi/particle-emitter";
-import { Assets } from "pixi.js";
+import { EmitterConfigV3 } from "@pixi/particle-emitter"
+import { Assets } from "pixi.js"
 
 const create = (): EmitterConfigV3 => ({
   lifetime: {
@@ -94,6 +94,6 @@ const create = (): EmitterConfigV3 => ({
       }
     }
   ],
-});
+})
 
-export default create;
+export default create

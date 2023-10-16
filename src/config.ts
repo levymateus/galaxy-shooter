@@ -1,7 +1,9 @@
-import { Application } from "pixi.js";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { Application } from "pixi.js"
 
 export default function config(app: Application) {
   if (process.env.NODE_ENV === 'development') {
-    (window as any).__PIXI_APP__ = app;
+    // @ts-ignore
+    (window as Window).__PIXI_APP__ = app
   }
 }

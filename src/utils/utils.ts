@@ -1,18 +1,18 @@
-import { Point, RAD_TO_DEG } from "@pixi/math";
+import { Point, RAD_TO_DEG } from "@pixi/math"
 // import { GameObject } from "core";
 
 export function randi(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
 export function randf(min: number, max: number): number {
-  return parseFloat((Math.random() * (max - min) + min).toString());
+  return parseFloat((Math.random() * (max - min) + min).toString())
 }
 
 export function angleBetween(a: Point, b: Point): number {
-  const dist = new Point(b.x, b.y).subtract(a);
-  const angle = Math.atan2(dist.y, dist.x) * RAD_TO_DEG;
-  return angle;
+  const dist = new Point(b.x, b.y).subtract(a)
+  const angle = Math.atan2(dist.y, dist.x) * RAD_TO_DEG
+  return angle
 }
 
 export function dice(sides: number) {
@@ -22,7 +22,7 @@ export function dice(sides: number) {
       return Math.floor(Math.random() * sides) + 1
     }
   }
-  return dice;
+  return dice
 }
 
 /**
@@ -38,9 +38,9 @@ export const uid = (): string => {
   const s4 = () => {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
-      .substring(1);
+      .substring(1)
   }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
 }
 
-export const DOWN = new Point(0, 1);
+export const DOWN = new Point(0, 1)

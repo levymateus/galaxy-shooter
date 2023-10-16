@@ -8,17 +8,17 @@ export enum Entities {
 }
 
 export type MainShipAttributes = {
-  health: number;
+  health: number
 }
 
 export type KlaedBulletAttributes = {
-  damage: number;
+  damage: number
 }
 
-export interface Entity<T = any> {
-  attributes: T;
+export interface Entity<T = unknown> {
+  attributes: T
 }
 
 export function isEntity<T>(object: unknown): object is Entity<T> {
-  return !!(object as Entity)?.attributes;
+  return !!(object as Entity)?.attributes
 }

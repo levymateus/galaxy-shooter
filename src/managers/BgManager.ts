@@ -1,14 +1,14 @@
-import { Surface, EventEmitter, AxisAlignedBounds } from "core";
+import { AxisAlignedBounds, EventEmitter, Surface } from "core"
 import { Manager } from "core/Manager"
-import { ActivityConstructor } from "core/typings";
-import { Ticker, Container, Rectangle } from "pixi.js";
-import { AppEvents } from "typings";
+import { ActivityConstructor } from "core/typings"
+import { Container, Rectangle, Ticker } from "pixi.js"
+import { AppEvents } from "typings"
 
 /**
  * Game Background Manager.
  */
 export class BgManager extends Manager<AppEvents> {
-  suspended: boolean;
+  suspended: boolean
 
   constructor(
     ticker: Ticker,
@@ -19,25 +19,25 @@ export class BgManager extends Manager<AppEvents> {
     emitter: EventEmitter<AppEvents>,
     index?: number
   ) {
-    super(ticker, stage, screen, surface, bounds, emitter, index);
-    this.suspended = false;
+    super(ticker, stage, screen, surface, bounds, emitter, index)
+    this.suspended = false
   }
 
   async goto(ctor: ActivityConstructor<AppEvents>): Promise<void> {
     if (!this.suspended) {
-      return super.goto(ctor);
+      return super.goto(ctor)
     }
     if (this.context) {
-      this.stage.addChild(this.context);
-      this.stage.sortChildren();
-      this.suspended = false;
+      this.stage.addChild(this.context)
+      this.stage.sortChildren()
+      this.suspended = false
     }
   }
 
   suspend() {
     if (this.context) {
-      this.context.removeFromParent();
-      this.suspended = true;
+      this.context.removeFromParent()
+      this.suspended = true
     }
   }
 }

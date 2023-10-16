@@ -1,10 +1,10 @@
-import { Context } from "core";
-import { AppEvents } from "typings";
-import { Scene } from "../managers/SceneManager";
+import { Context } from "core"
+import { AppEvents } from "typings"
+import { Scene } from "../managers/SceneManager"
 
 export default class VFX extends Scene {
   async onStart(context: Context<AppEvents>) {
-    this.context = context;
+    this.context = context
   }
   onUpdate(): void { }
   async onFinish(): Promise<void> { }
