@@ -20,6 +20,7 @@ export class Text extends HTMLText {
     switch (weight) {
       case "bold":
         this.src = Text.PIXELOID_SANS_BOLD;
+        break;
       case "normal":
       default:
         this.src = Text.PIXELOID_MONO;
