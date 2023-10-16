@@ -1,13 +1,13 @@
 import { Surface, EventEmitter, AxisAlignedBounds } from "core";
 import { Manager } from "core/Manager"
-import { Activity } from "core/typings";
+import { ActivityConstructor } from "core/typings";
 import { Ticker, Container, Rectangle } from "pixi.js";
-import { SpaceShooterEvents } from "typings";
+import { AppEvents } from "typings";
 
 /**
  * Game Background Manager.
  */
-export class BgManager extends Manager<SpaceShooterEvents> {
+export class BgManager extends Manager<AppEvents> {
   suspended: boolean;
 
   constructor(
@@ -16,24 +16,27 @@ export class BgManager extends Manager<SpaceShooterEvents> {
     screen: Rectangle,
     surface: Surface,
     bounds: AxisAlignedBounds,
-    emitter: EventEmitter<SpaceShooterEvents>
+    emitter: EventEmitter<AppEvents>,
+    index?: number
   ) {
-    super(ticker, stage, screen, surface, bounds, emitter);
+    super(ticker, stage, screen, surface, bounds, emitter, index);
     this.suspended = false;
   }
 
-  async gotoScene(newActivity: Activity<SpaceShooterEvents>, name: string): Promise<void> {
+  async goto(ctor: ActivityConstructor<AppEvents>): Promise<void> {
     if (!this.suspended) {
-      return super.gotoScene(newActivity, name);
+      return super.goto(ctor);
     }
     if (this.context) {
-      this.context.visible = true;
+      this.stage.addChild(this.context);
+      this.stage.sortChildren();
+      this.suspended = false;
     }
   }
 
   suspend() {
     if (this.context) {
-      this.context.visible = false;
+      this.context.removeFromParent();
       this.suspended = true;
     }
   }

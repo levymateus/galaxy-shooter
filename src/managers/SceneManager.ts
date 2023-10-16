@@ -2,19 +2,19 @@ import { AxisAlignedBounds, CollisionTest, Context, GameObject } from "core";
 import { Manager } from "core/Manager";
 import { Activity } from "core/typings";
 import { DisplayObject } from "pixi.js";
-import { SpaceShooterEvents } from "typings";
+import { AppEvents } from "typings";
 
 /**
  * Game Stage Scenes Manager.
  */
-export class SceneManager extends Manager<SpaceShooterEvents> { }
+export class SceneManager extends Manager<AppEvents> { }
 
-export class Scene implements Activity<SpaceShooterEvents> {
-  context: Context<SpaceShooterEvents>;
+export class Scene implements Activity<AppEvents> {
+  context: Context<AppEvents>;
   private area: AxisAlignedBounds;
-  private collision: CollisionTest<SpaceShooterEvents, GameObject<SpaceShooterEvents>>;
+  private collision: CollisionTest<AppEvents, GameObject<AppEvents>>;
 
-  async onStart(ctx: Context<SpaceShooterEvents>) {
+  async onStart(ctx: Context<AppEvents>) {
     this.context = ctx;
     this.area = ctx.bounds.clone().pad(32, 32) as AxisAlignedBounds;
     this.collision = new CollisionTest();
@@ -23,7 +23,7 @@ export class Scene implements Activity<SpaceShooterEvents> {
     });
   }
 
-  onUpdate(_: number): void {
+  onUpdate(): void {
     this.context.children.forEach(child => {
       this.contains(child);
       this.testCollision(child);

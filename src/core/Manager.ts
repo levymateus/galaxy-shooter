@@ -1,5 +1,5 @@
 import { AxisAlignedBounds, Context, EventEmitter, Surface } from "core";
-import { Activity } from "core/typings";
+import { Activity, ActivityConstructor } from "core/typings";
 import { Container, Graphics, Rectangle, Ticker, utils } from "pixi.js";
 
 /**
@@ -13,6 +13,7 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
   emitter: EventEmitter<E>;
   bounds: AxisAlignedBounds;
   activity: Activity<E> | null;
+  index?: number;
   protected context: Context<E> | null;
 
   constructor(
@@ -21,7 +22,8 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
     screen: Rectangle,
     surface: Surface,
     bounds: AxisAlignedBounds,
-    emitter: EventEmitter<E>
+    emitter: EventEmitter<E>,
+    index?: number,
   ) {
     this.stage = stage;
     this.screen = screen;
@@ -31,22 +33,23 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
     this.activity = null;
     this.emitter = emitter;
     this.ticker = ticker;
+    this.index = index;
   }
 
-  async gotoScene(newActivity: Activity<E>, name: string) {
+  async goto(ctor: ActivityConstructor<E>) {
     this.ticker.stop();
 
     await this.destroy();
 
     this.context = new Context<E>(this.surface, this.screen);
-    this.context.name = name;
+    this.context.name = ctor.name;
     this.context.manager = this;
     this.context.bounds = this.bounds;
     this.context.emitter = this.emitter;
     this.context.anchor.set(0.5);
 
     const mask = new Graphics();
-    mask.name = [name, 'mask'].join('_');
+    mask.name = [this.context.name, 'mask'].join('_');
     mask.beginFill();
     mask.drawRect(
       this.bounds.x,
@@ -58,16 +61,17 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
     this.context.mask = mask;
     this.context.addChild(mask);
 
-    await newActivity.onStart(this.context);
-    this.activity = newActivity;
+    this.activity = new ctor();
+    await this.activity.onStart(this.context);
 
-    this.stage.addChild(this.context);
+    if (this.index) this.stage.addChildAt(this.context, this.index);
+    else this.stage.addChild(this.context);
     this.stage.sortChildren();
 
     this.ticker.add(this.activity.onUpdate, this.activity);
     this.ticker.start();
 
-    console.log('Scene %s listeners %d', name, Ticker.shared.count);
+    console.log('Scene %s listeners %d', ctor.name, Ticker.shared.count);
   }
 
   async destroy() {

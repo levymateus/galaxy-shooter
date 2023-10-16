@@ -1,19 +1,26 @@
 import { Context, Timer } from "core";
 import { Assets, AssetsManifest } from "pixi.js";
-import { SpaceShooterEvents } from "typings";
+import { AppEvents } from "typings";
 import { Text } from "ui";
 import { Scene } from "../managers/SceneManager";
+import manifest from "res/manifest.json";
+import { gotoMainScene } from "index";
 
 export default class LoadingScene extends Scene {
-  static SCENE_NAME = "loading_scene";
-  static SCENE_TIMEOUT = 1000;
-
   bundleIds?: string[];
   next?: (() => void);
   manifest?: string | AssetsManifest;
 
-  async onStart(context: Context<SpaceShooterEvents>) {
+  async onStart(context: Context<AppEvents>) {
     this.context = context;
+    this.bundleIds = [
+      "enviroments_bundle",
+      "mainship_bundle",
+      "vfx_bundle",
+      "klaed_fighter_bundle"
+    ];
+    this.manifest = manifest;
+    this.next = gotoMainScene;
 
     const text = new Text("Loading...");
     text.style.align = "center";
@@ -23,10 +30,10 @@ export default class LoadingScene extends Scene {
 
     await Assets.init({ manifest: this.manifest || "" });
     await Assets.loadBundle(this.bundleIds || []);
-    if (this.next) new Timer().timeout(this.next, LoadingScene.SCENE_TIMEOUT);
+    if (this.next) new Timer().timeout(this.next, 1000);
   }
 
-  onUpdate(_: number): void { }
+  onUpdate(): void { }
   async onFinish(): Promise<void> { }
   destroy(): void { }
 }

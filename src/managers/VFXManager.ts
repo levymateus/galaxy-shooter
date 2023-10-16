@@ -2,13 +2,13 @@ import { Emitter, EmitterConfigV3 } from "@pixi/particle-emitter";
 import { AxisAlignedBounds, EventEmitter, Surface } from "core";
 import { Manager } from "core/Manager";
 import { Container, Rectangle, Ticker } from "pixi.js";
-import { Scene } from "./SceneManager";
-import { SpaceShooterEvents } from "typings";
+import { AppEvents } from "typings";
+import { ActivityConstructor } from "core/typings";
 
 /**
  * Game Visual Effects Manager.
  */
-export default class VFXManager extends Manager<SpaceShooterEvents> {
+export default class VFXManager extends Manager<AppEvents> {
   /**
    * `stopped` pause the particle emitter when `true`.
    * the default values is `true`.
@@ -21,14 +21,15 @@ export default class VFXManager extends Manager<SpaceShooterEvents> {
     screen: Rectangle,
     surface: Surface,
     bounds: AxisAlignedBounds,
-    emitter: EventEmitter<SpaceShooterEvents>,
+    emitter: EventEmitter<AppEvents>,
+    index?: number
   ) {
-    super(ticker, stage, screen, surface, bounds, emitter);
+    super(ticker, stage, screen, surface, bounds, emitter, index);
     this.stopped = true;
   }
 
-  async gotoScene(newActivity: Scene, name: string): Promise<void> {
-    await super.gotoScene(newActivity, name);
+  async goto(ctor: ActivityConstructor<AppEvents>): Promise<void> {
+    await super.goto(ctor);
     /**
      * An error `Uncaught TypeError: currentTarget.isInteractive is not a function` occur
      * when a mouse event is fired and this Emitter is running on.
@@ -58,4 +59,4 @@ export default class VFXManager extends Manager<SpaceShooterEvents> {
     this.stopped = false;
     this.ticker.start();
   }
-};
+}

@@ -1,7 +1,7 @@
 import { Manager } from "core/Manager";
-import { utils } from 'pixi.js';
+import { AppEvents } from "typings";
 
 /**
  * Game Graphic User Interface Manager.
  */
-export class GUIManager<E extends utils.EventEmitter.ValidEventTypes> extends Manager<E> {}
+export class GUIManager extends Manager<AppEvents> {}

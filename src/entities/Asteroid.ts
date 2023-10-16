@@ -1,14 +1,14 @@
 import { Context, GameObject } from "core";
 import { AnimatedSprite, Assets, Point, Sprite } from "pixi.js";
-import { SpaceShooterEvents } from "typings";
+import { AppEvents } from "typings";
 import { randf } from "utils/utils";
 
-export class Asteroid extends GameObject<SpaceShooterEvents> {
+export class Asteroid extends GameObject<AppEvents> {
   velocity: Point;
   speed: Point;
   rotate: number;
 
-  async onStart(ctx: Context<SpaceShooterEvents>): Promise<void> {
+  async onStart(ctx: Context<AppEvents>): Promise<void> {
     this.position.set(
       randf(ctx.bounds.x, ctx.bounds.right),
       ctx.bounds.y,
@@ -37,7 +37,7 @@ export class Asteroid extends GameObject<SpaceShooterEvents> {
     this.destroy({ children: true });
   }
 
-  onCollide(_: GameObject<SpaceShooterEvents>) {
+  onCollide() {
     // this.explodeAndDestroy();
   }
 

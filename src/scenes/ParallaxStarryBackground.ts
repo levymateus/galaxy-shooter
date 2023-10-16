@@ -1,18 +1,18 @@
 import dataJson from "assets/sprites/enviroment/starry_background.json";
 import { Context, Rectangle } from "core";
 import { AnimatedSprite, Assets, Graphics, Spritesheet } from "pixi.js";
-import { SpaceShooterEvents } from "typings";
+import { AppEvents } from "typings";
 import { Activity } from "ui/typings";
 import { randf } from "utils/utils";
 
 /**
  * Scene background root node.
  */
-export default class ParallaxStarryBackground implements Activity<SpaceShooterEvents>  {
-  context: Context<SpaceShooterEvents>;
+export default class ParallaxStarryBackground implements Activity<AppEvents>  {
+  context: Context<AppEvents>;
   private sprites: AnimatedSprite[];
 
-  async onStart(ctx: Context<SpaceShooterEvents>): Promise<void> {
+  async onStart(ctx: Context<AppEvents>): Promise<void> {
     this.context = ctx;
     this.sprites = [];
 
@@ -98,8 +98,7 @@ export default class ParallaxStarryBackground implements Activity<SpaceShooterEv
     );
   }
 
-  //@ts-ignore
-  onUpdate(dt: number): void {
+  onUpdate(): void {
     // const initialPosition = new Point();
     // animatedSprite.y += dt * 1;
     // if (animatedSprite.y >= this.rect.height) {
@@ -134,7 +133,9 @@ export default class ParallaxStarryBackground implements Activity<SpaceShooterEv
     const texture = Assets.get(bundleName);
     const spritesheet = new Spritesheet(texture, data);
     await spritesheet.parse();
-    const sprite = new AnimatedSprite(spritesheet.animations.animation as any);
+    const textures = spritesheet.animations['animation'];
+    if (!textures) throw new Error('Failded to load textures.');
+    const sprite = new AnimatedSprite(textures);
     sprite.animationSpeed = 0.4;
     sprite.position.set(props.x, props.y);
     sprite.anchor.set(0.5);

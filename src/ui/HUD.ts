@@ -1,13 +1,13 @@
 import { Context } from "core";
 import { Scene } from "managers/SceneManager";
-import { SpaceShooterEvents } from "typings";
+import { AppEvents } from "typings";
 import Score from "ui/Score";
 
 export default class HUD extends Scene {
   static GUI_NAME = "HUD";
   private score: Score;
 
-  async onStart(context: Context<SpaceShooterEvents>): Promise<void> {
+  async onStart(context: Context<AppEvents>): Promise<void> {
     this.context = context;
     this.context.zIndex = 1000;
     this.score = new Score();

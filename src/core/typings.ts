@@ -36,13 +36,17 @@ export enum Actions {
   MOVE_LEFT = "MOVE_LEFT",
   MOVE_RIGHT = "MOVE_RIGHT",
   WEAPON_FIRE = "WEAPON_FIRE",
-};
+}
 
 // interfaces
 export interface Activity<E extends utils.EventEmitter.ValidEventTypes> {
   onStart(context: Context<E>): Promise<void>;
   onUpdate(delta: number): void;
   onFinish(): Promise<void>;
+}
+
+export interface ActivityConstructor<E extends utils.EventEmitter.ValidEventTypes> {
+  new(): Activity<E>;
 }
 
 export interface GameObject<E extends utils.EventEmitter.ValidEventTypes> {
