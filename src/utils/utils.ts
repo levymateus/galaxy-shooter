@@ -43,4 +43,3 @@ export const uid = (): string => {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
 }
 
-export const DOWN = new Point(0, 1)
