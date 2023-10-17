@@ -17,7 +17,7 @@ export default class KlaEdFighter extends SpaceShip {
     this.spaceShipEngine.spritesheets.engine_idle = defaultSpritesheet
     this.spaceShipEngine.spritesheets.engine_power = defaultSpritesheet
 
-    this.state = new SpaceShipFullHealth(this)
+    this.baseState = new SpaceShipFullHealth(this)
     this.spaceShipEngine.state = new SpaceShipEngineIdle(this.spaceShipEngine)
   }
 }

@@ -1,14 +1,14 @@
 import { Context, GameObject } from "core"
-import { AnimatedSprite, Assets, Resource, Sprite, SpriteSource, Spritesheet, Texture } from "pixi.js"
+import { AnimatedSprite, Assets, ObservablePoint, Point, Resource, Sprite, SpriteSource, Spritesheet, Texture } from "pixi.js"
 import { AppEvents } from "typings"
 
-interface ISpaceShip {
+export interface ISpaceShip {
   removeSprite(name: string): void
   addSprite(source: SpriteSource, name: string): Sprite
   addAnimatedSprite(textures: Texture<Resource>[], name: string): AnimatedSprite
 }
 
-interface ISpaceShipBase {
+export interface ISpaceShipBase {
   damage(value: number): void
   heal(value: number): void
 }
@@ -128,7 +128,7 @@ export class SpaceShipVeryDamaged implements ISpaceShipBase {
   }
 }
 
-interface ISpaceShipEngine {
+export interface ISpaceShipEngine {
   powerOn(): void
   powerOff(): void
 }
@@ -226,13 +226,15 @@ export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShip
 export default class SpaceShip extends GameObject<AppEvents> implements ISpaceShip, ISpaceShipBase {
   health: number
   maxHealth: number
-  state: ISpaceShipBase
+  speed: ObservablePoint
+  baseState: ISpaceShipBase
   spaceShipEngine: SpaceShipEngine
   spriteSrcs: Record<"health" | "slight_damaged" | "very_damaged" | "damaged", SpriteSource>
 
   async onStart(ctx: Context<AppEvents>): Promise<void> {
     this.health = 100
     this.maxHealth = 100
+    this.speed = new ObservablePoint(this.onSpeedChange, this, 0, -1)
     this.sortableChildren = true
     this.spriteSrcs = {
       health: Assets.get("mainship_base_full_health"),
@@ -240,20 +242,30 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
       slight_damaged: Assets.get("mainship_base_slight_damaged"),
       very_damaged: Assets.get("mainship_base_very_damaged"),
     }
-    this.state = new SpaceShipFullHealth(this)
+    this.baseState = new SpaceShipFullHealth(this)
     this.spaceShipEngine = new SpaceShipEngine(this, ctx)
   }
 
+  private onSpeedChange() {
+    this.speed.set(this.speed.x, this.speed.y)
+    this.angle += 180 * this.speed.normalize().y
+  }
+
+  move(point: Point) {
+    this.position.x += point.normalize().x * this.speed.x
+    this.position.y += point.normalize().y * this.speed.y
+  }
+
   changeState(state: ISpaceShipBase) {
-    this.state = state
+    this.baseState = state
   }
 
   damage(value: number): void {
-    this.state.damage(value)
+    this.baseState.damage(value)
   }
 
   heal(value: number): void {
-    this.state.heal(value)
+    this.baseState.heal(value)
   }
 
   addSprite(source: SpriteSource, name: string) {
