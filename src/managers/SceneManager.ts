@@ -23,7 +23,8 @@ export class Scene implements Activity<AppEvents> {
     })
   }
 
-  onUpdate(): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onUpdate(_delta: number): void {
     this.context.children.forEach(child => {
       this.contains(child)
       this.testCollision(child)
