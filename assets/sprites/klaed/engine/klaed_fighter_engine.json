@@ -212,7 +212,19 @@
     }
   },
   "animations": {
-    "engine": [
+    "powering": [
+      "klaed_fighter_engine_0",
+      "klaed_fighter_engine_1",
+      "klaed_fighter_engine_2",
+      "klaed_fighter_engine_3",
+      "klaed_fighter_engine_4",
+      "klaed_fighter_engine_5",
+      "klaed_fighter_engine_6",
+      "klaed_fighter_engine_7",
+      "klaed_fighter_engine_8",
+      "klaed_fighter_engine_9"
+    ],
+    "idle": [
       "klaed_fighter_engine_0",
       "klaed_fighter_engine_1",
       "klaed_fighter_engine_2",
