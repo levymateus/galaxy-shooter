@@ -8,3 +8,8 @@ export interface AppEvents {
   outOfBounds: []
   onCollide: [other: GameObject<AppEvents>]
 }
+
+export type Vec2 = {
+  x: number,
+  y: number,
+}

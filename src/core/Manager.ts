@@ -70,8 +70,6 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
 
     this.ticker.add(this.activity.onUpdate, this.activity)
     this.ticker.start()
-
-    console.log('Scene %s listeners %d', ctor.name, Ticker.shared.count)
   }
 
   async destroy() {

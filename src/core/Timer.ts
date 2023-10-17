@@ -60,5 +60,4 @@ export class Timer {
   stop(): void {
     this.clear()
   }
-
 }
