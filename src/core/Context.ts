@@ -1,4 +1,4 @@
-import { AxisAlignedBounds, GameObject as ConcreteGameObject, EventEmitter, Surface } from "core"
+import { AxisAlignedBounds, EventEmitter, Surface, GameObject } from "core"
 import { Manager } from "core/Manager"
 import { Container, ObservablePoint, Rectangle, Ticker, utils } from "pixi.js"
 import { GameObjectConstructor } from "./typings"
@@ -38,13 +38,13 @@ export class Context<E extends utils.EventEmitter.ValidEventTypes> extends Conta
     this.pivot.y -= this.surface.height * this.anchor.y
   }
 
-  async create(ctor: GameObjectConstructor<E>): Promise<ConcreteGameObject<E>> {
+  async create<T extends GameObject<E>>(ctor: GameObjectConstructor<E>): Promise<T> {
     const gameObject = new ctor(this, ctor.name)
     this.ticker.add(gameObject.onUpdate, gameObject)
     await gameObject.onStart(this)
     if (!this.ticker.started) {
       this.ticker.start()
     }
-    return this.addChild(gameObject)
+    return this.addChild(gameObject) as T
   }
 }
