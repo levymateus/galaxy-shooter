@@ -1,6 +1,7 @@
 import { Context, GameObject } from "core"
-import { AnimatedSprite, Assets, ObservablePoint, Point, Resource, Sprite, SpriteSource, Spritesheet, Texture } from "pixi.js"
+import { AnimatedSprite, Assets, Point, Resource, Sprite, SpriteSource, Spritesheet, Texture } from "pixi.js"
 import { AppEvents } from "typings"
+import { angleBetween } from "utils/utils"
 
 export interface ISpaceShip {
   removeSprite(name: string): void
@@ -226,7 +227,6 @@ export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShip
 export default class SpaceShip extends GameObject<AppEvents> implements ISpaceShip, ISpaceShipBase {
   health: number
   maxHealth: number
-  speed: ObservablePoint
   baseState: ISpaceShipBase
   spaceShipEngine: SpaceShipEngine
   spriteSrcs: Record<"health" | "slight_damaged" | "very_damaged" | "damaged", SpriteSource>
@@ -234,7 +234,6 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
   async onStart(ctx: Context<AppEvents>): Promise<void> {
     this.health = 100
     this.maxHealth = 100
-    this.speed = new ObservablePoint(this.onSpeedChange, this, 0, -1)
     this.sortableChildren = true
     this.spriteSrcs = {
       health: Assets.get("mainship_base_full_health"),
@@ -246,14 +245,13 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
     this.spaceShipEngine = new SpaceShipEngine(this, ctx)
   }
 
-  private onSpeedChange() {
-    this.speed.set(this.speed.x, this.speed.y)
-    this.angle += 180 * this.speed.normalize().y
-  }
-
-  move(point: Point) {
-    this.position.x += point.normalize().x * this.speed.x
-    this.position.y += point.normalize().y * this.speed.y
+  move(velocity: Point) {
+    this.angle = angleBetween(
+      this.position.normalize(),
+      velocity.normalize().multiply(new Point(2, 2))
+    ) - 270
+    this.position.x += velocity.x
+    this.position.y += velocity.y
   }
 
   changeState(state: ISpaceShipBase) {

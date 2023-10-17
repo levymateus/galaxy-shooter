@@ -10,8 +10,9 @@ export function randf(min: number, max: number): number {
 }
 
 export function angleBetween(a: Point, b: Point): number {
-  const dist = new Point(b.x, b.y).subtract(a)
+  const dist = b.clone().subtract(a.clone())
   const angle = Math.atan2(dist.y, dist.x) * RAD_TO_DEG
+  if (Number.isNaN(angle)) return 0
   return angle
 }
 
@@ -42,4 +43,3 @@ export const uid = (): string => {
   }
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
 }
-
