@@ -6,6 +6,9 @@ enum TimerStatus {
 
 type TimeHandler = (() => void)
 
+/**
+ * The `Timer` class manage the window timer handling.
+ */
 export class Timer {
   private status: TimerStatus
   private id: null | number

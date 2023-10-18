@@ -1,18 +1,16 @@
-import { Context, Timer } from "core"
-import { Scene } from "managers/SceneManager"
+import { Activity, Context } from "core"
 import { AppEvents } from "typings"
 import { Text } from "ui"
 
-export default class GameOverScene extends Scene {
-  timer: Timer
-
-  async onStart(context: Context<AppEvents>) {
-    this.context = context
+export default class GameOverScene implements Activity<AppEvents> {
+  async onStart(ctx: Context<AppEvents>) {
     const text = new Text("Game Over!")
     text.style.align = "center"
     text.anchor.set(0.5)
-    this.context.addChild(text)
+    ctx.addChild(text)
   }
 
   onUpdate(): void { }
+
+  async onFinish(): Promise<void> { }
 }

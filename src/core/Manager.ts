@@ -1,9 +1,18 @@
-import { AxisAlignedBounds, Context, EventEmitter, Surface } from "core"
-import { Activity, ActivityConstructor } from "core/typings"
+import { Activity, ActivityCtor, AxisAlignedBounds, Context, EventEmitter, Surface } from "core"
 import { Container, Graphics, Rectangle, Ticker, utils } from "pixi.js"
+
+type ManagerOptions = {
+  gotoAndStart?: boolean
+}
+
+const defaultManagerOptions: ManagerOptions = {
+  gotoAndStart: true
+}
 
 /**
  * Manager base class implementation.
+ *
+ * Handles the activity croncrete classes and the lifecycles implemented by the `Activity` interface.
  */
 export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
   ticker: Ticker
@@ -12,8 +21,16 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
   surface: Surface
   emitter: EventEmitter<E>
   bounds: AxisAlignedBounds
-  activity: Activity<E> | null
   index?: number
+
+  /**
+   * Current running activity.
+   */
+  activity: Activity<E> | null
+
+  /**
+   * The current context for the current activity.
+   */
   protected context: Context<E> | null
 
   constructor(
@@ -36,16 +53,28 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
     this.index = index
   }
 
-  async goto(ctor: ActivityConstructor<E>) {
+  /**
+   * The `goto` method build, setup and provide a `Context` for an `Activity`.
+   *
+   * @details Destroy the current activity and build an another one.
+   * @param ctor The Activity constructor
+   */
+  async goto(
+    ctor: ActivityCtor<E>,
+    options: ManagerOptions = defaultManagerOptions
+  ) {
     this.ticker.stop()
 
     await this.destroy()
 
-    this.context = new Context<E>(this.surface, this.screen)
-    this.context.name = ctor.name
-    this.context.manager = this
-    this.context.bounds = this.bounds
-    this.context.emitter = this.emitter
+    this.context = new Context<E>(
+      this.surface,
+      this.screen,
+      ctor.name,
+      this,
+      this.bounds,
+      this.emitter
+    )
     this.context.anchor.set(0.5)
 
     const mask = new Graphics()
@@ -69,9 +98,12 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
     this.stage.sortChildren()
 
     this.ticker.add(this.activity.onUpdate, this.activity)
-    this.ticker.start()
+    if (options?.gotoAndStart) this.ticker.start()
   }
 
+  /**
+   * Destroy the current activity and context.
+   */
   async destroy() {
     if (this.activity && this.context) {
       this.ticker.stop()
@@ -79,7 +111,6 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
 
       await this.activity.onFinish()
       this.activity = null
-
 
       this.context.destroy({ children: true, texture: false, baseTexture: false })
       this.context = null

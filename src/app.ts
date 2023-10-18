@@ -3,7 +3,7 @@ import "styles.css"
 
 import { Group, Stage } from "@pixi/layers"
 import devtools from "config"
-import { Application, settings } from "pixi.js"
+import { Application, ICanvas, settings } from "pixi.js"
 
 const appOptions = {
   resizeTo: window,
@@ -14,11 +14,22 @@ const appOptions = {
 }
 
 const app = new Application(appOptions)
-const view: Node = (app.view as unknown) as Node
+const view: ICanvas = app.view
 app.stage = new Stage(new Group())
 app.stage.name = "stage"
 settings.RESOLUTION = window.devicePixelRatio || 1
-document.body.appendChild(view)
+
+if (view instanceof Node) {
+  document.body.appendChild(view)
+} else throw new Error('Application.view is not a valid instance of Node.')
+
+// setup pixijs devtools plugin
 devtools(app)
+
+const isPauseOnBlurEnabled = true
+const pause = () => app.ticker.stop()
+const unpause = () => app.ticker.start()
+isPauseOnBlurEnabled && window.addEventListener('focus', unpause)
+isPauseOnBlurEnabled && window.addEventListener('blur', pause)
 
 export { app }

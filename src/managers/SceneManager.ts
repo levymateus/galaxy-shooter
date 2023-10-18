@@ -1,6 +1,4 @@
-import { AxisAlignedBounds, CollisionTest, Context, GameObject } from "core"
-import { Manager } from "core/Manager"
-import { Activity } from "core/typings"
+import { Activity, AxisAlignedBounds, CollisionTest, Context, GameObject, Manager } from "core"
 import { DisplayObject } from "pixi.js"
 import { AppEvents } from "typings"
 
@@ -21,6 +19,9 @@ export class Scene implements Activity<AppEvents> {
     this.context.on("childAdded", (child) => {
       if (child instanceof GameObject) this.collision.add(child)
     })
+    this.context.emitter.on("appPause", isPause =>
+      isPause ? this.context.removeUpdates() : this.context.addUpdates()
+    )
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,4 +1,4 @@
-import { HTMLText, TextStyleFontWeight, getFontFamilyName } from "pixi.js"
+import { HTMLText, TextStyleFontWeight, getFontFamilyName } from "pixi.js";
 
 /**
  * Pre-configured and styled text for the Space Shooter Game.

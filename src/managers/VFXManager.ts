@@ -1,7 +1,5 @@
 import { Emitter, EmitterConfigV3 } from "@pixi/particle-emitter"
-import { AxisAlignedBounds, EventEmitter, Surface } from "core"
-import { Manager } from "core/Manager"
-import { ActivityConstructor } from "core/typings"
+import { AxisAlignedBounds, EventEmitter, Surface, Manager, ActivityCtor } from "core"
 import { Container, Rectangle, Ticker } from "pixi.js"
 import { AppEvents } from "typings"
 
@@ -28,7 +26,7 @@ export default class VFXManager extends Manager<AppEvents> {
     this.stopped = true
   }
 
-  async goto(ctor: ActivityConstructor<AppEvents>): Promise<void> {
+  async goto(ctor: ActivityCtor<AppEvents>): Promise<void> {
     await super.goto(ctor)
     /**
      * An error `Uncaught TypeError: currentTarget.isInteractive is not a function` occur

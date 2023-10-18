@@ -7,6 +7,7 @@ export interface AppEvents {
   gameOver: []
   outOfBounds: []
   onCollide: [other: GameObject<AppEvents>]
+  appPause: [pause: boolean]
 }
 
 export type Vec2 = {

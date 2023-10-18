@@ -1,11 +1,12 @@
-import { Context } from "core/Context"
-import { GameObject as GameObjectInterface } from "core/typings"
+import { Activity, ActivityElement, Context, EventEmitter } from "core"
 import { Circle, Container, IDestroyOptions, ObservablePoint, utils } from "pixi.js"
 import { uid } from "utils/utils"
-import { EventEmitter } from "./EventEmitter"
 
+/**
+ * The `GameObject` is a base class that extends the `PIXI.Container`.
+ */
 export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
-  extends Container implements GameObjectInterface<E> {
+  extends Container implements Activity<E>, ActivityElement<E> {
   readonly name: string
   readonly id: string
   readonly emitter: EventEmitter<E>
@@ -15,6 +16,10 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
    * Default is `true`.
    */
   collisionTest: boolean
+
+  /**
+   * Shape used to test collision.
+   */
   collisionShape: Circle
   anchor: ObservablePoint
 
@@ -47,6 +52,10 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
 
   onUpdate(delta: number): void {
     return void delta
+  }
+
+  async onFinish(): Promise<void> {
+    throw new Error("Method not implemented.")
   }
 
   destroy(options?: boolean | IDestroyOptions | undefined): void {

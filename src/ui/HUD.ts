@@ -1,28 +1,51 @@
-import { Context } from "core"
-import { Scene } from "managers/SceneManager"
-import { AppEvents } from "typings"
-import Score from "ui/Score"
+import { Activity, Context } from "core";
+import { GUIElement } from "managers/GUIManager";
+import { AppEvents } from "typings";
+import { Text } from "ui";
 
-export default class HUD extends Scene {
-  static GUI_NAME = "HUD";
-  private score: Score
+export class Score extends GUIElement {
+  private static MASK = "00000000";
+  private count: number
+  text: Text
 
-  async onStart(context: Context<AppEvents>): Promise<void> {
-    this.context = context
-    this.context.zIndex = 1000
-    this.score = new Score()
-    this.score.text.anchor.set(1)
-    this.score.x = this.context.bounds.right - 8
-    this.score.y = this.context.bounds.y + this.score.text.height + 8
-    this.context.emitter.on("scoreIncrement", this.score.inc, this.score)
-    this.context.addChild(this.score)
+  async onStart() {
+    this.count = 0
+    this.text = new Text(Score.MASK)
+    this.text.weight("bold")
+    this.addChild(this.text)
   }
 
-  onUpdate(): void {
-    // throw new Error("Method not implemented.");
+  onUpdate(): void { }
+  async onFinish(): Promise<void> { }
+
+  private pad(value: number, size: number) {
+    const strValue: string = Score.MASK + value
+    return strValue.substring(strValue.length - size)
   }
 
-  async onFinish(): Promise<void> {
-    // this.context.removeAllListeners();
+  setValue(value: number) {
+    this.text.text = this.pad(value, Score.MASK.length)
   }
+
+  add(amount: number): number {
+    this.count = this.count + amount
+    this.setValue(this.count)
+    return this.count
+  }
+}
+
+
+export class HUD implements Activity<AppEvents> {
+  async onStart(ctx: Context<AppEvents>): Promise<void> {
+    const score = await ctx.create<Score>(Score)
+    score.text.anchor.set(1)
+    score.x = ctx.bounds.right - 8
+    score.y = ctx.bounds.y + score.text.height + 8
+    ctx.emitter.on("scoreIncrement", score.add, score)
+    ctx.zIndex = 1000
+  }
+
+  onUpdate(): void { }
+
+  async onFinish(): Promise<void> { }
 }

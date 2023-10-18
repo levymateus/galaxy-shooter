@@ -1,5 +1,4 @@
 import { Point, RAD_TO_DEG } from "@pixi/math"
-// import { GameObject } from "core";
 
 export function randi(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min)
@@ -25,15 +24,6 @@ export function dice(sides: number) {
   }
   return dice
 }
-
-/**
- * Validates a collision/collisor.
- * @param names - The name of the valid collisors.
- * @param collisor - The testing collisor.
- * @returns `true` for valid or `false`.
- */
-// export const isValidCollisor = (names: string[], collisor: GameObject): boolean =>
-//   names.some(name => collisor.name.includes(name));
 
 export const uid = (): string => {
   const s4 = () => {

@@ -1,5 +1,8 @@
 type KeyStatus = { keydown?: boolean, keyup?: boolean }
 
+/**
+ * The singleton `KeyboardInput` class manage the keyboard handling.
+ */
 export class KeyboardInput {
   private keyStatus: Record<string, KeyStatus>
 

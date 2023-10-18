@@ -1,7 +1,7 @@
-import { Resolution } from "core/typings"
+import { Resolution } from "core"
 
 /**
- * Global game settings parser.
+ * Global game settings implementation.
  */
 export class Settings {
   static RESOLUTIONS: [Resolution] = [

@@ -14,7 +14,7 @@ import MainScene from "scenes/MainScene"
 import ParallaxStarryBackground from "scenes/ParallaxStarryBackground"
 import VFX from "scenes/VFX"
 import { AppEvents } from "typings"
-import HUD from "ui/HUD"
+import { HUD, Menu } from "ui"
 
 Assets.setPreferences({
   preferWorkers: true,
@@ -61,5 +61,15 @@ emitter.on("gameOver", () => {
 emitter.on("dispathVFX", (config) => {
   vfxManager.emit(config)
 })
+
+const addViewEventListener = app.view.addEventListener
+addViewEventListener && addViewEventListener('blur', () => {
+  guiManager.goto(Menu)
+  emitter.emit("appPause", true)
+})
+addViewEventListener && addViewEventListener('focus', () => {
+  guiManager.goto(HUD)
+  emitter.emit("appPause", false)
+ })
 
 gotoLoadingScene()

@@ -1,6 +1,4 @@
-import { AxisAlignedBounds, EventEmitter, Surface } from "core"
-import { Manager } from "core/Manager"
-import { ActivityConstructor } from "core/typings"
+import { AxisAlignedBounds, EventEmitter, Surface, ActivityCtor, Manager } from "core"
 import { Container, Rectangle, Ticker } from "pixi.js"
 import { AppEvents } from "typings"
 
@@ -23,7 +21,7 @@ export class BgManager extends Manager<AppEvents> {
     this.suspended = false
   }
 
-  async goto(ctor: ActivityConstructor<AppEvents>): Promise<void> {
+  async goto(ctor: ActivityCtor<AppEvents>): Promise<void> {
     if (!this.suspended) {
       return super.goto(ctor)
     }

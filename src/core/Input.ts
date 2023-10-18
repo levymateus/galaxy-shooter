@@ -1,17 +1,14 @@
-import { EventEmitter } from "core/EventEmitter"
+import { Actions, EventEmitter, InputEvents } from "core"
 import { KeyboardInput } from "core/KeyboardInput"
-import { MouseInput } from "core/MouseInput"
-import { Actions, InputEvents } from "core/typings"
 import { Ticker } from "pixi.js"
 import settings from "res/settings.json"
 
 /**
- * Global game input handling for any type of input (keyboard, controler).
+ * The `GameInputHandler` singleton class, is a global game input handling for any type of input, like keyboard, gamepad etc.
  */
 class GameInputHandler extends EventEmitter<InputEvents> {
   private static instance: GameInputHandler
   private keyboardInput: KeyboardInput
-  private mouseInput: MouseInput
   private ticker: Ticker
 
   constructor() {
@@ -19,9 +16,6 @@ class GameInputHandler extends EventEmitter<InputEvents> {
 
     this.keyboardInput = new KeyboardInput()
     this.keyboardInput.scan()
-
-    this.mouseInput = new MouseInput()
-    this.mouseInput.scan()
 
     this.ticker = Ticker.shared
     this.ticker.add(() => {
@@ -48,11 +42,7 @@ class GameInputHandler extends EventEmitter<InputEvents> {
   isActionPressed(action: Actions): boolean {
     const key = settings?.Keyboard[action]
     const isKeyDown = this.keyboardInput.isKeyDown(key)
-    const button = settings?.Mouse[action]
-    const isMouseDown = button !== null && this.mouseInput.isKeyDown(button)
-    if (isKeyDown || isMouseDown) {
-      this.emit('onActionPressed', action)
-    }
+    if (isKeyDown) this.emit('onActionPressed', action)
     return isKeyDown
   }
 
@@ -64,15 +54,10 @@ class GameInputHandler extends EventEmitter<InputEvents> {
   isActionReleased(action: Actions): boolean {
     const key = settings?.Keyboard[action]
     const isKeyUp = this.keyboardInput.isKeyUp(key)
-    const button = settings?.Mouse[action]
-    const isMouseUp = button !== null && this.mouseInput.isKeyUp(button)
-    if (isKeyUp || isMouseUp) {
-      this.emit('onActionReleased', action)
-    }
+    if (isKeyUp) this.emit('onActionReleased', action)
     return isKeyUp
   }
 }
 
 const Input = GameInputHandler.getInstance()
 export { Input }
-

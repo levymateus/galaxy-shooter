@@ -1,4 +1,4 @@
-import { Resolution } from "core/typings"
+import { Resolution } from "core"
 import { Rectangle } from "pixi.js"
 
 /**

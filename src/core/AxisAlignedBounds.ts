@@ -1,6 +1,9 @@
 import { AxisAlignedBounds as PixiAxisAlignedBounds } from "@pixi-essentials/bounds"
 import { ObservablePoint } from "pixi.js"
 
+/**
+ * Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y) and by its width and its height.
+ */
 export class AxisAlignedBounds extends PixiAxisAlignedBounds {
   anchor: ObservablePoint
 

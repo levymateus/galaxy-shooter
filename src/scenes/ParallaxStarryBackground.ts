@@ -1,8 +1,7 @@
 import dataJson from "assets/sprites/enviroment/starry_background.json"
-import { Context } from "core"
+import { Context, Activity } from "core"
 import { AnimatedSprite, Assets, Graphics, Spritesheet } from "pixi.js"
 import { AppEvents, Vec2 } from "typings"
-import { Activity } from "ui/typings"
 import { randf } from "utils/utils"
 
 type SpriteData = {

@@ -38,7 +38,7 @@ export class Asteroid extends GameObject<AppEvents> {
   }
 
   onCollide() {
-    // this.explodeAndDestroy();
+    // empty
   }
 
   explodeAndDestroy() {

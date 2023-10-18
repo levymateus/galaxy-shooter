@@ -1,7 +1,10 @@
 
-import { GameObject } from "core/GameObject"
+import { GameObject } from "core"
 import { Circle, utils } from "pixi.js"
 
+/**
+ * The `CollisionTest` implements a simple collision test algorithm.
+ */
 export class CollisionTest<E extends utils.EventEmitter.ValidEventTypes, T extends GameObject<E>> {
   private set: Set<T>
   private map: Map<string, string>
@@ -20,30 +23,35 @@ export class CollisionTest<E extends utils.EventEmitter.ValidEventTypes, T exten
     return false
   }
 
-  from(left: T): T[] {
+  /**
+   * Test a collision beetwen the `object` argument and the previous added objects.
+   * @param object The object to test with
+   * @returns A list of collisions
+   */
+  from(object: T): T[] {
     const cols: T[] = []
-    for (const right of this.set) {
-      const collides = this.map.get(left.id) === right.id
-        || this.map.get(right.id) === left.id
+    for (const otherObject of this.set) {
+      const collides = this.map.get(object.id) === otherObject.id
+        || this.map.get(otherObject.id) === object.id
 
-      if (!collides && left.id !== right.id && this.test(left, right)) {
+      if (!collides && object.id !== otherObject.id && this.test(object, otherObject)) {
         // on enter / on starts collide
-        this.map.set(left.id, right.id)
-        this.map.set(right.id, left.id)
-        cols.push(right)
+        this.map.set(object.id, otherObject.id)
+        this.map.set(otherObject.id, object.id)
+        cols.push(otherObject)
         // cols.push([right, left]);
         continue
       }
-      if (collides && !this.test(left, right)) {
+      if (collides && !this.test(object, otherObject)) {
         // on exit / on stop collide
-        let collision = this.map.get(left.id)
-        if (collision === right.id) {
-          this.map.delete(left.id)
+        let collision = this.map.get(object.id)
+        if (collision === otherObject.id) {
+          this.map.delete(object.id)
         }
 
-        collision = this.map.get(right.id)
-        if (collision === left.id) {
-          this.map.delete(right.id)
+        collision = this.map.get(otherObject.id)
+        if (collision === object.id) {
+          this.map.delete(otherObject.id)
         }
       }
     }
