@@ -1,32 +1,76 @@
-import { HTMLText, TextStyleFontWeight, getFontFamilyName } from "pixi.js";
+import { HTMLText, getFontFamilyName } from "pixi.js";
+
+export interface IText {
+  text: HTMLText
+  setFont(src: string): Promise<void>
+}
+
+export interface GUITextFactory<T extends HTMLText> {
+  createText(text?: string): Promise<T>
+  createTextLg(text?: string): Promise<T>
+}
+
+class GUIText implements IText {
+  text: HTMLText;
+  async setFont(src: string): Promise<void> {
+    try {
+      this.text.style.fontFamily = getFontFamilyName(src)
+      return await this.text.style.loadFont(src)
+    } catch {
+      if (process.env.NODE_ENV !== "production")
+        throw new Error(`Error on setFont: Fail to load ${src}.`)
+      return
+    }
+  }
+}
 
 /**
- * Pre-configured and styled text for the Space Shooter Game.
+ * Decorator for `Text`.
+ * Create a styled normal styled text.
  */
-export class Text extends HTMLText {
-  static PIXELOID_MONO = "assets/fonts/PixeloidMono.ttf";
-  static PIXELOID_SANS_BOLD = "assets/fonts/PixeloidSansBold.ttf";
-  src: string
-
-  constructor(text?: string, src?: string) {
-    super(text)
-    this.style.fill = 0xffffff
-    this.style.fontSize = "12px"
-    this.src = src || Text.PIXELOID_MONO
-    this.weight("normal")
+export class MdText extends GUIText implements IText {
+  text: HTMLText
+  constructor(htmlText: HTMLText) {
+    super()
+    this.text = htmlText
+    this.text.style.fill = "white"
+    this.text.style.fontSize = 21
+    this.text.style.dropShadowColor = "blue"
+    this.text.style.dropShadowBlur = 0
+    this.text.style.dropShadowDistance = 5
+    this.text.style.dropShadow = true
   }
+}
 
-  async weight(weight: TextStyleFontWeight) {
-    switch (weight) {
-      case "bold":
-        this.src = Text.PIXELOID_SANS_BOLD
-        break
-      case "normal":
-      default:
-        this.src = Text.PIXELOID_MONO
-    }
-    this.style.fontWeight = weight
-    this.style.fontFamily = getFontFamilyName(this.src)
-    return await this.style.loadFont(this.src)
+/**
+ * Decorator for `Text`.
+ * Create a styled large styled text.
+ */
+export class LgText extends GUIText implements IText {
+  text: HTMLText
+  constructor(htmlText: HTMLText) {
+    super()
+    this.text = htmlText
+    this.text.style.fill = "white"
+    this.text.style.fontSize = 24
+    this.text.style.dropShadowColor = "blue"
+    this.text.style.dropShadowBlur = 0
+    this.text.style.dropShadowDistance = 5
+    this.text.style.dropShadow = true
+  }
+}
+
+export class TextFactory implements GUITextFactory<HTMLText> {
+  async createText(text?: string): Promise<HTMLText> {
+    const txt = new HTMLText(text)
+    await new MdText(txt).setFont("assets/fonts/PixeloidSansBold.ttf")
+    txt.style.fontWeight = "bold"
+    return txt
+  }
+  async createTextLg(text?: string): Promise<HTMLText> {
+    const txt = new HTMLText(text)
+    await new LgText(txt).setFont("assets/fonts/PixeloidSansBold.ttf")
+    txt.style.fontWeight = "bold"
+    return txt
   }
 }

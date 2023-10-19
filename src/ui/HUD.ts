@@ -1,17 +1,17 @@
 import { Activity, Context } from "core";
-import { GUIElement } from "managers/GUIManager";
+import { GUIElement, GUIManager } from "managers/GUIManager";
+import { HTMLText } from "pixi.js";
 import { AppEvents } from "typings";
-import { Text } from "ui";
 
 export class Score extends GUIElement {
-  private static MASK = "00000000";
-  private count: number
-  text: Text
+  static MASK = "00000000";
+  count: number
+  text: HTMLText
 
-  async onStart() {
+  async onStart(ctx: Context<AppEvents>) {
     this.count = 0
-    this.text = new Text(Score.MASK)
-    this.text.weight("bold")
+    const factory = ctx.getManager<GUIManager>().textFactory
+    this.text = await factory.createText(Score.MASK)
     this.addChild(this.text)
   }
 
@@ -33,7 +33,6 @@ export class Score extends GUIElement {
     return this.count
   }
 }
-
 
 export class HUD implements Activity<AppEvents> {
   async onStart(ctx: Context<AppEvents>): Promise<void> {

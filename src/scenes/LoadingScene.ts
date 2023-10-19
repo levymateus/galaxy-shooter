@@ -3,7 +3,7 @@ import { gotoMainScene } from "index"
 import { Assets, AssetsManifest } from "pixi.js"
 import manifest from "res/manifest.json"
 import { AppEvents } from "typings"
-import { Text } from "ui"
+import { TextFactory } from "ui/Text"
 import { Scene } from "../managers/SceneManager"
 
 export default class LoadingScene extends Scene {
@@ -11,8 +11,8 @@ export default class LoadingScene extends Scene {
   next?: (() => void)
   manifest?: string | AssetsManifest
 
-  async onStart(context: Context<AppEvents>) {
-    this.context = context
+  async onStart(ctx: Context<AppEvents>) {
+    this.context = ctx
     this.bundleIds = [
       "enviroments_bundle",
       "mainship_bundle",
@@ -22,14 +22,15 @@ export default class LoadingScene extends Scene {
     this.manifest = manifest
     this.next = gotoMainScene
 
-    const text = new Text("Loading...")
-    text.style.align = "center"
-    text.anchor.set(0.5)
-    text.weight("bold")
-    this.context.addChild(text)
-
     await Assets.init({ manifest: this.manifest || "" })
     await Assets.loadBundle(this.bundleIds || [])
+
+    const factory = new TextFactory()
+    const text = await factory.createTextLg("Loading...")
+    text.style.align = "center"
+    text.anchor.set(0.5)
+    this.context.addChild(text)
+
     if (this.next) new Timer().timeout(this.next, 1000)
   }
 

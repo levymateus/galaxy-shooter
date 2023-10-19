@@ -1,10 +1,14 @@
 import {
   ActivityElement,
+  AxisAlignedBounds,
   Context,
-  Manager
+  EventEmitter,
+  Manager,
+  Surface
 } from "core";
-import { Container } from "pixi.js";
+import { Container, HTMLText, Rectangle, Ticker } from "pixi.js";
 import { AppEvents } from "typings";
+import { GUITextFactory, TextFactory } from "ui/Text";
 
 export class GUIElement extends Container implements ActivityElement<AppEvents> {
   constructor() {
@@ -30,14 +34,19 @@ export class GUIElement extends Container implements ActivityElement<AppEvents> 
  * Game Graphic User Interface Manager.
  */
 export class GUIManager extends Manager<AppEvents> {
-  /**
-   * Add an activity without destroy the previous activity.
-   * @param ctor The activity constructor.
-   */
-  // async render(ctor: ActivityElementCtor<AppEvents>) {
-  //   if (this.context) {
-  //     // Create a sub context
-  //     this.context.create(ctor)
-  //   }
-  // }
+  textFactory: GUITextFactory<HTMLText>
+  manager: GUIManager
+
+  constructor(
+    ticker: Ticker,
+    stage: Container,
+    screen: Rectangle,
+    surface: Surface,
+    bounds: AxisAlignedBounds,
+    emitter: EventEmitter<AppEvents>,
+    index?: number,
+  ) {
+    super(ticker, stage, screen, surface, bounds, emitter, index)
+    this.textFactory = new TextFactory()
+  }
 }

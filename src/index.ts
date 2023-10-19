@@ -3,6 +3,7 @@ import "styles.css"
 
 import { app } from "app"
 import { AxisAlignedBounds, EventEmitter, Settings, Surface, Timer } from "core"
+import { isMainMenuEnalbed } from "feats"
 import { BgManager } from "managers/BgManager"
 import { GUIManager } from "managers/GUIManager"
 import { SceneManager } from "managers/SceneManager"
@@ -64,12 +65,12 @@ emitter.on("dispathVFX", (config) => {
 
 const addViewEventListener = app.view.addEventListener
 addViewEventListener && addViewEventListener('blur', () => {
-  guiManager.goto(Menu)
-  emitter.emit("appPause", true)
+  isMainMenuEnalbed && guiManager.goto(Menu)
+  isMainMenuEnalbed && emitter.emit("appPause", true)
 })
 addViewEventListener && addViewEventListener('focus', () => {
-  guiManager.goto(HUD)
-  emitter.emit("appPause", false)
- })
+  isMainMenuEnalbed && guiManager.goto(HUD)
+  isMainMenuEnalbed && emitter.emit("appPause", false)
+})
 
 gotoLoadingScene()

@@ -232,6 +232,7 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
   spriteSrcs: Record<"health" | "slight_damaged" | "very_damaged" | "damaged", SpriteSource>
 
   async onStart(ctx: Context<AppEvents>): Promise<void> {
+    this.sortableChildren = true
     this.health = 100
     this.maxHealth = 100
     this.spriteSrcs = {

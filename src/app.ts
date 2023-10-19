@@ -3,6 +3,7 @@ import "styles.css"
 
 import { Group, Stage } from "@pixi/layers"
 import devtools from "config"
+import { isPauseOnBlurEnabled } from "feats"
 import { Application, ICanvas, settings } from "pixi.js"
 
 const appOptions = {
@@ -26,7 +27,6 @@ if (view instanceof Node) {
 // setup pixijs devtools plugin
 devtools(app)
 
-const isPauseOnBlurEnabled = true
 const pause = () => app.ticker.stop()
 const unpause = () => app.ticker.start()
 isPauseOnBlurEnabled && window.addEventListener('focus', unpause)
