@@ -47,6 +47,7 @@ export class Context<E extends utils.EventEmitter.ValidEventTypes> extends Conta
     this.ticker.autoStart = false
     this.ticker.maxFPS = 60
     this.ticker.minFPS = 60
+    this.sortableChildren = true
   }
 
   private onAnchorUpdate() {
@@ -71,7 +72,7 @@ export class Context<E extends utils.EventEmitter.ValidEventTypes> extends Conta
    * Remove update listener of the context children.
    */
   removeUpdates() {
-    this.children.forEach(child =>  this.ticker.remove(child.onUpdate, child))
+    this.children.forEach(child => this.ticker.remove(child.onUpdate, child))
   }
 
   /**
@@ -79,5 +80,13 @@ export class Context<E extends utils.EventEmitter.ValidEventTypes> extends Conta
    */
   addUpdates() {
     this.children.forEach(child => this.ticker.add(child.onUpdate, child))
+  }
+
+  /**
+   * Returns the context manager.
+   * @returns The context `Manager` instance.
+   */
+  getManager<T extends Manager<E>>(): T {
+    return this.manager as T
   }
 }
