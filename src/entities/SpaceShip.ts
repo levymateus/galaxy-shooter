@@ -245,13 +245,17 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
     this.spaceShipEngine = new SpaceShipEngine(this, ctx)
   }
 
-  move(velocity: Point) {
-    this.angle = angleBetween(
-      this.position.normalize(),
-      velocity.normalize().multiply(new Point(2, 2))
-    ) - 270
-    this.position.x += velocity.x
-    this.position.y += velocity.y
+  look(to: Point) {
+    if (this.position.x && this.position.y)
+      this.angle = angleBetween(
+        this.position.normalize(),
+        to.normalize().multiply(new Point(2, 2))
+      ) - 270
+  }
+
+  move(x: number, y: number) {
+    this.position.x += x
+    this.position.y += y
   }
 
   changeState(state: ISpaceShipBase) {
