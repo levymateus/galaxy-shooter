@@ -234,7 +234,6 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
   async onStart(ctx: Context<AppEvents>): Promise<void> {
     this.health = 100
     this.maxHealth = 100
-    this.sortableChildren = true
     this.spriteSrcs = {
       health: Assets.get("mainship_base_full_health"),
       damaged: Assets.get("mainship_base_slight_damaged"),
