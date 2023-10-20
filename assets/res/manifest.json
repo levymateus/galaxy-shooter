@@ -120,6 +120,15 @@
       ]
     },
     {
+      "name": "pickups_bundle",
+      "assets": [
+        {
+          "name": "pickup_icon_base_engine",
+          "srcs": "assets/sprites/pickups/engines/pickup_icon_base_engine.json"
+        }
+      ]
+    },
+    {
       "name": "vfx_bundle",
       "assets": [
         {

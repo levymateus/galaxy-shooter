@@ -3,12 +3,6 @@ import { AnimatedSprite, Assets, Point, Resource, Sprite, SpriteSource, Spritesh
 import { AppEvents } from "typings"
 import { angleBetween } from "utils/utils"
 
-export interface ISpaceShip {
-  removeSprite(name: string): void
-  addSprite(source: SpriteSource, name: string): Sprite
-  addAnimatedSprite(textures: Texture<Resource>[], name: string): AnimatedSprite
-}
-
 export interface ISpaceShipBase {
   damage(value: number): void
   heal(value: number): void
@@ -19,7 +13,6 @@ export class SpaceShipFullHealth implements ISpaceShipBase {
 
   constructor(spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
-    this.spaceShip.removeSprite("BaseSpaceShip")
     this.spaceShip.addSprite(this.spaceShip.spriteSrcs.health, "BaseSpaceShip")
     this.damage(0)
   }
@@ -46,7 +39,6 @@ export class SpaceShipFullSlightDamaged implements ISpaceShipBase {
 
   constructor(spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
-    this.spaceShip.removeSprite("BaseSpaceShip")
     this.spaceShip.addSprite(this.spaceShip.spriteSrcs.slight_damaged, "BaseSpaceShip")
     this.damage(0)
   }
@@ -75,7 +67,6 @@ export class SpaceShipDamaged implements ISpaceShipBase {
 
   constructor(spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
-    this.spaceShip.removeSprite("BaseSpaceShip")
     this.spaceShip.addSprite(this.spaceShip.spriteSrcs.damaged, "BaseSpaceShip")
     this.damage(0)
   }
@@ -104,7 +95,6 @@ export class SpaceShipVeryDamaged implements ISpaceShipBase {
 
   constructor(spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
-    this.spaceShip.removeSprite("BaseSpaceShip")
     this.spaceShip.addSprite(this.spaceShip.spriteSrcs.very_damaged, "BaseSpaceShip")
     this.damage(0)
   }
@@ -145,10 +135,7 @@ export class SpaceShipEnginePower implements ISpaceShipEngine {
   powerOn(): void {
     const spritesheet = this.spaceShipEngine.spritesheets.engine_power
     const animations = spritesheet.animations as Record<"powering", Texture<Resource>[]>
-    this.spaceShipEngine.removeSprite("SpaceShipEngine")
     const sprite = this.spaceShipEngine.addAnimatedSprite(animations.powering, "SpaceShipEngine")
-    sprite.anchor.set(0.5)
-    sprite.animationSpeed = 0.4
     sprite.loop = true
     sprite.zIndex = -1
     sprite.play()
@@ -174,17 +161,17 @@ export class SpaceShipEngineIdle implements ISpaceShipEngine {
   powerOff(): void {
     const spritesheet = this.spaceShipEngine.spritesheets.engine_idle
     const animations = spritesheet.animations as Record<"idle", Texture<Resource>[]>
-    this.spaceShipEngine.removeSprite("SpaceShipEngine")
     const sprite = this.spaceShipEngine.addAnimatedSprite(animations.idle, "SpaceShipEngine")
-    sprite.anchor.set(0.5)
-    sprite.animationSpeed = 0.4
     sprite.loop = true
     sprite.zIndex = -1
     sprite.play()
   }
 }
 
-export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShip, ISpaceShipEngine {
+/**
+ * Mainship base engine.
+ */
+export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShipEngine {
   state: ISpaceShipEngine
   parent: SpaceShip
   spritesheets: Record<"engine_power" | "engine_idle", Spritesheet>
@@ -197,6 +184,10 @@ export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShip
       engine_idle: Assets.get<Spritesheet>("mainship_base_engine_idle")
     }
     this.state = new SpaceShipEngineIdle(this)
+    this.removeSprite("SpaceShipBaseEngine")
+    const engineSource = Assets.get<SpriteSource>("mainship_base_engine")
+    const engineSprite = this.addSprite(engineSource, "SpaceShipBaseEngine")
+    engineSprite.zIndex = -1
   }
 
   changeState(state: ISpaceShipEngine) {
@@ -212,7 +203,7 @@ export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShip
   }
 
   removeSprite(name: string): void {
-    return this.parent.removeSprite(name)
+    return this.parent.removeChildByName(name)
   }
 
   addSprite(source: SpriteSource, name: string): Sprite {
@@ -224,11 +215,11 @@ export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShip
   }
 }
 
-export default class SpaceShip extends GameObject<AppEvents> implements ISpaceShip, ISpaceShipBase {
+export default class SpaceShip extends GameObject<AppEvents> implements ISpaceShipBase {
   health: number
   maxHealth: number
   baseState: ISpaceShipBase
-  spaceShipEngine: SpaceShipEngine
+  spaceShipEngine: SpaceShipEngine | null
   spriteSrcs: Record<"health" | "slight_damaged" | "very_damaged" | "damaged", SpriteSource>
 
   async onStart(ctx: Context<AppEvents>): Promise<void> {
@@ -242,7 +233,8 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
       very_damaged: Assets.get("mainship_base_very_damaged"),
     }
     this.baseState = new SpaceShipFullHealth(this)
-    this.spaceShipEngine = new SpaceShipEngine(this, ctx)
+    this.spaceShipEngine = null
+    return void ctx
   }
 
   look(to: Point) {
@@ -271,23 +263,17 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
   }
 
   addSprite(source: SpriteSource, name: string) {
-    const sprite = Sprite.from(source)
-    sprite.name = name
+    this.removeChildByName(name)
+    const sprite = super.addSprite(source, name)
     sprite.anchor.set(0.5)
-    this.addChild(sprite)
     return sprite
   }
 
-  removeSprite(name: string) {
-    const prevSprite = this.getChildByName(name)
-    if (prevSprite) this.removeChild(prevSprite)
-  }
-
   addAnimatedSprite(textures: Texture<Resource>[], name: string) {
-    const sprite = new AnimatedSprite(textures)
-    sprite.name = name
+    this.removeChildByName(name)
+    const sprite = super.addAnimatedSprite(textures, name)
+    sprite.animationSpeed = 0.4
     sprite.anchor.set(0.5)
-    this.addChild(sprite)
     return sprite
   }
 }

@@ -17,7 +17,8 @@ export default class LoadingScene extends Scene {
       "enviroments_bundle",
       "mainship_bundle",
       "vfx_bundle",
-      "klaed_fighter_bundle"
+      "klaed_fighter_bundle",
+      "pickups_bundle"
     ]
     this.manifest = manifest
     this.next = gotoMainScene

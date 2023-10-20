@@ -1,7 +1,7 @@
+import { Context, GameObject } from "core"
+import { Assets, Point, Resource, Spritesheet, Texture } from "pixi.js"
 import { AppEvents } from "typings"
 import SpaceShip from "./SpaceShip"
-import { Context, GameObject } from "core"
-import { Assets, Resource, Spritesheet, Texture } from "pixi.js"
 
 export interface ISpaceShipWeapon {
   fire(): void
@@ -28,22 +28,28 @@ export class MainShipAutoCannonWeapon extends GameObject<AppEvents> implements I
   equip(): void {
     const spritesheet = this.spritesheets.auto_cannon
     const animations = spritesheet.animations as Record<"fire", Texture<Resource>[]>
-    this.parent.removeSprite("MainShipAutoCannonWeapon")
+    this.parent.removeChildByName("MainShipAutoCannonWeapon")
     const sprite = this.parent.addAnimatedSprite(animations.fire, "MainShipAutoCannonWeapon")
     sprite.zIndex = -1
   }
 
   unequip(): void {
-    this.parent.removeSprite("MainShipAutoCannonWeapon")
+    this.parent.removeChildByName("MainShipAutoCannonWeapon")
   }
 }
 
 export default class MainShip extends SpaceShip {
   weapon: ISpaceShipWeapon
+  velocity: Point
 
   async onStart(ctx: Context<AppEvents>): Promise<void> {
     await super.onStart(ctx)
     this.weapon = new MainShipAutoCannonWeapon(this, ctx)
     this.weapon.equip()
+    this.velocity = new Point(0, -1)
+  }
+
+  onUpdate() {
+    this.look(this.velocity)
   }
 }

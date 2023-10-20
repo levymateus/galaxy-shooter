@@ -16,9 +16,12 @@ export class Scene implements Activity<AppEvents> {
     this.context = ctx
     this.area = ctx.bounds.clone().pad(32, 32) as AxisAlignedBounds
     this.collision = new CollisionTest()
-    this.context.on("childAdded", (child) => {
-      if (child instanceof GameObject) this.collision.add(child)
-    })
+    this.context.on("childAdded", child =>
+      child instanceof GameObject && this.collision.add(child)
+    )
+    this.context.on("childRemoved", child =>
+      child instanceof GameObject && this.collision.remove(child)
+    )
     this.context.emitter.on("appPause", isPause =>
       isPause ? this.context.removeUpdates() : this.context.addUpdates()
     )
