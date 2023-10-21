@@ -9,6 +9,7 @@ export class Score extends GUIElement {
   text: HTMLText
 
   async onStart(ctx: Context<AppEvents>) {
+    ctx.anchor.set(-0.5)
     this.count = 0
     const factory = ctx.getManager<GUIManager>().textFactory
     this.text = await factory.createText(Score.MASK)

@@ -1,5 +1,6 @@
-import { Context, Timer } from "core"
-import { gotoMainScene } from "index"
+import { Context } from "core"
+import { isCatalogSceneEnabled } from "feats"
+import { gotoCatalogScene, gotoMainScene } from "index"
 import { Assets, AssetsManifest } from "pixi.js"
 import manifest from "res/manifest.json"
 import { AppEvents } from "typings"
@@ -8,11 +9,11 @@ import { Scene } from "../managers/SceneManager"
 
 export default class LoadingScene extends Scene {
   bundleIds?: string[]
-  next?: (() => void)
   manifest?: string | AssetsManifest
 
   async onStart(ctx: Context<AppEvents>) {
     this.context = ctx
+    this.context.anchor.set(-0.5)
     this.bundleIds = [
       "enviroments_bundle",
       "mainship_bundle",
@@ -21,7 +22,6 @@ export default class LoadingScene extends Scene {
       "pickups_bundle"
     ]
     this.manifest = manifest
-    this.next = gotoMainScene
 
     await Assets.init({ manifest: this.manifest || "" })
     await Assets.loadBundle(this.bundleIds || [])
@@ -32,7 +32,8 @@ export default class LoadingScene extends Scene {
     text.anchor.set(0.5)
     this.context.addChild(text)
 
-    if (this.next) new Timer().timeout(this.next, 1000)
+    if (isCatalogSceneEnabled) return await gotoCatalogScene()
+    return await gotoMainScene()
   }
 
   onUpdate(): void { }

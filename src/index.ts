@@ -9,6 +9,7 @@ import { GUIManager } from "managers/GUIManager"
 import { SceneManager } from "managers/SceneManager"
 import VFXManager from "managers/VFXManager"
 import { Assets } from "pixi.js"
+import CatalogScene from "scenes/CatalogScene"
 import GameOverScene from "scenes/GameOverScene"
 import LoadingScene from "scenes/LoadingScene"
 import MainScene from "scenes/MainScene"
@@ -35,24 +36,30 @@ const vfxManager = new VFXManager(app.ticker, app.stage, app.screen, surface, bo
 
 vfxManager.goto(VFX)
 
-export const gotoMainScene = () => {
+export const gotoMainScene = async () => {
   vfxManager.play()
   bgManager.goto(ParallaxStarryBackground)
   guiManager.goto(HUD)
-  sceneManager.goto(MainScene)
+  await sceneManager.goto(MainScene)
 }
 
-export const gotoGameOverScene = () => {
+export const gotoCatalogScene = async () => {
+  vfxManager.stop()
+  bgManager.suspend()
+  await sceneManager.goto(CatalogScene)
+}
+
+export const gotoGameOverScene = async () => {
   vfxManager.stop()
   guiManager.destroy()
   bgManager.suspend()
-  sceneManager.goto(GameOverScene)
+  await sceneManager.goto(GameOverScene)
 }
 
-export const gotoLoadingScene = () => {
+export const gotoLoadingScene = async () => {
   vfxManager.stop()
   guiManager.destroy()
-  sceneManager.goto(LoadingScene)
+  await sceneManager.goto(LoadingScene)
 }
 
 emitter.on("gameOver", () => {

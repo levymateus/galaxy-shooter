@@ -1,6 +1,6 @@
 import { Activity, ActivityElement, Context, EventEmitter } from "core"
 import { AnimatedSprite, Circle, Container, IDestroyOptions, ObservablePoint, Resource, Sprite, SpriteSource, Texture, utils } from "pixi.js"
-import { uid } from "utils/utils"
+import { ContainerUtils, IDUtils } from "utils/utils"
 
 /**
  * The `GameObject` is a base class that extends the `PIXI.Container`.
@@ -27,7 +27,7 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
 
   constructor(context: Context<E>, name: string) {
     super()
-    this.id = uid()
+    this.id = IDUtils.get()
     this.name = name
     this.collisionTest = true
     this.collisionShape = new Circle(0, 0, 16)
@@ -75,9 +75,7 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
    * @returns An `AnimatedSprite` instance
    */
   addAnimatedSprite(textures: Texture<Resource>[], name: string): AnimatedSprite {
-    const sprite = new AnimatedSprite(textures)
-    sprite.name = name
-    return this.addChild(sprite)
+    return ContainerUtils.addChild(this, new AnimatedSprite(textures), name)
   }
 
   /**
@@ -87,9 +85,7 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
    * @returns A `Sprite` instance
    */
   addSprite(source: SpriteSource, name: string): Sprite {
-    const sprite = Sprite.from(source)
-    sprite.name = name
-    return this.addChild(sprite)
+    return ContainerUtils.addChild(this, Sprite.from(source), name)
   }
 
   /**
@@ -97,8 +93,7 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
    * @param name The child name string
    */
   removeChildByName(name: string): void {
-    const sprite = this.getChildByName(name)
-    sprite && this.removeChild(sprite)
+    return ContainerUtils.removeChildByName(this, name)
   }
 
   /**

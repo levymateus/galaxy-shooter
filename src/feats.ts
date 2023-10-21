@@ -7,3 +7,8 @@ export const isPauseOnBlurEnabled = false
  * toggle main menu.
  */
 export const isMainMenuEnalbed = false
+
+/**
+ * toggle catalog scene
+ */
+export const isCatalogSceneEnabled = true

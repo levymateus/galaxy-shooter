@@ -1,5 +1,5 @@
 import { ActivityElement, ActivityElementCtor, AxisAlignedBounds, EventEmitter, Manager, Surface } from "core"
-import { Container, ObservablePoint, Rectangle, Ticker, utils } from "pixi.js"
+import { Container, Graphics, ObservablePoint, Rectangle, Ticker, utils } from "pixi.js"
 
 export type ContextChildren<E extends utils.EventEmitter.ValidEventTypes> = ActivityElement<E>[]
 
@@ -16,6 +16,7 @@ export class Context<E extends utils.EventEmitter.ValidEventTypes> extends Conta
   children: ContextChildren<E>
   private surface: Surface
   private ticker: Ticker
+  private maskRef: Graphics
 
   constructor(
     surface: Surface,
@@ -48,11 +49,34 @@ export class Context<E extends utils.EventEmitter.ValidEventTypes> extends Conta
     this.ticker.maxFPS = 60
     this.ticker.minFPS = 60
     this.sortableChildren = true
+    this.addMask()
+  }
+
+  private addMask() {
+    const name = [this.name, 'Mask'].join('_')
+    this.getChildByName(name)?.destroy({ children: true })
+    const mask = new Graphics()
+    mask.name = name
+    mask.beginFill()
+    mask.drawRect(
+      this.bounds.x,
+      this.bounds.y,
+      this.bounds.width,
+      this.bounds.height
+    )
+    mask.endFill()
+    mask.pivot.x = mask.width * 0.5 * -1
+    mask.pivot.y = mask.height * 0.5 * -1
+    this.mask = mask
+    this.maskRef = mask
+    this.addChild(mask)
   }
 
   private onAnchorUpdate() {
-    this.pivot.x -= this.surface.width * this.anchor.x
-    this.pivot.y -= this.surface.height * this.anchor.y
+    this.pivot.x = this.surface.width * this.anchor.x
+    this.pivot.y = this.surface.height * this.anchor.y
+    this.maskRef.pivot.x -= this.pivot.x
+    this.maskRef.pivot.y -= this.pivot.y
   }
 
   /**

@@ -1,7 +1,7 @@
 import { Context, GameObject } from "core"
 import { AnimatedSprite, Assets, Point, Resource, Sprite, SpriteSource, Spritesheet, Texture } from "pixi.js"
 import { AppEvents } from "typings"
-import { angleBetween } from "utils/utils"
+import { MathUtils } from "utils/utils"
 
 export interface ISpaceShipBase {
   damage(value: number): void
@@ -239,7 +239,7 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
 
   look(to: Point) {
     if (this.position.x && this.position.y)
-      this.angle = angleBetween(
+      this.angle = MathUtils.angleBetween(
         this.position.normalize(),
         to.normalize().multiply(new Point(2, 2))
       ) - 270

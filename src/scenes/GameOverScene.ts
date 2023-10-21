@@ -4,6 +4,7 @@ import { AppEvents } from "typings"
 
 export default class GameOverScene implements Activity<AppEvents> {
   async onStart(ctx: Context<AppEvents>) {
+    ctx.anchor.set(-0.5)
     const factory = ctx.getManager<GUIManager>().textFactory
     const text = await factory.createTextLg("Game Over")
     text.style.align = "center"

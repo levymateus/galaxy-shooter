@@ -1,5 +1,5 @@
 import { Activity, ActivityCtor, AxisAlignedBounds, Context, EventEmitter, Surface } from "core"
-import { Container, Graphics, Rectangle, Ticker, utils } from "pixi.js"
+import { Container, Rectangle, Ticker, utils } from "pixi.js"
 
 type ManagerOptions = {
   gotoAndStart?: boolean
@@ -75,20 +75,6 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
       this.bounds,
       this.emitter
     )
-    this.context.anchor.set(0.5)
-
-    const mask = new Graphics()
-    mask.name = [this.context.name, 'mask'].join('_')
-    mask.beginFill()
-    mask.drawRect(
-      this.bounds.x,
-      this.bounds.y,
-      this.bounds.width,
-      this.bounds.height
-    )
-    mask.endFill()
-    this.context.mask = mask
-    this.context.addChild(mask)
 
     this.activity = new ctor()
     await this.activity.onStart(this.context)

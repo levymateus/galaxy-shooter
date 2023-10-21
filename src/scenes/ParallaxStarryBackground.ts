@@ -1,8 +1,8 @@
 import dataJson from "assets/sprites/enviroment/starry_background.json"
-import { Context, Activity } from "core"
+import { Activity, Context } from "core"
 import { AnimatedSprite, Assets, Graphics, Spritesheet } from "pixi.js"
 import { AppEvents, Vec2 } from "typings"
-import { randf } from "utils/utils"
+import { MathUtils } from "utils/utils"
 
 type SpriteData = {
   sprite: AnimatedSprite,
@@ -21,6 +21,7 @@ export default class ParallaxStarryBackground implements Activity<AppEvents>  {
 
   async onStart(ctx: Context<AppEvents>): Promise<void> {
     this.context = ctx
+    this.context.anchor.set(-0.5)
     this.sprites = []
 
     Assets.cache.set("starry_background", dataJson)
@@ -100,7 +101,7 @@ export default class ParallaxStarryBackground implements Activity<AppEvents>  {
       "starry_background_layer_x_big_star",
       "starry_background_layer_x_big_star",
       {
-        pos: { x: randf(0, rect.width), y: 0 },
+        pos: { x: MathUtils.randf(0, rect.width), y: 0 },
         speed: 0.3
       }
     )
