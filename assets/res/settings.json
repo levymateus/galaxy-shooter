@@ -2,8 +2,8 @@
   "Keyboard": {
     "MOVE_UP": "w",
     "MOVE_DOWN": "s",
-    "MOVE_LEFT": "d",
-    "MOVE_RIGHT": "a",
+    "MOVE_LEFT": "a",
+    "MOVE_RIGHT": "d",
     "WEAPON_FIRE": " "
   },
   "Mouse": {

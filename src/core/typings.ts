@@ -1,5 +1,5 @@
 import { Context } from "core"
-import { AssetsManifest, Container, utils } from "pixi.js"
+import { AssetsManifest, Container, Resource, Texture, utils } from "pixi.js"
 
 export type SceneOptions = {
   manifest?: string | AssetsManifest
@@ -28,6 +28,8 @@ export type GameSettings = {
   }
 }
 
+export type Textures = Texture<Resource>[]
+
 export type ActivityElement<E extends utils.EventEmitter.ValidEventTypes> = Container & Activity<E>
 
 export enum Actions {
@@ -42,7 +44,7 @@ export enum Actions {
  * The `Activity` implements a basic lifecycles behaviour, managed by a `Manager`, providing a `Context` to the children.
  */
 export interface Activity<E extends utils.EventEmitter.ValidEventTypes> {
-  onStart(context: Context<E>): Promise<void>
+  onStart(context: Context<E>, ...args: unknown[]): Promise<void>
   onUpdate(delta: number): void
   onFinish(): Promise<void>
 }

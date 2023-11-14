@@ -82,12 +82,13 @@ export class Context<E extends utils.EventEmitter.ValidEventTypes> extends Conta
   /**
    * Instantiate and setup a `GameObject` and add as a child of the current context.
    * @param ctor The constructor of the game object that should be instantiated.
+   * @param args Spreaded args passed to the instantiated object.
    * @returns An instance of a game object.
    */
-  async create<T>(ctor: ActivityElementCtor<E>): Promise<T> {
+  async create<T>(ctor: ActivityElementCtor<E>, ...args: unknown[]): Promise<T> {
     const el = new ctor(this, ctor.name)
     this.ticker.add(el.onUpdate, el)
-    await el.onStart(this)
+    await el.onStart(this, ...args)
     if (!this.ticker.started) this.ticker.start()
     return this.addChild(el) as T
   }

@@ -1,7 +1,8 @@
 import { Point, RAD_TO_DEG } from "@pixi/math"
-import { Container, DisplayObject } from "pixi.js"
+import { Textures } from "core/typings"
+import { Container, DisplayObject, FrameObject } from "pixi.js"
 
-type Dice = { roll: (() => number )}
+type Dice = { roll: (() => number) }
 
 export class MathUtils {
   /**
@@ -28,13 +29,37 @@ export class MathUtils {
    * Returns the angle (degress) between 2 points.
    * @param a The point A
    * @param b The point B
-   * @returns An angle number value
+   * @returns An angle number value in degress
    */
   static angleBetween(a: Point, b: Point): number {
     const dist = b.clone().subtract(a.clone())
     const angle = Math.atan2(dist.y, dist.x) * RAD_TO_DEG
     if (Number.isNaN(angle)) return 0
     return angle
+  }
+
+  /**
+   * Rotate a Point (Vector 2D) from an angle in degress.
+   * @param point The point
+   * @param angle The angle in degress
+   * @returns A new rotated Point
+   */
+  static rotatePoint(point: Point, angle: number): Point {
+    const radians = angle * (Math.PI / 180)
+    return new Point(
+      point.x * Math.cos(radians) - point.y * Math.sin(radians),
+      point.x * Math.sin(radians) + point.y * Math.cos(radians)
+    )
+  }
+
+  static add(a: Point, b: Point, range?: [Point, Point]): Point {
+    const point = a.add(b)
+    if (range) {
+      const [min, max] = range
+      if (point.x >= max.x) point.x = max.x; if (point.x <= min.x) point.x = min.x
+      if (point.y >= max.y) point.y = max.y; if (point.y <= min.y) point.y = min.y
+    }
+    return point
   }
 
   /**
@@ -87,5 +112,11 @@ export class ContainerUtils {
   static removeChildByName = (container: Container, name: string): void => {
     const child = container.getChildByName(name)
     child && container.removeChild(child)
+  }
+}
+
+export class FrameObjects {
+  static from(textures: Textures): FrameObject[] {
+    return textures.map((texture) => ({ texture, time: 100 }))
   }
 }

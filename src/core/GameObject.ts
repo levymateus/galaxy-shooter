@@ -1,6 +1,6 @@
-import { Activity, ActivityElement, Context, EventEmitter } from "core"
-import { AnimatedSprite, Circle, Container, IDestroyOptions, ObservablePoint, Resource, Sprite, SpriteSource, Texture, utils } from "pixi.js"
-import { ContainerUtils, IDUtils } from "utils/utils"
+import { Activity, ActivityElement, Context, EventEmitter, Textures } from "core"
+import { AnimatedSprite, Circle, Container, FrameObject, IDestroyOptions, ObservablePoint, Point, Sprite, SpriteSource, utils } from "pixi.js"
+import { ContainerUtils, IDUtils, MathUtils } from "utils/utils"
 
 /**
  * The `GameObject` is a base class that extends the `PIXI.Container`.
@@ -50,8 +50,9 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
    * Called before adds the `GameObject` on the stage.
    * @param context The `Context` of the current `GameObject`.
    */
-  async onStart(context: Context<E>): Promise<void> {
+  async onStart(context: Context<E>, ...args: unknown[]): Promise<void> {
     this.context = context
+    return void args
   }
 
   /**
@@ -74,7 +75,7 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
    * @param name The name of the sprite
    * @returns An `AnimatedSprite` instance
    */
-  addAnimatedSprite(textures: Texture<Resource>[], name: string): AnimatedSprite {
+  addAnimatedSprite(textures: Textures | FrameObject[], name: string): AnimatedSprite {
     return ContainerUtils.addChild(this, new AnimatedSprite(textures), name)
   }
 
@@ -94,6 +95,15 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
    */
   removeChildByName(name: string): void {
     return ContainerUtils.removeChildByName(this, name)
+  }
+
+  /**
+   * Rotate to a point.
+   * @param to The point to rotate
+   */
+  look(to: Point) {
+    if (this.position.x && this.position.y)
+      this.angle = MathUtils.angleBetween(this.position.normalize(), to) - 270
   }
 
   /**

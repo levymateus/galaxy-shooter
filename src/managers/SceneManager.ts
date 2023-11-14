@@ -41,8 +41,7 @@ export class Scene implements Activity<AppEvents> {
 
   private contains(child: DisplayObject) {
     if (child instanceof GameObject) {
-      const vertex = [{ x: child.x, y: child.y }]
-      const notContains = vertex.every(({ x, y }) => !this.area.contains(x, y))
+      const notContains = !this.area.contains(child.x, child.y)
       if (notContains) {
         child.emitter.emit("outOfBounds")
         this.collision.remove(child)

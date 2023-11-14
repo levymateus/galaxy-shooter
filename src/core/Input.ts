@@ -7,6 +7,11 @@ import settings from "res/settings.json"
  * The `GameInputHandler` singleton class, is a global game input handling for any type of input, like keyboard, gamepad etc.
  */
 class GameInputHandler extends EventEmitter<InputEvents> {
+  /**
+   * `true` when any action is pressed otherwise `false`.
+   */
+  pressed: boolean
+  
   private static instance: GameInputHandler
   private keyboardInput: KeyboardInput
   private ticker: Ticker
@@ -42,7 +47,10 @@ class GameInputHandler extends EventEmitter<InputEvents> {
   isActionPressed(action: Actions): boolean {
     const key = settings?.Keyboard[action]
     const isKeyDown = this.keyboardInput.isKeyDown(key)
-    if (isKeyDown) this.emit('onActionPressed', action)
+    if (isKeyDown) {
+      this.pressed = true
+      this.emit('onActionPressed', action)
+    }
     return isKeyDown
   }
 
@@ -54,7 +62,10 @@ class GameInputHandler extends EventEmitter<InputEvents> {
   isActionReleased(action: Actions): boolean {
     const key = settings?.Keyboard[action]
     const isKeyUp = this.keyboardInput.isKeyUp(key)
-    if (isKeyUp) this.emit('onActionReleased', action)
+    if (isKeyUp) {
+      this.pressed = false
+      this.emit('onActionReleased', action)
+    }
     return isKeyUp
   }
 }

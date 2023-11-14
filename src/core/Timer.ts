@@ -53,6 +53,10 @@ export class Timer {
     return this
   }
 
+  debounce(callback: TimeHandler, ms: number = 300){
+    return this.timeout(callback, ms)
+  }
+
   clear(): void {
     if (this.id) {
       window.clearInterval(this.id)

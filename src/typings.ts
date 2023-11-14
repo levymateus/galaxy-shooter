@@ -14,3 +14,8 @@ export type Vec2 = {
   x: number,
   y: number,
 }
+
+export interface IPickUp {
+  equip(): void
+  unequip(): void
+}
