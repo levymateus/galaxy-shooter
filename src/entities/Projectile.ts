@@ -178,3 +178,37 @@ export class BigGunProjectile extends Projectile {
     this.move(this.velocity.x * this.speed.x * delta, this.velocity.y * this.speed.y * delta)
   }
 }
+
+export class KlaEdFighterProjectile extends Projectile {
+  speed: Point
+  private go: boolean
+  private static MIN_MAX_SPEED: [Point, Point] = [new Point(0.98, 0.98), new Point(3, 3)]
+
+  async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
+    await super.onStart(context, ...args)
+    this.speed = new Point(1, 1)
+  }
+
+  shoot(): void {
+    const spritesheet = Assets.get<Spritesheet>("klaed_bullet")
+    this.setupFromSheet(spritesheet)
+    this.go = true
+    this.countdown = 6000
+    this.startCount()
+  }
+
+  updateSpeed(): void {
+    this.speed = MathUtils.add(
+      this.speed,
+      new Point(-0.06, -0.06),
+      KlaEdFighterProjectile.MIN_MAX_SPEED
+    )
+  }
+
+  onUpdate(delta: number): void {
+    if (!this.go) return
+    this.updateSpeed()
+    this.look(this.velocity.normalize().multiply(new Point(100, 100)))
+    this.move(this.velocity.x * this.speed.x * delta, this.velocity.y * this.speed.y * delta)
+  }
+}

@@ -139,6 +139,10 @@
         {
           "name": "klaed_bullet",
           "srcs": "assets/sprites/klaed/projectiles/klaed_bullet.json"
+        },
+        {
+          "name": "klaed_fighter_shield",
+          "srcs": "assets/sprites/klaed/shield/klaed_fighter_shield.json"
         }
       ]
     },
