@@ -16,17 +16,26 @@ export class Projectile extends GameObject<AppEvents> implements IProjectile {
   weapon: SpaceShipWeapon
   velocity: Point
   countdown: number
+
+  protected spritesheet: Spritesheet
   protected timer: Timer
 
   async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
     const position = args[0]
     const velocity = args[1]
-    if (position && position instanceof Point) this.position.set(position.x, position.y)
+
+    if (position && position instanceof Point)
+      this.position.set(position.x, position.y)
+
     this.velocity = new Point()
-    if (velocity && velocity instanceof Point) this.velocity.set(velocity.x, velocity.y)
+
+    if (velocity && velocity instanceof Point)
+      this.velocity.set(velocity.x, velocity.y)
+
     this.zIndex = -10
     this.countdown = 5000
     this.timer = new Timer()
+    this.spritesheet = Assets.get<Spritesheet>("mainship_weapons_projectile_auto_cannon_bullet")
     return void context
   }
 
@@ -49,8 +58,7 @@ export class Projectile extends GameObject<AppEvents> implements IProjectile {
   }
 
   shoot(): void {
-    const spritesheet = Assets.get<Spritesheet>("mainship_weapons_projectile_auto_cannon_bullet")
-    this.setupFromSheet(spritesheet)
+    this.setupFromSheet(this.spritesheet)
     this.startCount()
   }
 
@@ -179,7 +187,7 @@ export class BigGunProjectile extends Projectile {
   }
 }
 
-export class KlaEdFighterProjectile extends Projectile {
+export class KlaEdBullet extends Projectile {
   speed: Point
   private go: boolean
   private static MIN_MAX_SPEED: [Point, Point] = [new Point(0.98, 0.98), new Point(3, 3)]
@@ -187,11 +195,11 @@ export class KlaEdFighterProjectile extends Projectile {
   async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
     await super.onStart(context, ...args)
     this.speed = new Point(1, 1)
+    this.spritesheet =  Assets.get<Spritesheet>("klaed_bullet")
   }
 
   shoot(): void {
-    const spritesheet = Assets.get<Spritesheet>("klaed_bullet")
-    this.setupFromSheet(spritesheet)
+    this.setupFromSheet(this.spritesheet)
     this.go = true
     this.countdown = 6000
     this.startCount()
@@ -201,7 +209,7 @@ export class KlaEdFighterProjectile extends Projectile {
     this.speed = MathUtils.add(
       this.speed,
       new Point(-0.06, -0.06),
-      KlaEdFighterProjectile.MIN_MAX_SPEED
+      KlaEdBullet.MIN_MAX_SPEED
     )
   }
 
@@ -210,5 +218,14 @@ export class KlaEdFighterProjectile extends Projectile {
     this.updateSpeed()
     this.look(this.velocity.normalize().multiply(new Point(100, 100)))
     this.move(this.velocity.x * this.speed.x * delta, this.velocity.y * this.speed.y * delta)
+  }
+}
+
+export class KlaEdBigBullet extends KlaEdBullet {
+  speed: Point
+  async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
+    await super.onStart(context, ...args)
+    this.speed = new Point(1, 1)
+    this.spritesheet = Assets.get<Spritesheet>("klaed_big_bullet")
   }
 }

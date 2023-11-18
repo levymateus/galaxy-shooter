@@ -211,6 +211,13 @@ export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShip
     engineSprite.zIndex = -1
   }
 
+  initSpritesheets(sheet: Spritesheet) {
+    this.spritesheets = {
+      engine_power: sheet,
+      engine_idle: sheet
+    }
+  }
+
   changeState(state: ISpaceShipEngine) {
     this.state = state
   }
@@ -264,6 +271,15 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
     this.position.y += y
   }
 
+  initSpriteSrcs(spriteSrc: SpriteSource): void {
+    this.spriteSrcs = {
+      health: spriteSrc,
+      damaged: spriteSrc,
+      slight_damaged: spriteSrc,
+      very_damaged: spriteSrc
+    }
+  }
+
   changeState(state: ISpaceShipBase) {
     this.baseState = state
   }
@@ -289,5 +305,16 @@ export default class SpaceShip extends GameObject<AppEvents> implements ISpaceSh
     sprite.animationSpeed = 0.4
     sprite.anchor.set(0.5)
     return sprite
+  }
+
+  explodeAndDestroy(textures: Textures, name: string): void {
+    const sprite = this.addAnimatedSprite(textures, name)
+    this.removeChildByName("BaseSpaceShip")
+    this.removeChildByName("SpaceShipBaseEngine")
+    this.removeChildByName("SpaceShipEngine")
+    sprite.onComplete = () => this.destroy({ children: true })
+    sprite.loop = false
+    sprite.animationSpeed = 0.4
+    sprite.play()
   }
 }

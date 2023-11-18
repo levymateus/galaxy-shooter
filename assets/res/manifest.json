@@ -209,6 +209,31 @@
       ]
     },
     {
+      "name": "klaed_scout",
+      "assets": [
+        {
+          "name": "klaed_scout_base",
+          "srcs": "assets/sprites/klaed/base/klaed_scout_base.png"
+        },
+        {
+          "name": "klaed_scout_weapons",
+          "srcs": "assets/sprites/klaed/weapons/klaed_scout_weapons.json"
+        },
+        {
+          "name": "klaed_big_bullet",
+          "srcs": "assets/sprites/klaed/projectiles/klaed_big_bullet.json"
+        },
+        {
+          "name": "klaed_scout_shield",
+          "srcs": "assets/sprites/klaed/shield/klaed_scout_shield.json"
+        },
+        {
+          "name": "klaed_scout_destruction",
+          "srcs": "assets/sprites/klaed/destruction/klaed_scout_destruction.json"
+        }
+      ]
+    },
+    {
       "name": "vfx_bundle",
       "assets": [
         {
