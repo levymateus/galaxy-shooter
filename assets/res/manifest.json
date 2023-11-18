@@ -234,6 +234,23 @@
       ]
     },
     {
+      "name": "klaed_support",
+      "assets": [
+        {
+          "name": "klaed_support_base",
+          "srcs": "assets/sprites/klaed/base/klaed_support_base.png"
+        },
+        {
+          "name": "klaed_support_engine",
+          "srcs": "assets/sprites/klaed/engine/klaed_support_engine.json"
+        },
+        {
+          "name": "klaed_support_destruction",
+          "srcs": "assets/sprites/klaed/destruction/klaed_support_destruction.json"
+        }
+      ]
+    },
+    {
       "name": "vfx_bundle",
       "assets": [
         {
