@@ -1,4 +1,11 @@
-import { Activity, AxisAlignedBounds, CollisionTest, Context, GameObject, Manager } from "core"
+import {
+  Activity,
+  AxisAlignedBounds,
+  CollisionTest,
+  Context,
+  GameObject,
+  Manager
+} from "core"
 import { DisplayObject } from "pixi.js"
 import { AppEvents } from "typings"
 

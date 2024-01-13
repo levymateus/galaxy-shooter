@@ -5,7 +5,11 @@ import { Circle, utils } from "pixi.js"
 /**
  * The `CollisionTest` implements a simple collision test algorithm.
  */
-export class CollisionTest<E extends utils.EventEmitter.ValidEventTypes, T extends GameObject<E>> {
+export class
+  CollisionTest<
+    E extends utils.EventEmitter.ValidEventTypes,
+    T extends GameObject<E>>
+{
   private set: Set<T>
   private map: Map<string, string>
 
@@ -16,15 +20,22 @@ export class CollisionTest<E extends utils.EventEmitter.ValidEventTypes, T exten
 
   private test(left: T, right: T): boolean {
     if (!left.collisionTest || !right.collisionTest) return false
-    if (left.collisionShape instanceof Circle && right.collisionShape instanceof Circle) {
-      const dist = Math.sqrt(Math.pow(left.x - right.x, 2) + Math.pow(left.y - right.y, 2))
+    if (
+      left.collisionShape instanceof Circle
+      && right.collisionShape instanceof Circle
+    ) {
+      const dist = Math.sqrt(
+        Math.pow(left.x - right.x, 2) + Math.pow(left.y - right.y, 2)
+      )
       return (dist <= left.collisionShape.radius + right.collisionShape.radius)
     }
     return false
   }
 
   /**
-   * Test a collision beetwen the `object` argument and the previous added objects.
+   * Test a collision beetwen the `object`
+   * argument and the previous added objects.
+   *
    * @param object The object to test with
    * @returns A list of collisions
    */
@@ -34,7 +45,10 @@ export class CollisionTest<E extends utils.EventEmitter.ValidEventTypes, T exten
       const collides = this.map.get(object.id) === otherObject.id
         || this.map.get(otherObject.id) === object.id
 
-      if (!collides && object.id !== otherObject.id && this.test(object, otherObject)) {
+      if (
+        !collides && object.id !== otherObject.id
+        && this.test(object, otherObject)
+      ) {
         // on enter / on starts collide
         this.map.set(object.id, otherObject.id)
         this.map.set(otherObject.id, object.id)

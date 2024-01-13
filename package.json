@@ -15,7 +15,8 @@
     "dev": "webpack-dev-server --config webpack.config.dev.js",
     "build": "webpack --config webpack.config.prod.js",
     "serve": "http-server ./dist/ -p 4000",
-    "debug": "webpack-dev-server --config webpack.config.dev.js --env debug=true"
+    "debug": "webpack-dev-server --config webpack.config.dev.js --env debug=true",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@babel/core": "^7.22.10",

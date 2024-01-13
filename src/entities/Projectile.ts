@@ -20,7 +20,10 @@ export class Projectile extends GameObject<AppEvents> implements IProjectile {
   protected spritesheet: Spritesheet
   protected timer: Timer
 
-  async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
+  async onStart(
+    context: Context<AppEvents>,
+    ...args: unknown[]
+  ): Promise<void> {
     const position = args[0]
     const velocity = args[1]
 
@@ -35,14 +38,17 @@ export class Projectile extends GameObject<AppEvents> implements IProjectile {
     this.zIndex = -10
     this.countdown = 5000
     this.timer = new Timer()
-    this.spritesheet = Assets.get<Spritesheet>("mainship_weapons_projectile_auto_cannon_bullet")
+    this.spritesheet =
+      Assets.get<Spritesheet>("mainship_weapons_projectile_auto_cannon_bullet")
     return void context
   }
 
   setupFromSheet(sheet: Spritesheet) {
     this.animations = sheet.animations as ProjectileAnimations
     this.removeChildByName("AnimatedSprite")
-    const sprite = this.addAnimatedSprite(this.animations.shoot, "AnimatedSprite")
+    const sprite = this.addAnimatedSprite(
+      this.animations.shoot, "AnimatedSprite"
+    )
     sprite.anchor.set(0.5)
     sprite.animationSpeed = 0.4
     sprite.zIndex = -2
@@ -69,7 +75,10 @@ export class Projectile extends GameObject<AppEvents> implements IProjectile {
 }
 
 export class AutoCannonBullet extends Projectile {
-  async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
+  async onStart(
+    context: Context<AppEvents>,
+    ...args: unknown[]
+  ): Promise<void> {
     await super.onStart(context, ...args)
   }
 
@@ -87,16 +96,23 @@ export class AutoCannonBullet extends Projectile {
 export class RocketProjectile extends Projectile {
   private go: boolean
   private speed: Point
-  private static MIN_MAX_SPEED: [Point, Point] = [new Point(1, 1), new Point(2, 2)]
+  private static MIN_MAX_SPEED: [Point, Point] = [
+    new Point(1, 1),
+    new Point(2, 2)
+  ]
 
-  async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
+  async onStart(
+    context: Context<AppEvents>,
+    ...args: unknown[]
+  ): Promise<void> {
     await super.onStart(context, ...args)
     this.go = false
     this.speed = RocketProjectile.MIN_MAX_SPEED[0]
   }
 
   shoot(): void {
-    const spritesheet = Assets.get<Spritesheet>("mainship_weapons_projectile_rockets")
+    const spritesheet =
+      Assets.get<Spritesheet>("mainship_weapons_projectile_rockets")
     this.setupFromSheet(spritesheet)
     this.go = true
     this.startCount()
@@ -115,14 +131,20 @@ export class RocketProjectile extends Projectile {
     const dir = this.velocity.normalize()
     this.look(dir.multiply(new Point(100, 100)))
     this.updateSpeed()
-    this.move(this.velocity.x * this.speed.x * delta, this.velocity.y * this.speed.y * delta)
+    this.move(
+      this.velocity.x * this.speed.x * delta,
+      this.velocity.y * this.speed.y * delta
+    )
   }
 }
 
 export class ZapperProjectile extends Projectile {
   length: number
 
-  async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
+  async onStart(
+    context: Context<AppEvents>,
+    ...args: unknown[]
+  ): Promise<void> {
     await super.onStart(context, ...args)
     return void context
   }
@@ -139,7 +161,8 @@ export class ZapperProjectile extends Projectile {
 
   shoot(): void {
     this.removeChildByName("AnimatedSprite")
-    const spritesheet = Assets.get<Spritesheet>("mainship_weapons_projectile_zapper")
+    const spritesheet =
+      Assets.get<Spritesheet>("mainship_weapons_projectile_zapper")
     this.length = 32
     for (let i = 0; i < this.length; i++)
       this.addZapper(spritesheet, i, new Point(0, i * -32))
@@ -155,9 +178,15 @@ export class ZapperProjectile extends Projectile {
 export class BigGunProjectile extends Projectile {
   speed: Point
   private go: boolean
-  private static MIN_MAX_SPEED: [Point, Point] = [new Point(0.98, 0.98), new Point(3, 3)]
+  private static MIN_MAX_SPEED: [Point, Point] = [
+    new Point(0.98, 0.98),
+    new Point(3, 3)
+  ]
 
-  async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
+  async onStart(
+    context: Context<AppEvents>,
+    ...args: unknown[]
+  ): Promise<void> {
     await super.onStart(context, ...args)
     this.speed = BigGunProjectile.MIN_MAX_SPEED[1]
     this.go = false
@@ -165,7 +194,8 @@ export class BigGunProjectile extends Projectile {
   }
 
   shoot(): void {
-    const spritesheet = Assets.get<Spritesheet>("mainship_weapons_projectile_big_gun")
+    const spritesheet =
+      Assets.get<Spritesheet>("mainship_weapons_projectile_big_gun")
     this.setupFromSheet(spritesheet)
     this.go = true
     this.countdown = 10000
@@ -183,16 +213,25 @@ export class BigGunProjectile extends Projectile {
   onUpdate(delta: number): void {
     if (!this.go) return
     this.updateSpeed()
-    this.move(this.velocity.x * this.speed.x * delta, this.velocity.y * this.speed.y * delta)
+    this.move(
+      this.velocity.x * this.speed.x * delta,
+      this.velocity.y * this.speed.y * delta
+    )
   }
 }
 
 export class KlaEdBullet extends Projectile {
   speed: Point
   private go: boolean
-  private static MIN_MAX_SPEED: [Point, Point] = [new Point(0.98, 0.98), new Point(3, 3)]
+  private static MIN_MAX_SPEED: [Point, Point] = [
+    new Point(0.98, 0.98),
+    new Point(3, 3)
+  ]
 
-  async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
+  async onStart(
+    context: Context<AppEvents>,
+    ...args: unknown[]
+  ): Promise<void> {
     await super.onStart(context, ...args)
     this.speed = new Point(1, 1)
     this.spritesheet =  Assets.get<Spritesheet>("klaed_bullet")
@@ -217,13 +256,19 @@ export class KlaEdBullet extends Projectile {
     if (!this.go) return
     this.updateSpeed()
     this.look(this.velocity.normalize().multiply(new Point(100, 100)))
-    this.move(this.velocity.x * this.speed.x * delta, this.velocity.y * this.speed.y * delta)
+    this.move(
+      this.velocity.x * this.speed.x * delta,
+      this.velocity.y * this.speed.y * delta
+      )
   }
 }
 
 export class KlaEdBigBullet extends KlaEdBullet {
   speed: Point
-  async onStart(context: Context<AppEvents>, ...args: unknown[]): Promise<void> {
+  async onStart(
+    context: Context<AppEvents>,
+    ...args: unknown[]
+  ): Promise<void> {
     await super.onStart(context, ...args)
     this.speed = new Point(1, 1)
     this.spritesheet = Assets.get<Spritesheet>("klaed_big_bullet")

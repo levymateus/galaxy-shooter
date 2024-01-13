@@ -35,7 +35,8 @@ export class Shield extends GameObject<AppEvents> implements IShield {
 
   equip(): void {
     this.parent.removeChildByName(this.name)
-    const sprite = this.parent.addAnimatedSprite(this.animations.animation, this.name)
+    const sprite =
+      this.parent.addAnimatedSprite(this.animations.animation, this.name)
     sprite.anchor.set(0.5)
     sprite.animationSpeed = 0.4
     sprite.zIndex = 10

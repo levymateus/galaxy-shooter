@@ -1,13 +1,32 @@
-import { ActivityElement, ActivityElementCtor, AxisAlignedBounds, EventEmitter, Manager, Surface } from "core"
-import { Container, Graphics, ObservablePoint, Rectangle, Ticker, utils } from "pixi.js"
+import {
+  ActivityElement,
+  ActivityElementCtor,
+  AxisAlignedBounds,
+  EventEmitter,
+  Manager,
+  Surface
+} from "core"
+import {
+  Container,
+  Graphics,
+  ObservablePoint,
+  Rectangle,
+  Ticker,
+  utils
+} from "pixi.js"
 
-export type ContextChildren<E extends utils.EventEmitter.ValidEventTypes> = ActivityElement<E>[]
+export type ContextChildren<
+  E extends utils.EventEmitter.ValidEventTypes> = ActivityElement<E>[]
 
 /**
  * The Context is the root Container of an activity.
- * The Context provide the convient references to the children, like an observable `EventEmitter` and a `AxisAlignedBounds`.
+ * The Context provide the convient references to the children,
+ * like an observable `EventEmitter` and a `AxisAlignedBounds`.
  */
-export class Context<E extends utils.EventEmitter.ValidEventTypes> extends Container {
+export class Context<
+  E extends utils.EventEmitter.ValidEventTypes>
+    extends Container
+{
   name: string
   manager: Manager<E>
   bounds: AxisAlignedBounds
@@ -80,12 +99,17 @@ export class Context<E extends utils.EventEmitter.ValidEventTypes> extends Conta
   }
 
   /**
-   * Instantiate and setup a `GameObject` and add as a child of the current context.
+   * Instantiate and setup a `GameObject` and add
+   * as a child of the current context.
+   *
    * @param ctor The constructor of the game object that should be instantiated.
    * @param args Spreaded args passed to the instantiated object.
    * @returns An instance of a game object.
    */
-  async create<T>(ctor: ActivityElementCtor<E>, ...args: unknown[]): Promise<T> {
+  async create<T>(
+    ctor: ActivityElementCtor<E>,
+    ...args: unknown[]
+  ): Promise<T> {
     const el = new ctor(this, ctor.name)
     this.ticker.add(el.onUpdate, el)
     await el.onStart(this, ...args)

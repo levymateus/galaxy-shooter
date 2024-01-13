@@ -1,4 +1,10 @@
-import { AxisAlignedBounds, EventEmitter, Surface, ActivityCtor, Manager } from "core"
+import {
+  AxisAlignedBounds,
+  EventEmitter,
+  Surface,
+  ActivityCtor,
+  Manager
+} from "core"
 import { Container, Rectangle, Ticker } from "pixi.js"
 import { AppEvents } from "typings"
 

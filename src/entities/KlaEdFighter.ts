@@ -3,7 +3,13 @@ import { Assets, Point, SpriteSource } from "pixi.js"
 import { AppEvents } from "typings"
 import { KlaEdBullet, Projectile } from "./Projectile"
 import { Shield } from "./Shield"
-import SpaceShip, { ISpaceShipBase, SpaceShipDestroied, SpaceShipEngine, SpaceShipEngineIdle, SpaceShipFullHealth } from "./SpaceShip"
+import SpaceShip, {
+  ISpaceShipBase,
+  SpaceShipDestroied,
+  SpaceShipEngine,
+  SpaceShipEngineIdle,
+  SpaceShipFullHealth
+} from "./SpaceShip"
 import { SpaceShipWeapon } from "./SpaceShipWeapon"
 
 class KlaEdFighterWeapon extends SpaceShipWeapon {
@@ -82,7 +88,8 @@ export default class KlaEdFighter extends SpaceShip {
 
   onChangeState(state: ISpaceShipBase): void {
     if (state instanceof SpaceShipDestroied) {
-      const animations = (Assets.get("klaed_fighter_destruction").animations as Record<"destruction", Textures>)
+      const animations = (Assets.get("klaed_fighter_destruction")
+        .animations as Record<"destruction", Textures>)
       this.explodeAndDestroy(animations.destruction, "KlaEdFighterDestruction")
     }
   }

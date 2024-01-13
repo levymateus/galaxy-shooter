@@ -10,7 +10,10 @@ import { Container, HTMLText, Rectangle, Ticker } from "pixi.js";
 import { AppEvents } from "typings";
 import { GUITextFactory, TextFactory } from "ui/Text";
 
-export class GUIElement extends Container implements ActivityElement<AppEvents> {
+export class GUIElement
+  extends Container
+    implements ActivityElement<AppEvents>
+{
   constructor() {
     super()
   }

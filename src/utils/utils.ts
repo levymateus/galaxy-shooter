@@ -56,8 +56,14 @@ export class MathUtils {
     const point = a.add(b)
     if (range) {
       const [min, max] = range
-      if (point.x >= max.x) point.x = max.x; if (point.x <= min.x) point.x = min.x
-      if (point.y >= max.y) point.y = max.y; if (point.y <= min.y) point.y = min.y
+      if (point.x >= max.x)
+        point.x = max.x;
+      if (point.x <= min.x)
+        point.x = min.x
+      if (point.y >= max.y)
+        point.y = max.y;
+      if (point.y <= min.y)
+        point.y = min.y
     }
     return point
   }
@@ -88,7 +94,18 @@ export class IDUtils {
         .toString(16)
         .substring(1)
     }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+    return s4()
+      + s4()
+      + '-'
+      + s4()
+      + '-'
+      + s4()
+      + '-'
+      + s4()
+      + '-'
+      + s4()
+      + s4()
+      + s4()
   }
 }
 
@@ -100,7 +117,11 @@ export class ContainerUtils {
    * @param name The required name of the child param
    * @returns The added chield
    */
-  static addChild = <T extends DisplayObject>(container: Container, child: T, name: string): T => {
+  static addChild = <T extends DisplayObject>(
+    container: Container,
+    child: T,
+    name: string
+  ): T => {
     child.name = name
     return container.addChild(child)
   }

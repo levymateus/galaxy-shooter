@@ -1,5 +1,22 @@
-import { Activity, ActivityElement, Context, EventEmitter, Textures } from "core"
-import { AnimatedSprite, Circle, Container, FrameObject, IDestroyOptions, ObservablePoint, Point, Sprite, SpriteSource, utils } from "pixi.js"
+import {
+  Activity,
+  ActivityElement,
+  Context,
+  EventEmitter,
+  Textures
+} from "core"
+import {
+  AnimatedSprite,
+  Circle,
+  Container,
+  FrameObject,
+  IDestroyOptions,
+  ObservablePoint,
+  Point,
+  Sprite,
+  SpriteSource,
+  utils
+} from "pixi.js"
 import { ContainerUtils, IDUtils, MathUtils } from "utils/utils"
 
 /**
@@ -75,7 +92,10 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
    * @param name The name of the sprite
    * @returns An `AnimatedSprite` instance
    */
-  addAnimatedSprite(textures: Textures | FrameObject[], name: string): AnimatedSprite {
+  addAnimatedSprite(
+    textures: Textures | FrameObject[],
+    name: string
+  ): AnimatedSprite {
     return ContainerUtils.addChild(this, new AnimatedSprite(textures), name)
   }
 
@@ -107,7 +127,9 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
   }
 
   /**
-   * Removes all internal references and listeners as well as removes children from the display list.
+   * Removes all internal references and listeners as well
+   * as removes children from the display list.
+   * 
    * Do not use a `GameObject` after calling destroy.
    * @param options
    */

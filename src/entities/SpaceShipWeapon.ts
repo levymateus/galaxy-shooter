@@ -12,7 +12,10 @@ export interface ISpaceShipWeapon extends IPickUp {
   animations: SpaceShipWeaponAnimations
 }
 
-export class SpaceShipWeapon extends GameObject<AppEvents> implements ISpaceShipWeapon {
+export class SpaceShipWeapon
+  extends GameObject<AppEvents>
+    implements ISpaceShipWeapon
+{
   ready: boolean
   countdown: number
   parent: SpaceShip
@@ -30,7 +33,11 @@ export class SpaceShipWeapon extends GameObject<AppEvents> implements ISpaceShip
     this.setupFromSheet(Assets.get<Spritesheet>("mainship_weapons_auto_cannon"))
   }
 
-  async createBullet(ctor: ActivityElementCtor<AppEvents>, x: number = 0, y: number = 0): Promise<Projectile> {
+  async createBullet(
+    ctor: ActivityElementCtor<AppEvents>,
+    x: number = 0,
+    y: number = 0
+  ): Promise<Projectile> {
     const velocity = this.parent.velocity
     let position = new Point(this.parent.x + x, this.parent.y + y)
     position = this.parent.position.clone().subtract(position)
@@ -58,7 +65,8 @@ export class SpaceShipWeapon extends GameObject<AppEvents> implements ISpaceShip
 
   equip(): void {
     this.parent.removeChildByName(this.name)
-    const sprite = this.parent.addAnimatedSprite(this.animations.fire, this.name)
+    const sprite =
+      this.parent.addAnimatedSprite(this.animations.fire, this.name)
     sprite.anchor.set(0.5)
     sprite.animationSpeed = 0.4
     sprite.zIndex = -1

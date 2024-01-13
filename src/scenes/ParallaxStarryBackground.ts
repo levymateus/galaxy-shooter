@@ -157,7 +157,15 @@ export default class ParallaxStarryBackground implements Activity<AppEvents>  {
     this.context.visible = false
   }
 
-  // this function reuse an atlas data animation json file for multiple spritesheets.
+  /**
+   * This function reuse an atlas data animation json file for
+   * multiple spritesheets.
+   *
+   * @param prefix
+   * @param bundleName
+   * @param atlasDataKey
+   * @returns
+   */
   private parseFrom(prefix: string, bundleName: string, atlasDataKey: string) {
     const data = Assets.get(atlasDataKey)
     const frames: Record<string, unknown> = {}
@@ -172,7 +180,11 @@ export default class ParallaxStarryBackground implements Activity<AppEvents>  {
     return data
   }
 
-  private async addSprite(name: string, bundleName: string, props: SpriteData['props']) {
+  private async addSprite(
+    name: string,
+    bundleName: string,
+    props: SpriteData['props']
+  ) {
     const data = this.parseFrom(name, bundleName, "starry_background")
     const texture = Assets.get(bundleName)
     const spritesheet = new Spritesheet(texture, data)

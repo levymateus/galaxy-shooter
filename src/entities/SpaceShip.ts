@@ -1,5 +1,13 @@
 import { Context, GameObject, Textures } from "core"
-import { AnimatedSprite, Assets, FrameObject, Point, Sprite, SpriteSource, Spritesheet } from "pixi.js"
+import {
+  AnimatedSprite,
+  Assets,
+  FrameObject,
+  Point,
+  Sprite,
+  SpriteSource,
+  Spritesheet
+} from "pixi.js"
 import { AppEvents } from "typings"
 
 export interface ISpaceShipBase {
@@ -38,7 +46,9 @@ export class SpaceShipFullSlightDamaged implements ISpaceShipBase {
 
   constructor(spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
-    this.spaceShip.addSprite(this.spaceShip.spriteSrcs.slight_damaged, "BaseSpaceShip")
+    this.spaceShip.addSprite(
+      this.spaceShip.spriteSrcs.slight_damaged, "BaseSpaceShip"
+    )
     this.damage(0)
   }
 
@@ -94,7 +104,9 @@ export class SpaceShipVeryDamaged implements ISpaceShipBase {
 
   constructor(spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
-    this.spaceShip.addSprite(this.spaceShip.spriteSrcs.very_damaged, "BaseSpaceShip")
+    this.spaceShip.addSprite(
+      this.spaceShip.spriteSrcs.very_damaged, "BaseSpaceShip"
+    )
     this.damage(0)
   }
 
@@ -152,14 +164,18 @@ export class SpaceShipEnginePower implements ISpaceShipEngine {
   powerOn(): void {
     const spritesheet = this.spaceShipEngine.spritesheets.engine_power
     const animations = spritesheet.animations as Record<"powering", Textures>
-    const sprite = this.spaceShipEngine.addAnimatedSprite(animations.powering, "SpaceShipEngine")
+    const sprite = this.spaceShipEngine.addAnimatedSprite(
+      animations.powering, "SpaceShipEngine"
+    )
     sprite.loop = true
     sprite.zIndex = -1
     sprite.play()
   }
 
   powerOff(): void {
-    this.spaceShipEngine.changeState(new SpaceShipEngineIdle(this.spaceShipEngine))
+    this.spaceShipEngine.changeState(
+      new SpaceShipEngineIdle(this.spaceShipEngine)
+    )
   }
 }
 
@@ -172,13 +188,17 @@ export class SpaceShipEngineIdle implements ISpaceShipEngine {
   }
 
   powerOn(): void {
-    this.spaceShipEngine.changeState(new SpaceShipEnginePower(this.spaceShipEngine))
+    this.spaceShipEngine.changeState(
+      new SpaceShipEnginePower(this.spaceShipEngine)
+    )
   }
 
   powerOff(): void {
     const spritesheet = this.spaceShipEngine.spritesheets.engine_idle
     const animations = spritesheet.animations as Record<"idle", Textures>
-    const sprite = this.spaceShipEngine.addAnimatedSprite(animations.idle, "SpaceShipEngine")
+    const sprite = this.spaceShipEngine.addAnimatedSprite(
+      animations.idle, "SpaceShipEngine"
+    )
     sprite.loop = true
     sprite.zIndex = -1
     sprite.play()
@@ -188,7 +208,10 @@ export class SpaceShipEngineIdle implements ISpaceShipEngine {
 /**
  * Mainship base engine.
  */
-export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShipEngine {
+export class SpaceShipEngine
+  extends GameObject<AppEvents>
+    implements ISpaceShipEngine
+{
   static CANONICAL_NAME = "SpaceShipBaseEngine"
   state: ISpaceShipEngine
   parent: SpaceShip
@@ -207,7 +230,9 @@ export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShip
 
   setupFromSrc(spriteSrc: SpriteSource) {
     this.removeSprite(SpaceShipEngine.CANONICAL_NAME)
-    const engineSprite = this.addSprite(spriteSrc, SpaceShipEngine.CANONICAL_NAME)
+    const engineSprite = this.addSprite(
+      spriteSrc, SpaceShipEngine.CANONICAL_NAME
+    )
     engineSprite.zIndex = -1
   }
 
@@ -243,13 +268,18 @@ export class SpaceShipEngine extends GameObject<AppEvents> implements ISpaceShip
   }
 }
 
-export default class SpaceShip extends GameObject<AppEvents> implements ISpaceShipBase {
+export default class SpaceShip
+  extends GameObject<AppEvents>
+    implements ISpaceShipBase
+{
   health: number
   velocity: Point
   maxHealth: number
   baseState: ISpaceShipBase
   spaceShipEngine: SpaceShipEngine | null
-  spriteSrcs: Record<"health" | "slight_damaged" | "very_damaged" | "damaged", SpriteSource>
+  spriteSrcs: Record<
+    "health" | "slight_damaged" | "very_damaged" | "damaged", SpriteSource
+  >
 
   async onStart(ctx: Context<AppEvents>): Promise<void> {
     this.sortableChildren = true

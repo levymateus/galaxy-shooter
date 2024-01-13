@@ -29,10 +29,22 @@ const surface = new Surface(app.screen, res)
 const bounds = new AxisAlignedBounds(0, 0, surface.width, surface.height)
 bounds.anchor.set(0.5)
 
-const guiManager = new GUIManager(app.ticker, app.stage, app.screen, surface, bounds, emitter, 0)
-const bgManager = new BgManager(app.ticker, app.stage, app.screen, surface, bounds, emitter, 0)
-const sceneManager = new SceneManager(app.ticker, app.stage, app.screen, surface, bounds, emitter, 0)
-const vfxManager = new VFXManager(app.ticker, app.stage, app.screen, surface, bounds, emitter, 0)
+const guiManager =
+  new GUIManager(
+    app.ticker, app.stage, app.screen, surface, bounds, emitter, 0
+  )
+const bgManager =
+  new BgManager(
+    app.ticker, app.stage, app.screen, surface, bounds, emitter, 0
+  )
+const sceneManager =
+  new SceneManager(
+    app.ticker, app.stage, app.screen, surface, bounds, emitter, 0
+  )
+const vfxManager =
+  new VFXManager(
+    app.ticker, app.stage, app.screen, surface, bounds, emitter, 0
+  )
 
 vfxManager.goto(VFX)
 

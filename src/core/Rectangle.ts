@@ -1,7 +1,10 @@
 import { ObservablePoint, Rectangle as PixiRectangle } from "pixi.js"
 
 /**
- * Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y) and by its width and its height.
+ * Rectangle object is an area defined by its position,
+ * as indicated by its top-left corner point (x, y)
+ * and by its width and its height.
+ * 
  */
 export class Rectangle extends PixiRectangle {
   anchor: ObservablePoint

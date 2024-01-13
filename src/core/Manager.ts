@@ -1,4 +1,11 @@
-import { Activity, ActivityCtor, AxisAlignedBounds, Context, EventEmitter, Surface } from "core"
+import {
+  Activity,
+  ActivityCtor,
+  AxisAlignedBounds,
+  Context,
+  EventEmitter,
+  Surface
+} from "core"
 import { Container, Rectangle, Ticker, utils } from "pixi.js"
 
 type ManagerOptions = {
@@ -12,7 +19,9 @@ const defaultManagerOptions: ManagerOptions = {
 /**
  * Manager base class implementation.
  *
- * Handles the activity croncrete classes and the lifecycles implemented by the `Activity` interface.
+ * Handles the activity croncrete classes and the lifecycles implemented
+ * by the `Activity` interface.
+ *
  */
 export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
   ticker: Ticker
@@ -98,7 +107,11 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
       await this.activity.onFinish()
       this.activity = null
 
-      this.context.destroy({ children: true, texture: false, baseTexture: false })
+      this.context.destroy({
+        children: true,
+        texture: false,
+        baseTexture: false
+      })
       this.context = null
     }
   }

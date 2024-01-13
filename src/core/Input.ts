@@ -4,14 +4,16 @@ import { Ticker } from "pixi.js"
 import settings from "res/settings.json"
 
 /**
- * The `GameInputHandler` singleton class, is a global game input handling for any type of input, like keyboard, gamepad etc.
+ * The `GameInputHandler` singleton class,
+ * is a global game input handling for any type of input,
+ * like keyboard, gamepad etc.
  */
 class GameInputHandler extends EventEmitter<InputEvents> {
   /**
    * `true` when any action is pressed otherwise `false`.
    */
   pressed: boolean
-  
+
   private static instance: GameInputHandler
   private keyboardInput: KeyboardInput
   private ticker: Ticker
@@ -40,7 +42,9 @@ class GameInputHandler extends EventEmitter<InputEvents> {
   }
 
   /**
-   * Check if the `assets/res/settings.json` Keyboard configured named actions is pressed or not.
+   * Check if the `assets/res/settings.json` Keyboard configured named actions
+   * is pressed or not.
+   *
    * @param action The previus configured action name string
    * @returns `true` if is pressed or `false`.
    */
@@ -55,7 +59,9 @@ class GameInputHandler extends EventEmitter<InputEvents> {
   }
 
   /**
-  * Check if the `assets/res/settings.json` Keyboard configured named actions is released.
+  * Check if the `assets/res/settings.json`
+  * Keyboard configured named actions is released.
+  * 
   * @param action The previus configured action name string
   * @returns `true` if is released or `false`.
   */

@@ -1,5 +1,11 @@
 import { Actions, Context, Input, Timer } from "core"
-import { AnimatedSprite, Assets, Point, SpriteSource, Spritesheet } from "pixi.js"
+import {
+  AnimatedSprite,
+  Assets,
+  Point,
+  SpriteSource,
+  Spritesheet
+} from "pixi.js"
 import { AppEvents } from "typings"
 import { FrameObjects } from "utils/utils"
 import {
@@ -7,7 +13,12 @@ import {
   BigGunProjectile,
   Projectile, RocketProjectile, ZapperProjectile
 } from "./Projectile"
-import SpaceShip, { ISpaceShipBase, SpaceShipDestroied, SpaceShipEngine, SpaceShipEngineIdle } from "./SpaceShip"
+import SpaceShip, {
+  ISpaceShipBase,
+  SpaceShipDestroied,
+  SpaceShipEngine,
+  SpaceShipEngineIdle
+} from "./SpaceShip"
 import { ISpaceShipWeapon, SpaceShipWeapon } from "./SpaceShipWeapon"
 import { IShield } from "./Shield"
 import createSmallExplosion from "vfx/smallExplosion"
@@ -168,8 +179,10 @@ export class MainShipZapperWeapon extends SpaceShipWeapon {
 export class MainShipBigPulseEngine extends SpaceShipEngine {
   constructor(spaceShip: SpaceShip, ctx: Context<AppEvents>) {
     super(spaceShip, ctx)
-    this.spritesheets.engine_idle = Assets.get<Spritesheet>("mainship_big_pulse_engine_idle")
-    this.spritesheets.engine_power = Assets.get<Spritesheet>("mainship_big_pulse_engine_powering")
+    this.spritesheets.engine_idle =
+      Assets.get<Spritesheet>("mainship_big_pulse_engine_idle")
+    this.spritesheets.engine_power =
+      Assets.get<Spritesheet>("mainship_big_pulse_engine_powering")
     this.state = new SpaceShipEngineIdle(this)
     this.setupFromSrc(Assets.get<SpriteSource>("mainship_big_pulse_engine"))
   }
@@ -178,8 +191,10 @@ export class MainShipBigPulseEngine extends SpaceShipEngine {
 export class MainShipBurstEngine extends SpaceShipEngine {
   constructor(spaceShip: SpaceShip, ctx: Context<AppEvents>) {
     super(spaceShip, ctx)
-    this.spritesheets.engine_idle = Assets.get<Spritesheet>("mainship_burst_engine_idle")
-    this.spritesheets.engine_power = Assets.get<Spritesheet>("mainship_burst_engine_powering")
+    this.spritesheets.engine_idle =
+      Assets.get<Spritesheet>("mainship_burst_engine_idle")
+    this.spritesheets.engine_power =
+      Assets.get<Spritesheet>("mainship_burst_engine_powering")
     this.state = new SpaceShipEngineIdle(this)
     this.setupFromSrc(Assets.get<SpriteSource>("mainship_burst_engine"))
   }
@@ -188,8 +203,10 @@ export class MainShipBurstEngine extends SpaceShipEngine {
 export class MainShipSuperchargedEngine extends SpaceShipEngine {
   constructor(spaceShip: SpaceShip, ctx: Context<AppEvents>) {
     super(spaceShip, ctx)
-    this.spritesheets.engine_idle = Assets.get<Spritesheet>("mainship_supercharged_engine_idle")
-    this.spritesheets.engine_power = Assets.get<Spritesheet>("mainship_supercharged_engine_powering")
+    this.spritesheets.engine_idle =
+      Assets.get<Spritesheet>("mainship_supercharged_engine_idle")
+    this.spritesheets.engine_power =
+      Assets.get<Spritesheet>("mainship_supercharged_engine_powering")
     this.state = new SpaceShipEngineIdle(this)
     this.setupFromSrc(Assets.get<SpriteSource>("mainship_supercharged_engine"))
   }
@@ -221,11 +238,17 @@ export default class MainShip extends SpaceShip {
     if (this.velocity.x >= 0) this.velocity.x -= this.friction.x
     if (this.velocity.x <= 0) this.velocity.x += this.friction.x
 
-    if (Input.pressed) this.debounce.debounce(() => this.velocity.set(0, 0), 500)
-    if (Input.isActionPressed(Actions.MOVE_UP)) this.velocity.y = -this.speed.y
-    if (Input.isActionPressed(Actions.MOVE_RIGHT)) this.velocity.x = this.speed.x
-    if (Input.isActionPressed(Actions.MOVE_LEFT)) this.velocity.x = -this.speed.x
-    if (Input.isActionPressed(Actions.MOVE_DOWN)) this.velocity.y = this.speed.y
+    if (Input.pressed) this.debounce.debounce(
+      () => this.velocity.set(0, 0), 500
+    )
+    if (Input.isActionPressed(Actions.MOVE_UP))
+      this.velocity.y = -this.speed.y
+    if (Input.isActionPressed(Actions.MOVE_RIGHT))
+      this.velocity.x = this.speed.x
+    if (Input.isActionPressed(Actions.MOVE_LEFT))
+      this.velocity.x = -this.speed.x
+    if (Input.isActionPressed(Actions.MOVE_DOWN))
+      this.velocity.y = this.speed.y
 
     if (this.weapon instanceof MainShipAutoCannonWeapon) this.weapon.fire()
     else if (Input.isActionPressed(Actions.WEAPON_FIRE)) this.weapon?.fire()

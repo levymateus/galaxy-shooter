@@ -1,7 +1,13 @@
 import { Context, Textures } from "core"
 import { Assets, Point, SpriteSource } from "pixi.js"
 import { AppEvents } from "typings"
-import SpaceShip, { ISpaceShipBase, SpaceShipDestroied, SpaceShipEngine, SpaceShipEngineIdle, SpaceShipFullHealth } from "./SpaceShip"
+import SpaceShip, {
+  ISpaceShipBase,
+  SpaceShipDestroied,
+  SpaceShipEngine,
+  SpaceShipEngineIdle,
+  SpaceShipFullHealth
+} from "./SpaceShip"
 
 export default class KlaEdSupport extends SpaceShip {
   async onStart(ctx: Context<AppEvents>): Promise<void> {
@@ -29,7 +35,8 @@ export default class KlaEdSupport extends SpaceShip {
 
   onChangeState(state: ISpaceShipBase): void {
     if (state instanceof SpaceShipDestroied) {
-      const animations = (Assets.get("klaed_support_destruction").animations as Record<"destruction", Textures>)
+      const animations = (Assets.get("klaed_support_destruction")
+        .animations as Record<"destruction", Textures>)
       this.explodeAndDestroy(animations.destruction, "KlaEdSupportDestruction")
     }
   }
