@@ -21,7 +21,8 @@ export default class LoadingScene extends Scene {
       "klaed_fighter_bundle",
       "pickups_bundle",
       "klaed_scout",
-      "klaed_support"
+      "klaed_support",
+      "klaed_bomber"
     ]
     this.manifest = manifest
 

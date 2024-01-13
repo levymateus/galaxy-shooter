@@ -1,6 +1,7 @@
 import {
   Context, GameObject,
 } from "core"
+import KlaEdBomber from "entities/KlaEdBomber"
 import KlaEdFighter from "entities/KlaEdFighter"
 import KlaEdScout from "entities/KlaEdScout"
 import KlaEdSupport from "entities/KlaEdSupport"
@@ -17,6 +18,7 @@ export default class CatalogScene extends Scene {
     list.push(await ctx.create(KlaEdFighter))
     list.push(await ctx.create(KlaEdScout))
     list.push(await ctx.create(KlaEdSupport))
+    list.push(await ctx.create(KlaEdBomber))
     list.forEach((obj, index) => obj.position.set(48 * (index + 1), 48))
   }
 }

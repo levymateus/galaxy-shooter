@@ -251,6 +251,27 @@
       ]
     },
     {
+      "name": "klaed_bomber",
+      "assets": [
+        {
+          "name": "klaed_bomber_base",
+          "srcs": "assets/sprites/klaed/base/klaed_bomber_base.png"
+        },
+        {
+          "name": "klaed_bomber_engine",
+          "srcs": "assets/sprites/klaed/engine/klaed_bomber_engine.json"
+        },
+        {
+          "name": "klaed_bomber_destruction",
+          "srcs": "assets/sprites/klaed/destruction/klaed_bomber_destruction.json"
+        },
+        {
+          "name": "klaed_bomber_shield",
+          "srcs": "assets/sprites/klaed/shield/klaed_bomber_shield.json"
+        }
+      ]
+    },
+    {
       "name": "vfx_bundle",
       "assets": [
         {
