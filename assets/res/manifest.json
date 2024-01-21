@@ -272,6 +272,35 @@
       ]
     },
     {
+      "name": "klaed_torpedo",
+      "assets": [
+        {
+          "name": "klaed_torpedo_base",
+          "srcs": "assets/sprites/klaed/base/klaed_torpedo_base.png"
+        },
+        {
+          "name": "klaed_torpedo_engine",
+          "srcs": "assets/sprites/klaed/engine/klaed_torpedo_engine.json"
+        },
+        {
+          "name": "klaed_torpedo_destruction",
+          "srcs": "assets/sprites/klaed/destruction/klaed_torpedo_destruction.json"
+        },
+        {
+          "name": "klaed_torpedo_projectiles",
+          "srcs": "assets/sprites/klaed/projectiles/klaed_torpedo.json"
+        },
+        {
+          "name": "klaed_torpedo_shield",
+          "srcs": "assets/sprites/klaed/shield/klaed_torpedo_shield.json"
+        },
+        {
+          "name": "klaed_torpedo_weapons",
+          "srcs": "assets/sprites/klaed/weapons/klaed_torpedo_weapons.json"
+        }
+      ]
+    },
+    {
       "name": "vfx_bundle",
       "assets": [
         {

@@ -5,6 +5,7 @@ import KlaEdBomber from "entities/KlaEdBomber"
 import KlaEdFighter from "entities/KlaEdFighter"
 import KlaEdScout from "entities/KlaEdScout"
 import KlaEdSupport from "entities/KlaEdSupport"
+import KlaEdTorpedo from "entities/KlaEdTorpedo"
 import MainShip from "entities/MainShip"
 import { Scene } from "managers/SceneManager"
 import { AppEvents } from "typings"
@@ -19,6 +20,7 @@ export default class CatalogScene extends Scene {
     list.push(await ctx.create(KlaEdScout))
     list.push(await ctx.create(KlaEdSupport))
     list.push(await ctx.create(KlaEdBomber))
+    list.push(await ctx.create(KlaEdTorpedo))
     list.forEach((obj, index) => obj.position.set(48 * (index + 1), 48))
   }
 }

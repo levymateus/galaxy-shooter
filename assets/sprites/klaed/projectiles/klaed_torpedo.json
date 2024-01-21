@@ -1,0 +1,83 @@
+{
+  "frames": {
+    "klaed_topedo_projectile_0": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 11,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 11,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 11,
+        "h": 32
+      },
+      "duration": 100
+    },
+    "klaed_topedo_projectile_1": {
+      "frame": {
+        "x": 11,
+        "y": 0,
+        "w": 11,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 11,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 11,
+        "h": 32
+      },
+      "duration": 100
+    },
+    "klaed_topedo_projectile_2": {
+      "frame": {
+        "x": 22,
+        "y": 0,
+        "w": 11,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 11,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 11,
+        "h": 32
+      },
+      "duration": 100
+    }
+  },
+  "animations": {
+    "shoot": [
+      "klaed_topedo_projectile_0",
+      "klaed_topedo_projectile_1",
+      "klaed_topedo_projectile_2"
+    ]
+  },
+  "meta": {
+    "image": "klaed_torpedo.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 33,
+      "h": 32
+    },
+    "scale": "1"
+  }
+}
