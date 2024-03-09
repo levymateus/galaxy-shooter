@@ -16,6 +16,6 @@ export type Vec2 = {
 }
 
 export interface IPickUp {
-  equip(): void
+  equip(zIndex?: number): void
   unequip(): void
 }

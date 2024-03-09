@@ -147,6 +147,31 @@
       ]
     },
     {
+      "name": "klaed_battlecruiser_bundle",
+      "assets": [
+        {
+          "name": "klaed_battlecruiser_base",
+          "srcs": "assets/sprites/klaed/base/klaed_battlecruiser_base.png"
+        },
+        {
+          "name": "klaed_battlecruiser_engine",
+          "srcs": "assets/sprites/klaed/engine/klaed_battlecruiser_engine.json"
+        },
+        {
+          "name": "klaed_battlecruiser_destruction",
+          "srcs": "assets/sprites/klaed/destruction/klaed_battlecruiser_destruction.json"
+        },
+        {
+          "name": "klaed_battlecruiser_weapons",
+          "srcs": "assets/sprites/klaed/weapons/klaed_battlecruiser_weapons.json"
+        },
+        {
+          "name": "klaed_wave",
+          "srcs": "assets/sprites/klaed/projectiles/klaed_wave.json"
+        }
+      ]
+    },
+    {
       "name": "enviroments_bundle",
       "assets": [
         {

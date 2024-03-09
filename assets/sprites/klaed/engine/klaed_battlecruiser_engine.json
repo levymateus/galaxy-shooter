@@ -1,0 +1,297 @@
+{
+  "frames": {
+    "klaed_battlecruiser_engine_0": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_1": {
+      "frame": {
+        "x": 128,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_2": {
+      "frame": {
+        "x": 256,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_3": {
+      "frame": {
+        "x": 384,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_4": {
+      "frame": {
+        "x": 512,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_5": {
+      "frame": {
+        "x": 640,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_6": {
+      "frame": {
+        "x": 768,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_7": {
+      "frame": {
+        "x": 896,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_8": {
+      "frame": {
+        "x": 1024,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_9": {
+      "frame": {
+        "x": 1152,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_10": {
+      "frame": {
+        "x": 1280,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    },
+    "klaed_battlecruiser_engine_11": {
+      "frame": {
+        "x": 1408,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "duration": 100
+    }
+  },
+  "animations": {
+    "powering": [
+      "klaed_battlecruiser_engine_0",
+      "klaed_battlecruiser_engine_1",
+      "klaed_battlecruiser_engine_2",
+      "klaed_battlecruiser_engine_3",
+      "klaed_battlecruiser_engine_4",
+      "klaed_battlecruiser_engine_5",
+      "klaed_battlecruiser_engine_6",
+      "klaed_battlecruiser_engine_7",
+      "klaed_battlecruiser_engine_8",
+      "klaed_battlecruiser_engine_9",
+      "klaed_battlecruiser_engine_10",
+      "klaed_battlecruiser_engine_11"
+    ],
+    "idle": [
+      "klaed_battlecruiser_engine_0",
+      "klaed_battlecruiser_engine_1",
+      "klaed_battlecruiser_engine_2",
+      "klaed_battlecruiser_engine_3",
+      "klaed_battlecruiser_engine_4",
+      "klaed_battlecruiser_engine_5",
+      "klaed_battlecruiser_engine_6",
+      "klaed_battlecruiser_engine_7",
+      "klaed_battlecruiser_engine_8",
+      "klaed_battlecruiser_engine_9",
+      "klaed_battlecruiser_engine_10",
+      "klaed_battlecruiser_engine_11"
+    ]
+  },
+  "meta": {
+    "app": "http://www.aseprite.org/",
+    "version": "1.2.40-x64-trial",
+    "format": "RGBA8888",
+    "image": "klaed_battlecruiser_engine.png",
+    "size": {
+      "w": 1536,
+      "h": 128
+    },
+    "scale": "1"
+  }
+}

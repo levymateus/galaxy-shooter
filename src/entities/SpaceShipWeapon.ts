@@ -36,9 +36,9 @@ export class SpaceShipWeapon
   async createBullet(
     ctor: ActivityElementCtor<AppEvents>,
     x: number = 0,
-    y: number = 0
+    y: number = 0,
+    velocity: Point = this.parent.velocity,
   ): Promise<Projectile> {
-    const velocity = this.parent.velocity
     let position = new Point(this.parent.x + x, this.parent.y + y)
     position = this.parent.position.clone().subtract(position)
     position = MathUtils.rotatePoint(position, this.parent.angle)
@@ -63,13 +63,13 @@ export class SpaceShipWeapon
     }
   }
 
-  equip(): void {
+  equip(zIndex?: number): void {
     this.parent.removeChildByName(this.name)
     const sprite =
       this.parent.addAnimatedSprite(this.animations.fire, this.name)
     sprite.anchor.set(0.5)
     sprite.animationSpeed = 0.4
-    sprite.zIndex = -1
+    sprite.zIndex = zIndex || -1
   }
 
   unequip(): void {

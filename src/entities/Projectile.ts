@@ -259,7 +259,7 @@ export class KlaEdBullet extends Projectile {
     this.move(
       this.velocity.x * this.speed.x * delta,
       this.velocity.y * this.speed.y * delta
-      )
+    )
   }
 }
 
@@ -272,5 +272,17 @@ export class KlaEdBigBullet extends KlaEdBullet {
     await super.onStart(context, ...args)
     this.speed = new Point(1, 1)
     this.spritesheet = Assets.get<Spritesheet>("klaed_big_bullet")
+  }
+}
+
+export class KlaEdWaveBullet extends KlaEdBullet {
+  speed: Point
+  async onStart(
+    context: Context<AppEvents>,
+    ...args: unknown[]
+  ): Promise<void> {
+    await super.onStart(context, ...args)
+    this.speed = new Point(1, 1)
+    this.spritesheet = Assets.get<Spritesheet>("klaed_wave")
   }
 }
