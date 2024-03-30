@@ -240,7 +240,7 @@ export class KlaEdBullet extends Projectile {
   shoot(): void {
     this.setupFromSheet(this.spritesheet)
     this.go = true
-    this.countdown = 6000
+    this.countdown = 1000
     this.startCount()
   }
 
