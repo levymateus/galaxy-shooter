@@ -338,10 +338,8 @@ export default class SpaceShip
   }
 
   explodeAndDestroy(textures: Textures, name: string): void {
+    this.removeChildren()
     const sprite = this.addAnimatedSprite(textures, name)
-    this.removeChildByName("BaseSpaceShip")
-    this.removeChildByName("SpaceShipBaseEngine")
-    this.removeChildByName("SpaceShipEngine")
     sprite.onComplete = () => this.destroy({ children: true })
     sprite.loop = false
     sprite.animationSpeed = 0.4
