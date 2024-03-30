@@ -17,7 +17,8 @@ import SpaceShip, {
   ISpaceShipBase,
   SpaceShipDestroied,
   SpaceShipEngine,
-  SpaceShipEngineIdle
+  SpaceShipEngineIdle,
+  SpaceShipSpawning
 } from "./SpaceShip"
 import { ISpaceShipWeapon, SpaceShipWeapon } from "./SpaceShipWeapon"
 import { IShield } from "./Shield"
@@ -241,13 +242,16 @@ export default class MainShip extends SpaceShip {
     if (Input.pressed) this.debounce.debounce(
       () => this.velocity.set(0, 0), 500
     )
-    if (Input.isActionPressed(Actions.MOVE_UP))
+
+    const canMove = !(this.baseState instanceof SpaceShipSpawning)
+
+    if (canMove && Input.isActionPressed(Actions.MOVE_UP))
       this.velocity.y = -this.speed.y
-    if (Input.isActionPressed(Actions.MOVE_RIGHT))
+    if (canMove && Input.isActionPressed(Actions.MOVE_RIGHT))
       this.velocity.x = this.speed.x
-    if (Input.isActionPressed(Actions.MOVE_LEFT))
+    if (canMove && Input.isActionPressed(Actions.MOVE_LEFT))
       this.velocity.x = -this.speed.x
-    if (Input.isActionPressed(Actions.MOVE_DOWN))
+    if (canMove && Input.isActionPressed(Actions.MOVE_DOWN))
       this.velocity.y = this.speed.y
 
     if (this.weapon instanceof MainShipAutoCannonWeapon) this.weapon.fire()

@@ -205,6 +205,24 @@ export class SpaceShipEngineIdle implements ISpaceShipEngine {
   }
 }
 
+export class SpaceShipSpawning implements ISpaceShipBase {
+  spaceShip: SpaceShip
+
+  constructor(spaceShip: SpaceShip) {
+    this.spaceShip = spaceShip
+    this.spaceShip.addSprite(this.spaceShip.spriteSrcs.health, "BaseSpaceShip")
+    this.damage(0)
+  }
+
+  damage(value: number): void {
+    return void value
+  }
+
+  heal(value: number): void {
+    return void value
+  }
+}
+
 /**
  * Mainship base engine.
  */
@@ -291,7 +309,7 @@ export default class SpaceShip
       slight_damaged: Assets.get("mainship_base_slight_damaged"),
       very_damaged: Assets.get("mainship_base_very_damaged"),
     }
-    this.baseState = new SpaceShipFullHealth(this)
+    this.baseState = new SpaceShipSpawning(this)
     this.spaceShipEngine = null
     return void ctx
   }
