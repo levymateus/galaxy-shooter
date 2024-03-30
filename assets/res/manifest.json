@@ -168,6 +168,10 @@
         {
           "name": "klaed_wave",
           "srcs": "assets/sprites/klaed/projectiles/klaed_wave.json"
+        },
+        {
+          "name": "klaed_battlecruiser_shield",
+          "srcs": "assets/sprites/klaed/shield/klaed_battlecruiser_shield.json"
         }
       ]
     },

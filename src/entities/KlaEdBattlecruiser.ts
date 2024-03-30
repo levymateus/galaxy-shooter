@@ -11,11 +11,12 @@ import SpaceShip, {
 import { SpaceShipWeapon } from "./SpaceShipWeapon"
 import { KlaEdWaveBullet, Projectile } from "./Projectile"
 import { MathUtils } from "utils/utils"
+import { Shield } from "./Shield"
 
 class KlaEdBattleCruiserWeapon extends SpaceShipWeapon {
-  parent: KlaEdBattlecruiser
+  parent: KlaEdBattleCruiser
 
-  constructor(parent: KlaEdBattlecruiser, ctx: Context<AppEvents>) {
+  constructor(parent: KlaEdBattleCruiser, ctx: Context<AppEvents>) {
     super(parent, "KlaEdBattlecruiser", ctx)
     this.parent = parent
     this.setupFromSheet(Assets.get("klaed_battlecruiser_weapons"))
@@ -111,9 +112,20 @@ class KlaEdBattleCruiserWeapon extends SpaceShipWeapon {
   }
 }
 
-export default class KlaEdBattlecruiser extends SpaceShip {
+class KlaEdBattleCruiseShield extends Shield {
+  parent: KlaEdBattleCruiser
+
+  constructor(parent: KlaEdBattleCruiser, ctx: Context<AppEvents>) {
+    super(parent, "KlaEdBattleCruiser", ctx)
+    this.parent = parent
+    this.setupFromSheet(Assets.get("klaed_battlecruiser_shield"))
+  }
+}
+
+export default class KlaEdBattleCruiser extends SpaceShip {
   velocity: Point
   weapon: KlaEdBattleCruiserWeapon
+  shield: KlaEdBattleCruiseShield | null
 
   async onStart(ctx: Context<AppEvents>): Promise<void> {
     await super.onStart(ctx)
@@ -135,6 +147,8 @@ export default class KlaEdBattlecruiser extends SpaceShip {
 
     this.weapon.equip(1)
     new Timer().interval(() => this.weapon.fire(), 1000)
+
+    this.shield = new KlaEdBattleCruiseShield(this, ctx)
   }
 
   onUpdate() {
