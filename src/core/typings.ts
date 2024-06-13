@@ -1,5 +1,5 @@
 import { Context } from "core"
-import { AssetsManifest, Container, Resource, Texture, utils } from "pixi.js"
+import { AssetsManifest, Container, Resource, Texture } from "pixi.js"
 
 export type SceneOptions = {
   manifest?: string | AssetsManifest
@@ -30,9 +30,7 @@ export type GameSettings = {
 
 export type Textures = Texture<Resource>[]
 
-export type ActivityElement<
-  E extends utils.EventEmitter.ValidEventTypes
-> = Container & Activity<E>
+export type ActivityElement = Container & Activity
 
 export enum Actions {
   MOVE_UP = "MOVE_UP",
@@ -46,20 +44,18 @@ export enum Actions {
  * The `Activity` implements a basic lifecycles behaviour,
  * managed by a `Manager`, providing a `Context` to the children.
  */
-export interface Activity<E extends utils.EventEmitter.ValidEventTypes> {
-  onStart(context: Context<E>, ...args: unknown[]): Promise<void>
+export interface Activity {
+  onStart(context: Context, ...args: unknown[]): Promise<void>
   onUpdate(delta: number): void
   onFinish(): Promise<void>
 }
 
-export interface ActivityCtor<E extends utils.EventEmitter.ValidEventTypes> {
-  new(): Activity<E>
+export interface ActivityCtor {
+  new(): Activity
 }
 
-export interface ActivityElementCtor<
-  E extends utils.EventEmitter.ValidEventTypes
-> {
-  new(ctx: Context<E>, name: string): ActivityElement<E>
+export interface ActivityElementCtor {
+  new(ctx: Context, name: string): ActivityElement
 }
 
 export interface InputEvents {

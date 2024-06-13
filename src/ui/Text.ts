@@ -1,4 +1,4 @@
-import { HTMLText, getFontFamilyName } from "pixi.js";
+import { HTMLText, getFontFamilyName } from "pixi.js"
 
 export interface IText {
   text: HTMLText
@@ -11,7 +11,7 @@ export interface GUITextFactory<T extends HTMLText> {
 }
 
 class GUIText implements IText {
-  text: HTMLText;
+  text: HTMLText
   async setFont(src: string): Promise<void> {
     try {
       this.text.style.fontFamily = getFontFamilyName(src)

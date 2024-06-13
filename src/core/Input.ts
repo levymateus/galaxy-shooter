@@ -1,6 +1,7 @@
-import { Actions, EventEmitter, InputEvents } from "core"
+import { Actions } from "core"
 import { KeyboardInput } from "core/KeyboardInput"
-import { Ticker } from "pixi.js"
+import { Ticker, utils } from "pixi.js"
+
 import settings from "res/settings.json"
 
 /**
@@ -8,7 +9,7 @@ import settings from "res/settings.json"
  * is a global game input handling for any type of input,
  * like keyboard, gamepad etc.
  */
-class GameInputHandler extends EventEmitter<InputEvents> {
+class GameInputHandler extends utils.EventEmitter {
   /**
    * `true` when any action is pressed otherwise `false`.
    */
@@ -61,7 +62,7 @@ class GameInputHandler extends EventEmitter<InputEvents> {
   /**
   * Check if the `assets/res/settings.json`
   * Keyboard configured named actions is released.
-  * 
+  *
   * @param action The previus configured action name string
   * @returns `true` if is released or `false`.
   */

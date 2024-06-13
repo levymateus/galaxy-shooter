@@ -7,7 +7,7 @@ import {
   ISpritesheetData,
   Spritesheet
 } from "pixi.js"
-import { AppEvents, Vec2 } from "typings"
+import { Vec2 } from "typings"
 import { MathUtils } from "utils/utils"
 
 type SpriteData = {
@@ -21,11 +21,11 @@ type SpriteData = {
 /**
  * Scene background root node.
  */
-export default class ParallaxStarryBackground implements Activity<AppEvents>  {
-  context: Context<AppEvents>
+export default class ParallaxStarryBackground implements Activity {
+  context: Context
   private sprites: SpriteData[]
 
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+  async onStart(ctx: Context): Promise<void> {
     this.context = ctx
     this.context.anchor.set(-0.5)
     this.sprites = []
@@ -176,7 +176,7 @@ export default class ParallaxStarryBackground implements Activity<AppEvents>  {
     const data: ISpritesheetData = Assets.get(atlasDataKey)
     const frames: ISpritesheetData["frames"] = {}
     const animations: ISpritesheetData["animations"] = {}
-    const animation: string[] = [];
+    const animation: string[] = []
     Object.values(data.frames).forEach((value, index) => {
       const key = [prefix, bundleName, index].join('_')
       frames[key] = value

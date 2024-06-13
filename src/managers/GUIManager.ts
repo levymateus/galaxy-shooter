@@ -2,51 +2,49 @@ import {
   Core,
   ActivityElement,
   Context,
-  EventEmitter,
   Manager,
   Surface
-} from "core";
-import { Container, HTMLText, Rectangle, Ticker } from "pixi.js";
-import { AppEvents } from "typings";
-import { GUITextFactory, TextFactory } from "ui/Text";
+} from "core"
+import { Container, HTMLText, Rectangle, Ticker, utils } from "pixi.js"
+import { GUITextFactory, TextFactory } from "ui/Text"
 
 export class GUIElement
   extends Container
-    implements ActivityElement<AppEvents>
+    implements ActivityElement
 {
   constructor() {
     super()
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onStart(_context: Context<AppEvents>): Promise<void> {
-    throw new Error("Method not implemented.");
+  onStart(_context: Context): Promise<void> {
+    throw new Error("Method not implemented.")
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onUpdate(_delta: number): void {
-    throw new Error("Method not implemented.");
+    throw new Error("Method not implemented.")
   }
 
   onFinish(): Promise<void> {
-    throw new Error("Method not implemented.");
+    throw new Error("Method not implemented.")
   }
 }
 
 /**
  * Game Graphic User Interface Manager.
  */
-export class GUIManager extends Manager<AppEvents> {
+export class GUIManager extends Manager {
   textFactory: GUITextFactory<HTMLText>
   manager: GUIManager
 
   constructor(
-    ticker: Ticker,
-    stage: Container,
-    screen: Rectangle,
-    surface: Surface,
-    bounds: Core.AxisAlignedBounds,
-    emitter: EventEmitter<AppEvents>,
+    public readonly ticker: Ticker,
+    public readonly stage: Container,
+    public readonly screen: Rectangle,
+    public readonly surface: Surface,
+    public readonly bounds: Core.AxisAlignedBounds,
+    public readonly emitter: utils.EventEmitter,
     index?: number,
   ) {
     super(ticker, stage, screen, surface, bounds, emitter, index)

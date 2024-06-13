@@ -2,12 +2,10 @@ import {
   Activity,
   ActivityElement,
   Context,
-  EventEmitter,
   Textures
 } from "core"
 import {
   AnimatedSprite,
-  Circle,
   Container,
   FrameObject,
   IDestroyOptions,
@@ -15,41 +13,27 @@ import {
   Point,
   Sprite,
   SpriteSource,
-  utils
+  utils,
 } from "pixi.js"
-import { ContainerUtils, IDUtils, MathUtils } from "utils/utils"
+import { ContainerUtils, MathUtils } from "utils/utils"
 
 /**
  * The `GameObject` is a base class that extends the `PIXI.Container`.
  */
-export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
-  extends Container implements Activity<E>, ActivityElement<E> {
+export class GameObject
+  extends Container implements Activity, ActivityElement {
   readonly name: string
-  readonly id: string
-  readonly emitter: EventEmitter<E>
-
-  /**
-   * enable or disable collision test.
-   * Default is `true`.
-   */
-  collisionTest: boolean
-
-  /**
-   * Shape used to test collision.
-   */
-  collisionShape: Circle
+  readonly emitter: utils.EventEmitter
   anchor: ObservablePoint
 
-  protected context: Context<E>
-
-  constructor(context: Context<E>, name: string) {
+  constructor(
+    protected context: Context,
+    name: string,
+  ) {
     super()
-    this.id = IDUtils.get()
     this.name = name
-    this.collisionTest = true
-    this.collisionShape = new Circle(0, 0, 16)
     this.context = context
-    this.emitter = new EventEmitter()
+    this.emitter = new utils.EventEmitter()
     this.anchor = new ObservablePoint(
       this.onAnchorUpdate,
       this,
@@ -67,7 +51,7 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
    * Called before adds the `GameObject` on the stage.
    * @param context The `Context` of the current `GameObject`.
    */
-  async onStart(context: Context<E>, ...args: unknown[]): Promise<void> {
+  async onStart(context: Context, ...args: unknown[]): Promise<void> {
     this.context = context
     return void args
   }
@@ -129,7 +113,7 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
   /**
    * Removes all internal references and listeners as well
    * as removes children from the display list.
-   * 
+   *
    * Do not use a `GameObject` after calling destroy.
    * @param options
    */
@@ -138,7 +122,7 @@ export class GameObject<E extends utils.EventEmitter.ValidEventTypes>
     this.context.removeChild(this)?.destroy(options)
   }
 
-  clone(): GameObject<E> {
+  clone(): GameObject {
     return new GameObject(this.context, this.name)
   }
 }

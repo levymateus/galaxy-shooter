@@ -1,6 +1,5 @@
 import { Context, Textures } from "core"
 import { Assets, Point, SpriteSource } from "pixi.js"
-import { AppEvents } from "typings"
 import { KlaEdBigBullet } from "./Projectile"
 import { Shield } from "./Shield"
 import SpaceShip, {
@@ -13,9 +12,10 @@ import SpaceShip, {
 import { SpaceShipWeapon } from "./SpaceShipWeapon"
 
 class KlaEdScoutWeapon extends SpaceShipWeapon {
-  parent: KlaEdScout
-
-  constructor(parent: KlaEdScout, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: KlaEdScout,
+    ctx: Context,
+  ) {
     super(parent, "KlaEdScoutWeapon", ctx)
     this.parent = parent
     this.setupFromSheet(Assets.get("klaed_scout_weapons"))
@@ -41,9 +41,10 @@ class KlaEdScoutWeapon extends SpaceShipWeapon {
 }
 
 class KlaEdScoutShield extends Shield {
-  parent: KlaEdScout
-
-  constructor(parent: KlaEdScout, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: KlaEdScout,
+    ctx: Context,
+  ) {
     super(parent, "KalEdScoutShield", ctx)
     this.parent = parent
     this.setupFromSheet(Assets.get("klaed_scout_shield"))
@@ -54,7 +55,7 @@ export default class KlaEdScout extends SpaceShip {
   weapon: SpaceShipWeapon
   shield: KlaEdScoutShield | null
 
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+  async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
     const defaultSpriteSrc = Assets.get<SpriteSource>("klaed_scout_base")
     this.initSpriteSrcs(defaultSpriteSrc)

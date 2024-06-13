@@ -8,7 +8,6 @@ import {
   SpriteSource,
   Spritesheet
 } from "pixi.js"
-import { AppEvents } from "typings"
 
 export interface ISpaceShipBase {
   damage(value: number): void
@@ -16,9 +15,7 @@ export interface ISpaceShipBase {
 }
 
 export class SpaceShipFullHealth implements ISpaceShipBase {
-  spaceShip: SpaceShip
-
-  constructor(spaceShip: SpaceShip) {
+  constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.spaceShip.addSprite(this.spaceShip.spriteSrcs.health, "BaseSpaceShip")
     this.damage(0)
@@ -42,9 +39,7 @@ export class SpaceShipFullHealth implements ISpaceShipBase {
 }
 
 export class SpaceShipFullSlightDamaged implements ISpaceShipBase {
-  spaceShip: SpaceShip
-
-  constructor(spaceShip: SpaceShip) {
+ constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.spaceShip.addSprite(
       this.spaceShip.spriteSrcs.slight_damaged, "BaseSpaceShip"
@@ -72,9 +67,7 @@ export class SpaceShipFullSlightDamaged implements ISpaceShipBase {
 }
 
 export class SpaceShipDamaged implements ISpaceShipBase {
-  spaceShip: SpaceShip
-
-  constructor(spaceShip: SpaceShip) {
+constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.spaceShip.addSprite(this.spaceShip.spriteSrcs.damaged, "BaseSpaceShip")
     this.damage(0)
@@ -100,9 +93,7 @@ export class SpaceShipDamaged implements ISpaceShipBase {
 }
 
 export class SpaceShipVeryDamaged implements ISpaceShipBase {
-  spaceShip: SpaceShip
-
-  constructor(spaceShip: SpaceShip) {
+  constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.spaceShip.addSprite(
       this.spaceShip.spriteSrcs.very_damaged, "BaseSpaceShip"
@@ -128,9 +119,7 @@ export class SpaceShipVeryDamaged implements ISpaceShipBase {
 }
 
 export class SpaceShipDestroied implements ISpaceShipBase {
-  spaceShip: SpaceShip
-
-  constructor(spaceShip: SpaceShip) {
+  constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.damage(0)
   }
@@ -154,9 +143,7 @@ export interface ISpaceShipEngine {
 }
 
 export class SpaceShipEnginePower implements ISpaceShipEngine {
-  spaceShipEngine: SpaceShipEngine
-
-  constructor(spaceShipEngine: SpaceShipEngine) {
+  constructor(public readonly spaceShipEngine: SpaceShipEngine) {
     this.spaceShipEngine = spaceShipEngine
     this.powerOn()
   }
@@ -180,9 +167,7 @@ export class SpaceShipEnginePower implements ISpaceShipEngine {
 }
 
 export class SpaceShipEngineIdle implements ISpaceShipEngine {
-  spaceShipEngine: SpaceShipEngine
-
-  constructor(spaceShipEngine: SpaceShipEngine) {
+  constructor(public readonly spaceShipEngine: SpaceShipEngine) {
     this.spaceShipEngine = spaceShipEngine
     this.powerOff()
   }
@@ -206,9 +191,7 @@ export class SpaceShipEngineIdle implements ISpaceShipEngine {
 }
 
 export class SpaceShipSpawning implements ISpaceShipBase {
-  spaceShip: SpaceShip
-
-  constructor(spaceShip: SpaceShip) {
+  constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.spaceShip.addSprite(this.spaceShip.spriteSrcs.health, "BaseSpaceShip")
     this.damage(0)
@@ -227,15 +210,16 @@ export class SpaceShipSpawning implements ISpaceShipBase {
  * Mainship base engine.
  */
 export class SpaceShipEngine
-  extends GameObject<AppEvents>
-    implements ISpaceShipEngine
-{
+  extends GameObject
+  implements ISpaceShipEngine {
   static CANONICAL_NAME = "SpaceShipBaseEngine"
   state: ISpaceShipEngine
-  parent: SpaceShip
   spritesheets: Record<"engine_power" | "engine_idle", Spritesheet>
 
-  constructor(parent: SpaceShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: SpaceShip,
+    ctx: Context
+  ) {
     super(ctx, SpaceShipEngine.CANONICAL_NAME)
     this.parent = parent
     this.spritesheets = {
@@ -287,9 +271,8 @@ export class SpaceShipEngine
 }
 
 export default class SpaceShip
-  extends GameObject<AppEvents>
-    implements ISpaceShipBase
-{
+  extends GameObject
+  implements ISpaceShipBase {
   health: number
   velocity: Point
   maxHealth: number
@@ -299,7 +282,7 @@ export default class SpaceShip
     "health" | "slight_damaged" | "very_damaged" | "damaged", SpriteSource
   >
 
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+  async onStart(ctx: Context): Promise<void> {
     this.sortableChildren = true
     this.health = 100
     this.maxHealth = 100

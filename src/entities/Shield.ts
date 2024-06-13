@@ -1,8 +1,8 @@
 import { Context, GameObject, Textures } from "core"
 import { Assets, Spritesheet } from "pixi.js"
-import { AppEvents, IPickUp } from "typings"
-import SpaceShip from "./SpaceShip"
+import { IPickUp } from "typings"
 import MainShip from "./MainShip"
+import SpaceShip from "./SpaceShip"
 
 export type ShieldAnimations = Record<"animation", Textures>
 
@@ -10,12 +10,15 @@ export interface IShield extends IPickUp {
   damage(value: number): void
 }
 
-export class Shield extends GameObject<AppEvents> implements IShield {
-  parent: SpaceShip
+export class Shield extends GameObject implements IShield {
   health: number
   animations: ShieldAnimations
 
-  constructor(parent: SpaceShip, name: string, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: SpaceShip,
+    name: string,
+    ctx: Context,
+  ) {
     super(ctx, name)
     this.parent = parent
     this.health = 100
@@ -49,7 +52,10 @@ export class Shield extends GameObject<AppEvents> implements IShield {
 }
 
 export class ShieldFrontSides extends Shield {
-  constructor(parent: MainShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: MainShip,
+    ctx: Context,
+  ) {
     super(parent, "ShieldFrontSides", ctx)
     this.setupFromSheet(Assets.get("mainship_shield_front_sides"))
   }
@@ -60,7 +66,10 @@ export class ShieldFrontSides extends Shield {
 }
 
 export class ShieldFront extends Shield {
-  constructor(parent: MainShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: MainShip,
+    ctx: Context,
+  ) {
     super(parent, "ShieldFront", ctx)
     this.setupFromSheet(Assets.get("mainship_shield_front"))
   }
@@ -71,7 +80,10 @@ export class ShieldFront extends Shield {
 }
 
 export class ShieldInvincible extends Shield {
-  constructor(parent: MainShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: MainShip,
+    ctx: Context,
+  ) {
     super(parent, "ShieldInvincible", ctx)
     this.setupFromSheet(Assets.get("mainship_shield_invincible"))
   }
@@ -82,7 +94,10 @@ export class ShieldInvincible extends Shield {
 }
 
 export class ShieldRound extends Shield {
-  constructor(parent: MainShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: MainShip,
+    ctx: Context,
+  ) {
     super(parent, "ShieldRound", ctx)
     this.setupFromSheet(Assets.get("mainship_shield_round"))
   }

@@ -1,6 +1,6 @@
 import { ActivityElementCtor, Context, GameObject, Textures, Timer } from "core"
 import { AnimatedSprite, Assets, Point, Spritesheet } from "pixi.js"
-import { AppEvents, IPickUp } from "typings"
+import { IPickUp } from "typings"
 import { MathUtils } from "utils/utils"
 import { Projectile } from "./Projectile"
 import SpaceShip from "./SpaceShip"
@@ -13,17 +13,19 @@ export interface ISpaceShipWeapon extends IPickUp {
 }
 
 export class SpaceShipWeapon
-  extends GameObject<AppEvents>
-    implements ISpaceShipWeapon
-{
+  extends GameObject
+  implements ISpaceShipWeapon {
   ready: boolean
   countdown: number
-  parent: SpaceShip
   name: string
   animations: SpaceShipWeaponAnimations
   protected timer: Timer
 
-  constructor(parent: SpaceShip, name: string, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: SpaceShip,
+    name: string,
+    ctx: Context,
+  ) {
     super(ctx, name)
     this.parent = parent
     this.name = name
@@ -34,7 +36,7 @@ export class SpaceShipWeapon
   }
 
   async createBullet(
-    ctor: ActivityElementCtor<AppEvents>,
+    ctor: ActivityElementCtor,
     x: number = 0,
     y: number = 0,
     velocity: Point = this.parent.velocity,

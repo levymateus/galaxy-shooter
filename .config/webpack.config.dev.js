@@ -1,8 +1,8 @@
 
-import WebpackMerge from 'webpack-merge';
+import WebpackMerge from 'webpack-merge'
 
-import config from './webpack.config.js';
-import * as paths from './paths.js';
+import config from './webpack.config.js'
+import * as paths from './paths.js'
 
 export default (props) => {
   return WebpackMerge.merge(config(props), {
@@ -15,5 +15,5 @@ export default (props) => {
       },
       port: 3000
     }
-  });
+  })
 }

@@ -1,6 +1,5 @@
 import { Context, GameObject, Textures, Timer } from "core"
 import { AnimatedSprite, Assets, Point, Spritesheet } from "pixi.js"
-import { AppEvents } from "typings"
 import { FrameObjects, MathUtils } from "utils/utils"
 import { SpaceShipWeapon } from "./SpaceShipWeapon"
 
@@ -11,7 +10,7 @@ export interface IProjectile {
   shoot(): void
 }
 
-export class Projectile extends GameObject<AppEvents> implements IProjectile {
+export class Projectile extends GameObject implements IProjectile {
   animations: ProjectileAnimations
   weapon: SpaceShipWeapon
   velocity: Point
@@ -21,7 +20,7 @@ export class Projectile extends GameObject<AppEvents> implements IProjectile {
   protected timer: Timer
 
   async onStart(
-    context: Context<AppEvents>,
+    context: Context,
     ...args: unknown[]
   ): Promise<void> {
     const position = args[0]
@@ -76,7 +75,7 @@ export class Projectile extends GameObject<AppEvents> implements IProjectile {
 
 export class AutoCannonBullet extends Projectile {
   async onStart(
-    context: Context<AppEvents>,
+    context: Context,
     ...args: unknown[]
   ): Promise<void> {
     await super.onStart(context, ...args)
@@ -102,7 +101,7 @@ export class RocketProjectile extends Projectile {
   ]
 
   async onStart(
-    context: Context<AppEvents>,
+    context: Context,
     ...args: unknown[]
   ): Promise<void> {
     await super.onStart(context, ...args)
@@ -142,7 +141,7 @@ export class ZapperProjectile extends Projectile {
   length: number
 
   async onStart(
-    context: Context<AppEvents>,
+    context: Context,
     ...args: unknown[]
   ): Promise<void> {
     await super.onStart(context, ...args)
@@ -184,7 +183,7 @@ export class BigGunProjectile extends Projectile {
   ]
 
   async onStart(
-    context: Context<AppEvents>,
+    context: Context,
     ...args: unknown[]
   ): Promise<void> {
     await super.onStart(context, ...args)
@@ -229,12 +228,12 @@ export class KlaEdBullet extends Projectile {
   ]
 
   async onStart(
-    context: Context<AppEvents>,
+    context: Context,
     ...args: unknown[]
   ): Promise<void> {
     await super.onStart(context, ...args)
     this.speed = new Point(1, 1)
-    this.spritesheet =  Assets.get<Spritesheet>("klaed_bullet")
+    this.spritesheet = Assets.get<Spritesheet>("klaed_bullet")
   }
 
   shoot(): void {
@@ -266,7 +265,7 @@ export class KlaEdBullet extends Projectile {
 export class KlaEdBigBullet extends KlaEdBullet {
   speed: Point
   async onStart(
-    context: Context<AppEvents>,
+    context: Context,
     ...args: unknown[]
   ): Promise<void> {
     await super.onStart(context, ...args)
@@ -278,7 +277,7 @@ export class KlaEdBigBullet extends KlaEdBullet {
 export class KlaEdWaveBullet extends KlaEdBullet {
   speed: Point
   async onStart(
-    context: Context<AppEvents>,
+    context: Context,
     ...args: unknown[]
   ): Promise<void> {
     await super.onStart(context, ...args)

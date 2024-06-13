@@ -57,11 +57,11 @@ export class MathUtils {
     if (range) {
       const [min, max] = range
       if (point.x >= max.x)
-        point.x = max.x;
+        point.x = max.x
       if (point.x <= min.x)
         point.x = min.x
       if (point.y >= max.y)
-        point.y = max.y;
+        point.y = max.y
       if (point.y <= min.y)
         point.y = min.y
     }
@@ -81,31 +81,6 @@ export class MathUtils {
       }
     }
     return dice
-  }
-}
-
-export class IDUtils {
-  /**
-   * Returns a new random unique identifies string value.
-   */
-  static get(): string {
-    const s4 = () => {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1)
-    }
-    return s4()
-      + s4()
-      + '-'
-      + s4()
-      + '-'
-      + s4()
-      + '-'
-      + s4()
-      + '-'
-      + s4()
-      + s4()
-      + s4()
   }
 }
 

@@ -8,10 +8,10 @@ import { Rectangle } from "pixi.js"
  * our scenes a width x height stage to work with
  */
 export class Surface {
-  private screen: Rectangle
-  private res: Resolution
-
-  constructor(screen: Rectangle, res: Resolution) {
+  constructor(
+    public readonly screen: Rectangle,
+    public readonly res: Resolution
+  ) {
     this.screen = screen
     this.res = res
   }

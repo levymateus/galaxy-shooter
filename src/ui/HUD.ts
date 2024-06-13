@@ -1,14 +1,13 @@
-import { Activity, Context } from "core";
-import { GUIElement, GUIManager } from "managers/GUIManager";
-import { HTMLText } from "pixi.js";
-import { AppEvents } from "typings";
+import { Activity, Context } from "core"
+import { GUIElement, GUIManager } from "managers/GUIManager"
+import { HTMLText } from "pixi.js"
 
 export class Score extends GUIElement {
-  static MASK = "00000000";
+  static MASK = "00000000"
   count: number
   text: HTMLText
 
-  async onStart(ctx: Context<AppEvents>) {
+  async onStart(ctx: Context) {
     ctx.anchor.set(-0.5)
     this.count = 0
     const factory = ctx.getManager<GUIManager>().textFactory
@@ -35,8 +34,8 @@ export class Score extends GUIElement {
   }
 }
 
-export class HUD implements Activity<AppEvents> {
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+export class HUD implements Activity {
+  async onStart(ctx: Context): Promise<void> {
     const score = await ctx.create<Score>(Score)
     score.text.anchor.set(1)
     score.x = ctx.bounds.right - 8

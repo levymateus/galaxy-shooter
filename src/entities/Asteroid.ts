@@ -1,19 +1,17 @@
 import { Context, GameObject } from "core"
 import { AnimatedSprite, Assets, Point, Sprite } from "pixi.js"
-import { AppEvents } from "typings"
 import { MathUtils } from "utils/utils"
 
-export class Asteroid extends GameObject<AppEvents> {
+export class Asteroid extends GameObject {
   velocity: Point
   speed: Point
   rotate: number
 
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+  async onStart(ctx: Context): Promise<void> {
     this.position.set(
       MathUtils.randf(ctx.bounds.x, ctx.bounds.right),
       ctx.bounds.y,
     )
-    this.collisionShape.radius = 18
     this.velocity = new Point(1, 1)
     this.speed = new Point(0, 1)
     this.rotate = MathUtils.randf(0, 1)

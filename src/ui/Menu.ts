@@ -1,12 +1,11 @@
 import { Activity, Context } from "core"
 import { GUIElement, GUIManager } from "managers/GUIManager"
 import { Graphics, HTMLText } from "pixi.js"
-import { AppEvents } from "typings"
 
 export class MenuList extends GUIElement {
   titleText: HTMLText
 
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+  async onStart(ctx: Context): Promise<void> {
     const factory = ctx.getManager<GUIManager>().textFactory
     this.titleText = await factory.createTextLg("The Game is Pauded!")
     this.titleText.name = "MenuListTitle"
@@ -24,8 +23,8 @@ export class MenuList extends GUIElement {
   }
 }
 
-export class Menu implements Activity<AppEvents>  {
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+export class Menu implements Activity {
+  async onStart(ctx: Context): Promise<void> {
 
     const menuList = await ctx.create<MenuList>(MenuList)
     menuList.setTitle("The Game is Paused!")

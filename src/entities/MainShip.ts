@@ -6,13 +6,14 @@ import {
   SpriteSource,
   Spritesheet
 } from "pixi.js"
-import { AppEvents } from "typings"
 import { FrameObjects } from "utils/utils"
+import createSmallExplosion from "vfx/smallExplosion"
 import {
   AutoCannonBullet,
   BigGunProjectile,
   Projectile, RocketProjectile, ZapperProjectile
 } from "./Projectile"
+import { IShield } from "./Shield"
 import SpaceShip, {
   ISpaceShipBase,
   SpaceShipDestroied,
@@ -21,13 +22,12 @@ import SpaceShip, {
   SpaceShipSpawning
 } from "./SpaceShip"
 import { ISpaceShipWeapon, SpaceShipWeapon } from "./SpaceShipWeapon"
-import { IShield } from "./Shield"
-import createSmallExplosion from "vfx/smallExplosion"
 
 export class MainShipAutoCannonWeapon extends SpaceShipWeapon {
-  parent: MainShip
-
-  constructor(parent: MainShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: MainShip,
+    ctx: Context,
+  ) {
     super(parent, "MainShipAutoCannonWeapon", ctx)
     this.parent = parent
     this.setupFromSheet(Assets.get("mainship_weapons_auto_cannon"))
@@ -59,7 +59,10 @@ export class MainShipAutoCannonWeapon extends SpaceShipWeapon {
 }
 
 export class MainShipBigSpaceWeapon extends SpaceShipWeapon {
-  constructor(parent: MainShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: MainShip,
+    ctx: Context,
+  ) {
     super(parent, "MainShipBigSpaceWeapon", ctx)
     this.setupFromSheet(Assets.get("mainship_weapons_big_space_gun"))
   }
@@ -90,9 +93,10 @@ export class MainShipBigSpaceWeapon extends SpaceShipWeapon {
 }
 
 export class MainShipRocketsWeapon extends SpaceShipWeapon {
-  parent: MainShip
-
-  constructor(parent: MainShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: MainShip,
+    ctx: Context,
+  ) {
     super(parent, "MainShipRocketsWeapon", ctx)
     this.parent = parent
     this.setupFromSheet(Assets.get("mainship_weapons_rockets"))
@@ -132,7 +136,10 @@ export class MainShipRocketsWeapon extends SpaceShipWeapon {
 export class MainShipZapperWeapon extends SpaceShipWeapon {
   time: number
 
-  constructor(parent: MainShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: MainShip,
+    ctx: Context,
+  ) {
     super(parent, "MainShipZapperWeapon", ctx)
     this.setupFromSheet(Assets.get("mainship_weapons_zapper"))
     this.time = 1000
@@ -178,7 +185,10 @@ export class MainShipZapperWeapon extends SpaceShipWeapon {
 }
 
 export class MainShipBigPulseEngine extends SpaceShipEngine {
-  constructor(spaceShip: SpaceShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly spaceShip: SpaceShip,
+    ctx: Context,
+  ) {
     super(spaceShip, ctx)
     this.spritesheets.engine_idle =
       Assets.get<Spritesheet>("mainship_big_pulse_engine_idle")
@@ -190,7 +200,10 @@ export class MainShipBigPulseEngine extends SpaceShipEngine {
 }
 
 export class MainShipBurstEngine extends SpaceShipEngine {
-  constructor(spaceShip: SpaceShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly spaceShip: SpaceShip,
+    ctx: Context,
+  ) {
     super(spaceShip, ctx)
     this.spritesheets.engine_idle =
       Assets.get<Spritesheet>("mainship_burst_engine_idle")
@@ -202,7 +215,10 @@ export class MainShipBurstEngine extends SpaceShipEngine {
 }
 
 export class MainShipSuperchargedEngine extends SpaceShipEngine {
-  constructor(spaceShip: SpaceShip, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly spaceShip: SpaceShip,
+    ctx: Context,
+  ) {
     super(spaceShip, ctx)
     this.spritesheets.engine_idle =
       Assets.get<Spritesheet>("mainship_supercharged_engine_idle")
@@ -222,7 +238,7 @@ export default class MainShip extends SpaceShip {
 
   private debounce: Timer
 
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+  async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
     this.weapon = null
     this.shield = null

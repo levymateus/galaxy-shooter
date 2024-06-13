@@ -1,6 +1,5 @@
 import { Context, Textures } from "core"
 import { Assets, Point, SpriteSource } from "pixi.js"
-import { AppEvents } from "typings"
 import SpaceShip, {
   ISpaceShipBase,
   SpaceShipDestroied,
@@ -10,7 +9,7 @@ import SpaceShip, {
 } from "./SpaceShip"
 
 export default class KlaEdSupport extends SpaceShip {
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+  async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
     const defaultSpriteSrc = Assets.get<SpriteSource>("klaed_support_base")
     this.initSpriteSrcs(defaultSpriteSrc)

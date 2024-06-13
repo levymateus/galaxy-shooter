@@ -6,7 +6,7 @@ export interface AppEvents {
   dispathVFX: [config: EmitterConfigV3]
   gameOver: []
   outOfBounds: []
-  onCollide: [other: GameObject<AppEvents>]
+  onCollide: [other: GameObject]
   appPause: [pause: boolean]
 }
 

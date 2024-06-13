@@ -1,8 +1,7 @@
 import { GameObject, Textures } from "core"
 import { Assets, Spritesheet } from "pixi.js"
-import { AppEvents } from "typings"
 
-export class Pickup extends GameObject<AppEvents> {
+export class Pickup extends GameObject {
   addAnimatedSprite(textures: Textures, name: string) {
     const sprite = super.addAnimatedSprite(textures, name)
     sprite.animationSpeed = 0.4

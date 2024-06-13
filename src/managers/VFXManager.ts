@@ -1,18 +1,16 @@
 import { Emitter, EmitterConfigV3 } from "@pixi/particle-emitter"
 import {
   Core,
-  EventEmitter,
   Surface,
   Manager,
   ActivityCtor
 } from "core"
-import { Container, Rectangle, Ticker } from "pixi.js"
-import { AppEvents } from "typings"
+import { Container, Rectangle, Ticker, utils } from "pixi.js"
 
 /**
  * Game Visual Effects Manager.
  */
-export default class VFXManager extends Manager<AppEvents> {
+export default class VFXManager extends Manager {
   /**
    * `stopped` pause the particle emitter when `true`.
    * the default values is `true`.
@@ -20,19 +18,19 @@ export default class VFXManager extends Manager<AppEvents> {
   stopped: boolean
 
   constructor(
-    ticker: Ticker,
-    stage: Container,
-    screen: Rectangle,
-    surface: Surface,
-    bounds: Core.AxisAlignedBounds,
-    emitter: EventEmitter<AppEvents>,
+    public readonly ticker: Ticker,
+    public readonly stage: Container,
+    public readonly screen: Rectangle,
+    public readonly surface: Surface,
+    public readonly bounds: Core.AxisAlignedBounds,
+    public readonly emitter: utils.EventEmitter,
     index?: number
   ) {
     super(ticker, stage, screen, surface, bounds, emitter, index)
     this.stopped = true
   }
 
-  async goto(ctor: ActivityCtor<AppEvents>): Promise<void> {
+  async goto(ctor: ActivityCtor): Promise<void> {
     await super.goto(ctor)
     /**
      * The error:

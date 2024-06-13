@@ -6,7 +6,7 @@ import { Resolution } from "core"
 export class Settings {
   static RESOLUTIONS: [Resolution] = [
     { width: 360, height: 640, ratio: [9, 16] },
-  ];
+  ]
   private static instance: Settings
 
   static getInstance(): Settings {

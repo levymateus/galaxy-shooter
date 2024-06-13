@@ -1,5 +1,4 @@
 import { Context, Timer } from "core"
-import { AppEvents } from "typings"
 import MainShip from "./MainShip"
 import {
   ISpaceShipBase,
@@ -8,7 +7,7 @@ import {
 } from "./SpaceShip"
 
 export default class Player extends MainShip {
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+  async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
     const blinkTimer = new Timer()
     blinkTimer.interval(() => {

@@ -2,7 +2,6 @@ import {
   Core,
   ActivityElement,
   ActivityElementCtor,
-  EventEmitter,
   Manager,
   Surface
 } from "core"
@@ -12,47 +11,36 @@ import {
   ObservablePoint,
   Rectangle,
   Ticker,
-  utils
+  utils,
 } from "pixi.js"
 
-export type ContextChildren<
-  E extends utils.EventEmitter.ValidEventTypes> = ActivityElement<E>[]
+export type ContextChildren = ActivityElement[]
 
 /**
  * The Context is the root Container of an activity.
  * The Context provide the convient references to the children,
  * like an observable `EventEmitter` and a `AxisAlignedBounds`.
  */
-export class Context<
-  E extends utils.EventEmitter.ValidEventTypes>
+export class Context
     extends Container
 {
   name: string
-  manager: Manager<E>
-  bounds: Core.AxisAlignedBounds
-  emitter: EventEmitter<E>
   anchor: ObservablePoint
-  children: ContextChildren<E>
-  private surface: Surface
+  children: ContextChildren
   private ticker: Ticker
   private maskRef: Graphics
 
   constructor(
-    surface: Surface,
-    screen: Rectangle,
-    name: string,
-    manager: Manager<E>,
-    bounds: Core.AxisAlignedBounds,
-    emitter: EventEmitter<E>
+    private readonly manager: Manager,
+    private readonly surface: Surface,
+    private readonly screen: Rectangle,
+    public readonly bounds: Core.AxisAlignedBounds,
+    public readonly emitter: utils.EventEmitter,
   ) {
     super()
-    this.surface = surface
-    this.name = name
-    this.manager = manager
-    this.bounds = bounds
-    this.emitter = emitter
-    this.x = screen.width / 2 - this.surface.actualWidth() / 2
-    this.y = screen.height / 2 - this.surface.actualHeight() / 2
+    this.name = "Context"
+    this.x = this.screen.width / 2 - this.surface.actualWidth() / 2
+    this.y = this.screen.height / 2 - this.surface.actualHeight() / 2
     this.width = this.surface.width
     this.height = this.surface.height
     this.scale.x = this.surface.actualWidth() / this.surface.width
@@ -107,7 +95,7 @@ export class Context<
    * @returns An instance of a game object.
    */
   async create<T>(
-    ctor: ActivityElementCtor<E>,
+    ctor: ActivityElementCtor,
     ...args: unknown[]
   ): Promise<T> {
     const el = new ctor(this, ctor.name)
@@ -135,7 +123,7 @@ export class Context<
    * Returns the context manager.
    * @returns The context `Manager` instance.
    */
-  getManager<T extends Manager<E>>(): T {
+  getManager<T extends Manager>(): T {
     return this.manager as T
   }
 }

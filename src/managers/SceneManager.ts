@@ -1,34 +1,22 @@
 import {
-  Core,
+  // Core,
   Activity,
-  CollisionTest,
   Context,
-  GameObject,
   Manager
 } from "core"
-import { DisplayObject } from "pixi.js"
-import { AppEvents } from "typings"
 
 /**
  * Game Stage Scenes Manager.
  */
-export class SceneManager extends Manager<AppEvents> { }
+export class SceneManager extends Manager { }
 
-export class Scene implements Activity<AppEvents> {
-  context: Context<AppEvents>
-  private area: Core.AxisAlignedBounds
-  private collision: CollisionTest<AppEvents, GameObject<AppEvents>>
+export class Scene implements Activity {
+  context: Context
+  // private _area: Core.AxisAlignedBounds
 
-  async onStart(ctx: Context<AppEvents>) {
+  async onStart(ctx: Context) {
     this.context = ctx
-    this.area = ctx.bounds.clone().pad(32, 32) as Core.AxisAlignedBounds
-    this.collision = new CollisionTest()
-    this.context.on("childAdded", child =>
-      child instanceof GameObject && this.collision.add(child)
-    )
-    this.context.on("childRemoved", child =>
-      child instanceof GameObject && this.collision.remove(child)
-    )
+    // this.area = ctx.bounds.clone().pad(32, 32) as Core.AxisAlignedBounds
     this.context.emitter.on("appPause", isPause =>
       isPause ? this.context.removeUpdates() : this.context.addUpdates()
     )
@@ -36,32 +24,10 @@ export class Scene implements Activity<AppEvents> {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onUpdate(_delta: number): void {
-    this.context.children.forEach(child => {
-      this.contains(child)
-      this.testCollision(child)
-    })
+    // code ...
   }
 
   async onFinish(): Promise<void> {
     this.context.removeAllListeners()
-  }
-
-  private contains(child: DisplayObject) {
-    if (child instanceof GameObject) {
-      const notContains = !this.area.contains(child.x, child.y)
-      if (notContains) {
-        child.emitter.emit("outOfBounds")
-        this.collision.remove(child)
-      }
-    }
-  }
-
-  private async testCollision(child: DisplayObject) {
-    if (child instanceof GameObject) {
-      this.collision.from(child).forEach(other => {
-        other.emitter.emit("onCollide", child)
-        child.emitter.emit("onCollide", other)
-      })
-    }
   }
 }

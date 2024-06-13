@@ -6,13 +6,12 @@ import SpaceShip, {
   SpaceShipEngineIdle,
   SpaceShipFullHealth
 } from "./SpaceShip"
-import { AppEvents } from "typings"
 import { Assets, Point, SpriteSource } from "pixi.js"
 
 export default class KlaEdTorpedo extends SpaceShip {
   velocity: Point
 
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+  async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
     const defaultSpriteSrc = Assets.get<SpriteSource>("klaed_torpedo_base")
     this.initSpriteSrcs(defaultSpriteSrc)

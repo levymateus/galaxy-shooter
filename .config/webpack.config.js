@@ -1,14 +1,14 @@
 
-import webpack from 'webpack';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import HTMLWebpackPlugin from 'html-webpack-plugin';
-import TSConfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import webpack from 'webpack'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+import HTMLWebpackPlugin from 'html-webpack-plugin'
+import TSConfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 
-import * as paths from './paths.js';
+import * as paths from './paths.js'
 
 export default (props) => {
-  const { debug = false } = props;
-  const { EnvironmentPlugin } = webpack;
+  const { debug = false } = props
+  const { EnvironmentPlugin } = webpack
   const config = {
     stats: 'verbose',
     mode: 'production',
@@ -63,5 +63,5 @@ export default (props) => {
       new EnvironmentPlugin({ debug }),
     ]
   }
-  return config;
+  return config
 }

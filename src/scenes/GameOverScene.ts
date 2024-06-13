@@ -1,9 +1,8 @@
 import { Activity, Context } from "core"
 import { GUIManager } from "managers/GUIManager"
-import { AppEvents } from "typings"
 
-export default class GameOverScene implements Activity<AppEvents> {
-  async onStart(ctx: Context<AppEvents>) {
+export default class GameOverScene implements Activity {
+  async onStart(ctx: Context) {
     ctx.anchor.set(-0.5)
     const factory = ctx.getManager<GUIManager>().textFactory
     const text = await factory.createTextLg("Game Over")

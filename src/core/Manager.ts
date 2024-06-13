@@ -3,10 +3,10 @@ import {
   Activity,
   ActivityCtor,
   Context,
-  EventEmitter,
   Surface
 } from "core"
 import { Container, Rectangle, Ticker, utils } from "pixi.js"
+import { ModuleManager } from "./ModuleManager"
 
 type ManagerOptions = {
   gotoAndStart?: boolean
@@ -23,32 +23,26 @@ const defaultManagerOptions: ManagerOptions = {
  * by the `Activity` interface.
  *
  */
-export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
-  ticker: Ticker
-  stage: Container
-  screen: Rectangle
-  surface: Surface
-  emitter: EventEmitter<E>
-  bounds: Core.AxisAlignedBounds
+export class Manager {
   index?: number
 
   /**
    * Current running activity.
    */
-  activity: Activity<E> | null
+  activity: Activity | null
 
   /**
    * The current context for the current activity.
    */
-  protected context: Context<E> | null
+  protected context: Context | null
 
   constructor(
-    ticker: Ticker,
-    stage: Container,
-    screen: Rectangle,
-    surface: Surface,
-    bounds: Core.AxisAlignedBounds,
-    emitter: EventEmitter<E>,
+    public readonly ticker: Ticker,
+    public readonly stage: Container,
+    public readonly screen: Rectangle,
+    public readonly surface: Surface,
+    public readonly bounds: Core.AxisAlignedBounds,
+    public readonly emitter: utils.EventEmitter,
     index?: number,
   ) {
     this.stage = stage
@@ -69,21 +63,21 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
    * @param ctor The Activity constructor
    */
   async goto(
-    ctor: ActivityCtor<E>,
+    ctor: ActivityCtor,
     options: ManagerOptions = defaultManagerOptions
   ) {
     this.ticker.stop()
 
     await this.destroy()
 
-    this.context = new Context<E>(
+    this.context = new ModuleManager().addSingleton<Context>(Context,
+      this,
       this.surface,
       this.screen,
-      ctor.name,
-      this,
       this.bounds,
       this.emitter
     )
+    this.context.name = ctor.name
 
     this.activity = new ctor()
     await this.activity.onStart(this.context)

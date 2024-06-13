@@ -1,9 +1,8 @@
 import { Context } from "core"
-import { AppEvents } from "typings"
 import { Scene } from "../managers/SceneManager"
 
 export default class VFX extends Scene {
-  async onStart(context: Context<AppEvents>) {
+  async onStart(context: Context) {
     this.context = context
   }
   onUpdate(): void { }

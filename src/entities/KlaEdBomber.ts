@@ -1,6 +1,5 @@
 import { Context, Textures } from "core"
 import { Assets, Point, SpriteSource } from "pixi.js"
-import { AppEvents } from "typings"
 import { Shield } from "./Shield"
 import SpaceShip, {
   ISpaceShipBase,
@@ -11,9 +10,10 @@ import SpaceShip, {
 } from "./SpaceShip"
 
 class KlaEdBomberShield extends Shield {
-  parent: KlaEdBomber
-
-  constructor(parent: KlaEdBomber, ctx: Context<AppEvents>) {
+  constructor(
+    public readonly parent: KlaEdBomber,
+    ctx: Context
+  ) {
     super(parent, "KlaEdBomberShield", ctx)
     this.parent = parent
     this.setupFromSheet(Assets.get("klaed_bomber_shield"))
@@ -24,7 +24,7 @@ export default class KlaEdBomber extends SpaceShip {
   velocity: Point
   shield: KlaEdBomberShield | null
 
-  async onStart(ctx: Context<AppEvents>): Promise<void> {
+  async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
     const defaultSpriteSrc = Assets.get<SpriteSource>("klaed_bomber_base")
     this.initSpriteSrcs(defaultSpriteSrc)
