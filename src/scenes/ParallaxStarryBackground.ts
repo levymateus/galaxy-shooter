@@ -1,6 +1,12 @@
 import dataJson from "assets/sprites/enviroment/starry_background.json"
 import { Activity, Context } from "core"
-import { AnimatedSprite, Assets, Graphics, Spritesheet } from "pixi.js"
+import {
+  AnimatedSprite,
+  Assets,
+  Graphics,
+  ISpritesheetData,
+  Spritesheet
+} from "pixi.js"
 import { AppEvents, Vec2 } from "typings"
 import { MathUtils } from "utils/utils"
 
@@ -164,20 +170,22 @@ export default class ParallaxStarryBackground implements Activity<AppEvents>  {
    * @param prefix - A string value for the prefix.
    * @param bundleName - A string bundle name value.
    * @param atlasDataKey - A string data key.
-   * @returns
+   * @returns A spritesheet data object.
    */
-  private parseFrom(prefix: string, bundleName: string, atlasDataKey: string): object {
-    const data = Assets.get(atlasDataKey)
-    const frames: Record<string, unknown> = {}
-    const animation: string[] = []
+  private parseFrom(prefix: string, bundleName: string, atlasDataKey: string) {
+    const data: ISpritesheetData = Assets.get(atlasDataKey)
+    const frames: ISpritesheetData["frames"] = {}
+    const animations: ISpritesheetData["animations"] = {}
+    const animation: string[] = [];
     Object.values(data.frames).forEach((value, index) => {
       const key = [prefix, bundleName, index].join('_')
       frames[key] = value
       animation.push(key)
     })
+    animations["animation"] = animation
     data.frames = frames
-    data.animations.animation = animation
-    return data as object
+    data.animations = animations
+    return data
   }
 
   private async addSprite(
