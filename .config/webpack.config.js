@@ -1,32 +1,28 @@
-import * as path from 'path';
+
+import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HTMLWebpackPlugin from 'html-webpack-plugin';
 import TSConfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
-import webpack from 'webpack';
+
+import * as paths from './paths.js';
 
 export default (props) => {
   const { debug = false } = props;
   const { EnvironmentPlugin } = webpack;
-  const __dirname = new URL('.', import.meta.url).pathname;
-  const rootDir = path.resolve(__dirname, '..');
-  const tsconfigPath = path.resolve(rootDir, 'tsconfig.json');
-  const srcPath = path.resolve(rootDir, 'src/');
-  const nodeModulesPath = path.resolve(rootDir, 'node_modules');
-  const distPath = path.resolve(rootDir, 'dist');
   const config = {
     stats: 'verbose',
     mode: 'production',
     output: {
       filename: '[name].js',
-      path: distPath,
+      path: paths.distPath,
     },
     devtool: 'inline-source-map',
     resolve: {
       extensions: [".ts", ".js", ".css", ".json"],
-      modules: [srcPath, nodeModulesPath],
+      modules: [paths.srcPath, paths.nodeModulesPath],
       plugins: [
         new TSConfigPathsPlugin({
-          configFile: tsconfigPath
+          configFile: paths.tsconfigPath
         }),
       ],
     },
