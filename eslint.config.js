@@ -1,25 +1,25 @@
-{
-  "extends": [
+export default {
+  extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended"
   ],
-  "overrides": [
+  overrides: [
     {
-      "files": [
+      files: [
         "*.ts"
       ],
-      "extends": [
+      extends: [
         "plugin:@typescript-eslint/disable-type-checked"
       ]
     }
   ],
-  "parser": "@typescript-eslint/parser",
-  "plugins": [
+  parser: "@typescript-eslint/parser",
+  plugins: [
     "@typescript-eslint"
   ],
-  "rules": {
+  rules: {
     "max-len": ["error", { "code": 80 }]
   },
-  "ignorePatterns": ["*.js"],
-  "root": true
+  ignores: ["*.js"],
+  root: true,
 }

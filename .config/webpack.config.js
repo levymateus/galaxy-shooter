@@ -1,25 +1,32 @@
-const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HTMLWebpackPlugin = require('html-webpack-plugin');
-const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const { EnvironmentPlugin } = require('webpack');
+import * as path from 'path';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import HTMLWebpackPlugin from 'html-webpack-plugin';
+import TSConfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import webpack from 'webpack';
 
-module.exports = (props) => {
+export default (props) => {
   const { debug = false } = props;
+  const { EnvironmentPlugin } = webpack;
+  const __dirname = new URL('.', import.meta.url).pathname;
+  const rootDir = path.resolve(__dirname, '..');
+  const tsconfigPath = path.resolve(rootDir, 'tsconfig.json');
+  const srcPath = path.resolve(rootDir, 'src/');
+  const nodeModulesPath = path.resolve(rootDir, 'node_modules');
+  const distPath = path.resolve(rootDir, 'dist');
   const config = {
     stats: 'verbose',
     mode: 'production',
     output: {
       filename: '[name].js',
-      path: path.join(__dirname, 'dist'),
+      path: distPath,
     },
     devtool: 'inline-source-map',
     resolve: {
       extensions: [".ts", ".js", ".css", ".json"],
-      modules: [path.resolve(__dirname, 'src/'), path.resolve(__dirname, 'node_modules')],
+      modules: [srcPath, nodeModulesPath],
       plugins: [
         new TSConfigPathsPlugin({
-          configFile: path.resolve(__dirname, 'tsconfig.json')
+          configFile: tsconfigPath
         }),
       ],
     },
