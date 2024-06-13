@@ -1,6 +1,6 @@
 import {
+  Core,
   Activity,
-  AxisAlignedBounds,
   CollisionTest,
   Context,
   GameObject,
@@ -16,12 +16,12 @@ export class SceneManager extends Manager<AppEvents> { }
 
 export class Scene implements Activity<AppEvents> {
   context: Context<AppEvents>
-  private area: AxisAlignedBounds
+  private area: Core.AxisAlignedBounds
   private collision: CollisionTest<AppEvents, GameObject<AppEvents>>
 
   async onStart(ctx: Context<AppEvents>) {
     this.context = ctx
-    this.area = ctx.bounds.clone().pad(32, 32) as AxisAlignedBounds
+    this.area = ctx.bounds.clone().pad(32, 32) as Core.AxisAlignedBounds
     this.collision = new CollisionTest()
     this.context.on("childAdded", child =>
       child instanceof GameObject && this.collision.add(child)

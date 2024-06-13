@@ -1,7 +1,7 @@
 import {
+  Core,
   ActivityElement,
   ActivityElementCtor,
-  AxisAlignedBounds,
   EventEmitter,
   Manager,
   Surface
@@ -29,7 +29,7 @@ export class Context<
 {
   name: string
   manager: Manager<E>
-  bounds: AxisAlignedBounds
+  bounds: Core.AxisAlignedBounds
   emitter: EventEmitter<E>
   anchor: ObservablePoint
   children: ContextChildren<E>
@@ -42,7 +42,7 @@ export class Context<
     screen: Rectangle,
     name: string,
     manager: Manager<E>,
-    bounds: AxisAlignedBounds,
+    bounds: Core.AxisAlignedBounds,
     emitter: EventEmitter<E>
   ) {
     super()

@@ -1,7 +1,7 @@
 import {
+  Core,
   Activity,
   ActivityCtor,
-  AxisAlignedBounds,
   Context,
   EventEmitter,
   Surface
@@ -29,7 +29,7 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
   screen: Rectangle
   surface: Surface
   emitter: EventEmitter<E>
-  bounds: AxisAlignedBounds
+  bounds: Core.AxisAlignedBounds
   index?: number
 
   /**
@@ -47,7 +47,7 @@ export class Manager<E extends utils.EventEmitter.ValidEventTypes> {
     stage: Container,
     screen: Rectangle,
     surface: Surface,
-    bounds: AxisAlignedBounds,
+    bounds: Core.AxisAlignedBounds,
     emitter: EventEmitter<E>,
     index?: number,
   ) {

@@ -1,6 +1,6 @@
 import {
+  Core,
   ActivityElement,
-  AxisAlignedBounds,
   Context,
   EventEmitter,
   Manager,
@@ -45,7 +45,7 @@ export class GUIManager extends Manager<AppEvents> {
     stage: Container,
     screen: Rectangle,
     surface: Surface,
-    bounds: AxisAlignedBounds,
+    bounds: Core.AxisAlignedBounds,
     emitter: EventEmitter<AppEvents>,
     index?: number,
   ) {

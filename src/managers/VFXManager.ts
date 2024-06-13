@@ -1,6 +1,6 @@
 import { Emitter, EmitterConfigV3 } from "@pixi/particle-emitter"
 import {
-  AxisAlignedBounds,
+  Core,
   EventEmitter,
   Surface,
   Manager,
@@ -24,7 +24,7 @@ export default class VFXManager extends Manager<AppEvents> {
     stage: Container,
     screen: Rectangle,
     surface: Surface,
-    bounds: AxisAlignedBounds,
+    bounds: Core.AxisAlignedBounds,
     emitter: EventEmitter<AppEvents>,
     index?: number
   ) {

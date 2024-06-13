@@ -2,7 +2,7 @@ import "@pixi/math-extras"
 import "styles.css"
 
 import { app } from "app"
-import { AxisAlignedBounds, EventEmitter, Settings, Surface, Timer } from "core"
+import { Core, EventEmitter, Settings, Surface, Timer } from "core"
 import { isMainMenuEnalbed } from "feats"
 import { BgManager } from "managers/BgManager"
 import { GUIManager } from "managers/GUIManager"
@@ -26,7 +26,7 @@ const emitter = new EventEmitter<AppEvents>()
 const appSettings = Settings.getInstance()
 const res = appSettings.getDefaultResolution()
 const surface = new Surface(app.screen, res)
-const bounds = new AxisAlignedBounds(0, 0, surface.width, surface.height)
+const bounds = new Core.AxisAlignedBounds(0, 0, surface.width, surface.height)
 bounds.anchor.set(0.5)
 
 const guiManager =

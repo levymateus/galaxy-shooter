@@ -1,5 +1,5 @@
 import {
-  AxisAlignedBounds,
+  Core,
   EventEmitter,
   Surface,
   ActivityCtor,
@@ -19,7 +19,7 @@ export class BgManager extends Manager<AppEvents> {
     stage: Container,
     screen: Rectangle,
     surface: Surface,
-    bounds: AxisAlignedBounds,
+    bounds: Core.AxisAlignedBounds,
     emitter: EventEmitter<AppEvents>,
     index?: number
   ) {
