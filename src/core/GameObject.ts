@@ -27,12 +27,11 @@ export class GameObject
   anchor: ObservablePoint
 
   constructor(
-    protected context: Context,
+    public context: Context,
     name: string,
   ) {
     super()
     this.name = name
-    this.context = context
     this.emitter = new utils.EventEmitter()
     this.anchor = new ObservablePoint(
       this.onAnchorUpdate,

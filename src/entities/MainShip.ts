@@ -1,7 +1,8 @@
-import { Actions, Context, Input, Timer } from "core"
+import { Context } from "core"
 import {
   AnimatedSprite,
   Assets,
+  Circle,
   Point,
   SpriteSource,
   Spritesheet
@@ -19,9 +20,9 @@ import SpaceShip, {
   SpaceShipDestroied,
   SpaceShipEngine,
   SpaceShipEngineIdle,
-  SpaceShipSpawning
 } from "./SpaceShip"
 import { ISpaceShipWeapon, SpaceShipWeapon } from "./SpaceShipWeapon"
+import { Collision } from "core/Collision"
 
 export class MainShipAutoCannonWeapon extends SpaceShipWeapon {
   constructor(
@@ -236,8 +237,6 @@ export default class MainShip extends SpaceShip {
   friction: Point
   speed: Point
 
-  private debounce: Timer
-
   async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
     this.weapon = null
@@ -246,34 +245,7 @@ export default class MainShip extends SpaceShip {
     this.velocity = new Point(0, 0)
     this.speed = new Point(1.00, 1.00)
     this.friction = new Point(0.06, 0.06)
-    this.debounce = new Timer()
-  }
-
-  onUpdate(delta: number) {
-    if (this.velocity.y >= 0) this.velocity.y -= this.friction.y
-    if (this.velocity.y <= 0) this.velocity.y += this.friction.y
-    if (this.velocity.x >= 0) this.velocity.x -= this.friction.x
-    if (this.velocity.x <= 0) this.velocity.x += this.friction.x
-
-    if (Input.pressed) this.debounce.debounce(
-      () => this.velocity.set(0, 0), 500
-    )
-
-    const canMove = !(this.baseState instanceof SpaceShipSpawning)
-
-    if (canMove && Input.isActionPressed(Actions.MOVE_UP))
-      this.velocity.y = -this.speed.y
-    if (canMove && Input.isActionPressed(Actions.MOVE_RIGHT))
-      this.velocity.x = this.speed.x
-    if (canMove && Input.isActionPressed(Actions.MOVE_LEFT))
-      this.velocity.x = -this.speed.x
-    if (canMove && Input.isActionPressed(Actions.MOVE_DOWN))
-      this.velocity.y = this.speed.y
-
-    if (this.weapon instanceof MainShipAutoCannonWeapon) this.weapon.fire()
-    else if (Input.isActionPressed(Actions.WEAPON_FIRE)) this.weapon?.fire()
-
-    this.move(this.velocity.x * delta, this.velocity.y * delta)
+    new Collision(this, new Circle(0, 0, 16))
   }
 
   changeState(state: ISpaceShipBase): void {

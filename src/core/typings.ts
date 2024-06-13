@@ -1,5 +1,5 @@
 import { Context } from "core"
-import { AssetsManifest, Container, Resource, Texture } from "pixi.js"
+import { AssetsManifest, Circle, Container, Rectangle, Resource, Texture } from "pixi.js"
 
 export type SceneOptions = {
   manifest?: string | AssetsManifest
@@ -61,4 +61,8 @@ export interface ActivityElementCtor {
 export interface InputEvents {
   onActionPressed: [action: Actions]
   onActionReleased: [action: Actions]
+}
+
+export interface Collision {
+  test(shape: Circle | Rectangle): boolean
 }

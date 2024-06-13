@@ -34,7 +34,7 @@ export class Manager {
   /**
    * The current context for the current activity.
    */
-  protected context: Context | null
+  context: Context | null
 
   constructor(
     public readonly ticker: Ticker,
@@ -45,14 +45,8 @@ export class Manager {
     public readonly emitter: utils.EventEmitter,
     index?: number,
   ) {
-    this.stage = stage
-    this.screen = screen
-    this.surface = surface
-    this.bounds = bounds
     this.context = null
     this.activity = null
-    this.emitter = emitter
-    this.ticker = ticker
     this.index = index
   }
 

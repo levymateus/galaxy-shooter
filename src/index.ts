@@ -17,6 +17,7 @@ import ParallaxStarryBackground from "scenes/ParallaxStarryBackground"
 import VFX from "scenes/VFX"
 import { HUD, Menu } from "ui"
 import { ModuleManager } from "core/ModuleManager"
+import { CollisionServer } from "core/CollisionServer"
 
 Assets.setPreferences({
   preferWorkers: true,
@@ -69,6 +70,10 @@ const vfxManager = moduleManager.addSingleton<VFXManager>(VFXManager,
   bounds,
   emitter,
   0,
+)
+
+moduleManager.addSingleton<CollisionServer>(CollisionServer,
+  sceneManager,
 )
 
 vfxManager.goto(VFX)
