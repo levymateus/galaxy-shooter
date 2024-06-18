@@ -1,15 +1,22 @@
-import { Circle, Graphics } from "pixi.js";
+import { Circle, Graphics, Ticker, UPDATE_PRIORITY } from "pixi.js";
 import { GameObject } from "./GameObject";
 
 export class Collision implements Collision {
   private static DEFAULT_COLLISION_SHAPE_NAME = "CollisionShapeCircle"
-  
+
   constructor(
     public readonly parent: GameObject,
     public readonly shape: Circle,
   ) {
     const manager = this.parent.context.getManager()
     manager.emitter.emit("addCollision", this)
+
+    Ticker.shared.add(() => {
+      this.shape.x = this.parent.x
+      this.shape.y = this.parent.y
+      this.drawShape()
+    }, this.parent, UPDATE_PRIORITY.LOW)
+
     const gr = new Graphics()
     gr.name = Collision.DEFAULT_COLLISION_SHAPE_NAME
     this.parent.addChildAt(gr, 0)
@@ -17,7 +24,7 @@ export class Collision implements Collision {
 
   private drawShape() {
     const graphic = this.parent.getChildByName<Graphics>(
-      Collision.DEFAULT_COLLISION_SHAPE_NAME
+      Collision.DEFAULT_COLLISION_SHAPE_NAME,
     )
     graphic?.clear()
     graphic?.beginFill(0xffffff)
@@ -33,9 +40,5 @@ export class Collision implements Collision {
     const colliding = distance < this.shape.radius + shape.radius
 
     return colliding
-  }
-
-  debug() {
-    this.drawShape()
   }
 }

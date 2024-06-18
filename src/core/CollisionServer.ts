@@ -1,30 +1,49 @@
-import { UPDATE_PRIORITY } from "pixi.js";
-
+import { Ticker } from "pixi.js";
 import { Manager } from "./Manager";
 import { Collision } from "./Collision";
 
 export class CollisionServer {
   private collisions: Collision[] = []
+  private running: boolean = false
 
   constructor(
     private readonly manager: Manager,
   ) {
     this.manager.emitter.on(
       "addCollision",
-      (collision) => this.collisions.push(collision)
+      (collision) => {
+        this.collisions.push(collision)
+      }
     )
-    this.manager.ticker.add(this.onUpdate, this, UPDATE_PRIORITY.NORMAL)
+    Ticker.shared.add(this.onUpdate, this)
+  }
+
+  private async asyncTest() {
+    this.running = true
+
+    this.collisions.forEach((left, index, collisions) => {
+      const right = collisions[index + 1]
+
+      if (
+        right &&
+        left.test(right.shape)
+      ) {
+        left.parent.emitter.emit("onCollision", right)
+      }
+
+      if (
+        right &&
+        right.test(left.shape)
+      ) {
+        right.parent.emitter.emit("onCollision", left)
+      }
+    })
+
+    this.running = false
   }
 
   onUpdate() {
-    this.collisions.forEach((collision, index, collisions) => {
-      const nextShape = collisions[index + 1]?.shape
-
-      if (nextShape && collision.test(nextShape)) {
-        collision.parent.emit("onCollision", collisions[index + 1])
-      }
-
-      collision.debug()
-    })
+    if (!this.running)
+      this.asyncTest()
   }
 }
