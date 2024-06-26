@@ -2,7 +2,6 @@ import { Context } from "core"
 import {
   AnimatedSprite,
   Assets,
-  Circle,
   Point,
   SpriteSource,
   Spritesheet
@@ -22,7 +21,6 @@ import SpaceShip, {
   SpaceShipEngineIdle,
 } from "./SpaceShip"
 import { ISpaceShipWeapon, SpaceShipWeapon } from "./SpaceShipWeapon"
-import { Collision } from "core/Collision"
 
 export class MainShipAutoCannonWeapon extends SpaceShipWeapon {
   constructor(
@@ -245,7 +243,7 @@ export default class MainShip extends SpaceShip {
     this.velocity = new Point(0, 0)
     this.speed = new Point(1.00, 1.00)
     this.friction = new Point(0.06, 0.06)
-    new Collision(this, new Circle(0, 0, 16))
+    this.collision.shape.radius = 16
   }
 
   changeState(state: ISpaceShipBase): void {

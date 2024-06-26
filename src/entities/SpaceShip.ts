@@ -1,4 +1,5 @@
 import { Context, GameObject, Textures } from "core"
+import { RigidBody } from "core/RigidBody"
 import {
   AnimatedSprite,
   Assets,
@@ -271,7 +272,7 @@ export class SpaceShipEngine
 }
 
 export default class SpaceShip
-  extends GameObject
+  extends RigidBody
   implements ISpaceShipBase {
   health: number
   velocity: Point

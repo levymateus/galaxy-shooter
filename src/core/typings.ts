@@ -66,3 +66,9 @@ export interface InputEvents {
 export interface Collision {
   test(shape: Circle | Rectangle): boolean
 }
+
+export interface RigidBody {
+  onCollisionEnter(collision: Collision): void
+  onCollision(collision: Collision): void
+  onCollisionExit(collision: Collision): void
+}

@@ -5,6 +5,7 @@ import {
   SpaceShipFullHealth,
   SpaceShipSpawning
 } from "./SpaceShip"
+import { Collision } from "core/Collision"
 
 export default class Player extends MainShip {
   private debounce: Timer
@@ -27,10 +28,6 @@ export default class Player extends MainShip {
       blinkTimer.stop()
       this.baseState = new SpaceShipFullHealth(this)
     }, 500)
-
-    this.emitter.on("onCollision", () => {
-      console.log("collide")
-    })
   }
 
   onUpdate(delta: number): void {
@@ -68,5 +65,9 @@ export default class Player extends MainShip {
     if (state instanceof SpaceShipSpawning) {
       console.log("spawn")
     }
+  }
+
+  onCollision(_: Collision): void {
+    debugger
   }
 }
