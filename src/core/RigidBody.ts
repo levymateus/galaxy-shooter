@@ -14,6 +14,8 @@ export class RigidBody extends GameObject implements RigidBodyInterface {
     super(context, name)
     this.collision = new Collision(this, new Circle(0, 0, 0))
     this.emitter.on("onCollision", this.onCollision, this)
+    this.emitter.on("onCollisionEnter", this.onCollisionEnter, this)
+    this.emitter.on("onCollisionExit", this.onCollisionExit, this)
   }
 
   onCollisionEnter(_: Collision): void {}

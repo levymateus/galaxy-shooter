@@ -1,7 +1,11 @@
 import { Circle, Graphics, Ticker, UPDATE_PRIORITY } from "pixi.js";
 import { GameObject } from "./GameObject";
+import type { Collideable, Unique } from "./typings";
+import { Id } from "decorators";
 
-export class Collision implements Collision {
+export class Collision implements Collideable, Unique {
+  @Id() id = '';
+
   private static DEFAULT_COLLISION_SHAPE_NAME = "CollisionShapeCircle"
 
   constructor(
@@ -40,5 +44,9 @@ export class Collision implements Collision {
     const colliding = distance < this.shape.radius + shape.radius
 
     return colliding
+  }
+
+  equal(u: Unique) {
+    return u.id === this.id;
   }
 }

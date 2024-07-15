@@ -63,12 +63,17 @@ export interface InputEvents {
   onActionReleased: [action: Actions]
 }
 
-export interface Collision {
+export interface Unique {
+  id: string
+  equal(u: Unique): boolean
+}
+
+export interface Collideable {
   test(shape: Circle | Rectangle): boolean
 }
 
 export interface RigidBody {
-  onCollisionEnter(collision: Collision): void
-  onCollision(collision: Collision): void
-  onCollisionExit(collision: Collision): void
+  onCollisionEnter(collision: Collideable): void
+  onCollision(collision: Collideable): void
+  onCollisionExit(collision: Collideable): void
 }

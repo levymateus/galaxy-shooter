@@ -67,7 +67,15 @@ export default class Player extends MainShip {
     }
   }
 
+  onCollisionEnter(_: Collision): void {
+    console.log('enter')
+  }
+
+  onCollisionExit(_: Collision): void {
+    console.log('exit')
+  }
+
   onCollision(_: Collision): void {
-    debugger
+    // console.log(coll);
   }
 }
