@@ -1,8 +1,8 @@
-import { Context, GameObject } from "core"
+import { AbstractGameObject, Context } from "core"
 import { AnimatedSprite, Assets, Point, Sprite } from "pixi.js"
 import { MathUtils } from "utils/utils"
 
-export class Asteroid extends GameObject {
+export class Asteroid extends AbstractGameObject {
   velocity: Point
   speed: Point
   rotate: number

@@ -1,11 +1,11 @@
 import { Actions, Context, Input, Timer } from "core"
+import { AbstractCollision } from "core/Collision"
 import MainShip, { MainShipAutoCannonWeapon } from "./MainShip"
 import {
-  ISpaceShipBase,
+  SpaceShipBase,
   SpaceShipFullHealth,
   SpaceShipSpawning
 } from "./SpaceShip"
-import { Collision } from "core/Collision"
 
 export default class Player extends MainShip {
   private debounce: Timer
@@ -60,22 +60,22 @@ export default class Player extends MainShip {
     )
   }
 
-  onChangeState(state: ISpaceShipBase): void {
+  onChangeState(state: SpaceShipBase): void {
     super.onChangeState(state)
     if (state instanceof SpaceShipSpawning) {
       console.log("spawn")
     }
   }
 
-  onCollisionEnter(_: Collision): void {
+  onEnterBody(_: AbstractCollision): void {
     console.log('enter')
   }
 
-  onCollisionExit(_: Collision): void {
+  onExitBody(_: AbstractCollision): void {
     console.log('exit')
   }
 
-  onCollision(_: Collision): void {
+  onCollide(_: AbstractCollision): void {
     // console.log(coll);
   }
 }

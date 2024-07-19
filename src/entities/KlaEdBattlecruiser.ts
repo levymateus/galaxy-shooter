@@ -1,16 +1,16 @@
 import { Context, Textures, Timer } from "core"
 import { Assets, Point, SpriteSource } from "pixi.js"
+import { MathUtils } from "utils/utils"
+import { AbstractProjectile, KlaEdWaveBullet } from "./Projectile"
+import { AbstractShield } from "./Shield"
 import SpaceShip, {
-  ISpaceShipBase,
+  SpaceShipBase,
   SpaceShipDestroied,
   SpaceShipEngine,
   SpaceShipEngineIdle,
   SpaceShipFullHealth
 } from "./SpaceShip"
 import { SpaceShipWeapon } from "./SpaceShipWeapon"
-import { KlaEdWaveBullet, Projectile } from "./Projectile"
-import { MathUtils } from "utils/utils"
-import { Shield } from "./Shield"
 
 class KlaEdBattleCruiserWeapon extends SpaceShipWeapon {
   constructor(
@@ -22,7 +22,7 @@ class KlaEdBattleCruiserWeapon extends SpaceShipWeapon {
     this.setupFromSheet(Assets.get("klaed_battlecruiser_weapons"))
   }
 
-  private onFrameChange(bullet: Projectile[]) {
+  private onFrameChange(bullet: AbstractProjectile[]) {
     return function whenFrameChange(currentFrame: number) {
       if (currentFrame === 7) bullet[0]?.shoot()
       if (currentFrame === 10) bullet[1]?.shoot()
@@ -112,7 +112,7 @@ class KlaEdBattleCruiserWeapon extends SpaceShipWeapon {
   }
 }
 
-class KlaEdBattleCruiseShield extends Shield {
+class KlaEdBattleCruiseShield extends AbstractShield {
   constructor(
     public readonly parent: KlaEdBattleCruiser,
     ctx: Context
@@ -156,12 +156,12 @@ export default class KlaEdBattleCruiser extends SpaceShip {
     this.look(this.velocity.multiply(new Point(100, 100)))
   }
 
-  changeState(state: ISpaceShipBase): void {
+  changeState(state: SpaceShipBase): void {
     super.changeState(state)
     this.onChangeState(state)
   }
 
-  onChangeState(state: ISpaceShipBase): void {
+  onChangeState(state: SpaceShipBase): void {
     if (state instanceof SpaceShipDestroied) {
       const animations = (Assets.get("klaed_battlecruiser_destruction")
         .animations as Record<"destruction", Textures>)

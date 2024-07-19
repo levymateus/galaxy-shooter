@@ -1,9 +1,9 @@
 import { Context, Textures } from "core"
 import { Assets, Point, SpriteSource } from "pixi.js"
-import { KlaEdBullet, Projectile } from "./Projectile"
-import { Shield } from "./Shield"
+import { AbstractProjectile, KlaEdBullet } from "./Projectile"
+import { AbstractShield } from "./Shield"
 import SpaceShip, {
-  ISpaceShipBase,
+  SpaceShipBase,
   SpaceShipDestroied,
   SpaceShipEngine,
   SpaceShipEngineIdle,
@@ -21,7 +21,7 @@ class KlaEdFighterWeapon extends SpaceShipWeapon {
     this.setupFromSheet(Assets.get("klaed_fighter_weapons"))
   }
 
-  private onFrameChange(left: Projectile, right: Projectile) {
+  private onFrameChange(left: AbstractProjectile, right: AbstractProjectile) {
     return function whenFrameChange(currentFrame: number) {
       if (currentFrame === 2) left.shoot()
       if (currentFrame === 2) right.shoot()
@@ -46,7 +46,7 @@ class KlaEdFighterWeapon extends SpaceShipWeapon {
   }
 }
 
-class KlaEdFighterShield extends Shield {
+class KlaEdFighterShield extends AbstractShield {
   constructor(
     public readonly parent: KlaEdFighter,
     ctx: Context,
@@ -82,12 +82,12 @@ export default class KlaEdFighter extends SpaceShip {
     this.look(this.velocity.multiply(new Point(100, 100)))
   }
 
-  changeState(state: ISpaceShipBase): void {
+  changeState(state: SpaceShipBase): void {
     super.changeState(state)
     this.onChangeState(state)
   }
 
-  onChangeState(state: ISpaceShipBase): void {
+  onChangeState(state: SpaceShipBase): void {
     if (state instanceof SpaceShipDestroied) {
       const animations = (Assets.get("klaed_fighter_destruction")
         .animations as Record<"destruction", Textures>)

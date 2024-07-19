@@ -1,16 +1,16 @@
-import { Context, GameObject, Textures, Timer } from "core"
+import { AbstractGameObject, Context, Textures, Timer } from "core"
 import { AnimatedSprite, Assets, Point, Spritesheet } from "pixi.js"
 import { FrameObjects, MathUtils } from "utils/utils"
 import { SpaceShipWeapon } from "./SpaceShipWeapon"
 
 export type ProjectileAnimations = Record<"shoot", Textures>
 
-export interface IProjectile {
+export interface AbstractProjectile {
   animations: ProjectileAnimations
   shoot(): void
 }
 
-export class Projectile extends GameObject implements IProjectile {
+export class AbstractProjectile extends AbstractGameObject implements AbstractProjectile {
   animations: ProjectileAnimations
   weapon: SpaceShipWeapon
   velocity: Point
@@ -73,7 +73,7 @@ export class Projectile extends GameObject implements IProjectile {
   }
 }
 
-export class AutoCannonBullet extends Projectile {
+export class AutoCannonBullet extends AbstractProjectile {
   async onStart(
     context: Context,
     ...args: unknown[]
@@ -92,7 +92,7 @@ export class AutoCannonBullet extends Projectile {
   }
 }
 
-export class RocketProjectile extends Projectile {
+export class RocketProjectile extends AbstractProjectile {
   private go: boolean
   private speed: Point
   private static MIN_MAX_SPEED: [Point, Point] = [
@@ -137,7 +137,7 @@ export class RocketProjectile extends Projectile {
   }
 }
 
-export class ZapperProjectile extends Projectile {
+export class ZapperProjectile extends AbstractProjectile {
   length: number
 
   async onStart(
@@ -174,7 +174,7 @@ export class ZapperProjectile extends Projectile {
   }
 }
 
-export class BigGunProjectile extends Projectile {
+export class BigGunProjectile extends AbstractProjectile {
   speed: Point
   private go: boolean
   private static MIN_MAX_SPEED: [Point, Point] = [
@@ -219,7 +219,7 @@ export class BigGunProjectile extends Projectile {
   }
 }
 
-export class KlaEdBullet extends Projectile {
+export class KlaEdBullet extends AbstractProjectile {
   speed: Point
   private go: boolean
   private static MIN_MAX_SPEED: [Point, Point] = [

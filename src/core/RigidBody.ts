@@ -1,26 +1,30 @@
 import { Circle } from "pixi.js";
-import { Collision } from "./Collision";
+import { AbstractCollision } from "./Collision";
 import { Context } from "./Context";
-import { GameObject } from "./GameObject";
-import { RigidBody as RigidBodyInterface } from "./typings";
+import { AbstractGameObject } from "./GameObject";
+import { Collideable, RigidBody } from "./typings";
 
-export class RigidBody extends GameObject implements RigidBodyInterface {
-  protected collision: Collision
+/**
+ * Abstract RigidBody is a AbstractGameObject that
+ * implements RigidBody interface.
+ */
+export class AbstractRigidBody extends AbstractGameObject implements RigidBody {
+  protected collision: AbstractCollision
 
   constructor(
     public context: Context,
     name: string,
   ) {
     super(context, name)
-    this.collision = new Collision(this, new Circle(0, 0, 0))
-    this.emitter.on("onCollision", this.onCollision, this)
-    this.emitter.on("onCollisionEnter", this.onCollisionEnter, this)
-    this.emitter.on("onCollisionExit", this.onCollisionExit, this)
+    this.collision = new AbstractCollision(this, new Circle(0, 0, 0))
+    this.emitter.on("onCollision", this.onCollide, this)
+    this.emitter.on("onCollisionEnter", this.onEnterBody, this)
+    this.emitter.on("onCollisionExit", this.onExitBody, this)
   }
 
-  onCollisionEnter(_: Collision): void {}
+  onEnterBody(_: Collideable): void { }
 
-  onCollision(_: Collision): void {}
+  onCollide(_: Collideable): void { }
 
-  onCollisionExit(_: Collision): void {}
+  onExitBody(_: Collideable): void { }
 }

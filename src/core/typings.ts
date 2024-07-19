@@ -1,5 +1,12 @@
 import { Context } from "core"
-import { AssetsManifest, Circle, Container, Rectangle, Resource, Texture } from "pixi.js"
+import {
+  AssetsManifest,
+  Circle,
+  Container,
+  Rectangle,
+  Resource,
+  Texture,
+} from "pixi.js"
 
 export type SceneOptions = {
   manifest?: string | AssetsManifest
@@ -69,11 +76,15 @@ export interface Unique {
 }
 
 export interface Collideable {
-  test(shape: Circle | Rectangle): boolean
+  overleaps(shape: Circle | Rectangle): boolean
 }
 
 export interface RigidBody {
-  onCollisionEnter(collision: Collideable): void
-  onCollision(collision: Collideable): void
-  onCollisionExit(collision: Collideable): void
+  onEnterBody(collision: Collideable): void
+  onCollide(collision: Collideable): void
+  onExitBody(collision: Collideable): void
+}
+
+export interface Debuggable {
+  debug(...args: unknown[]): void
 }

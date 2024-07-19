@@ -9,13 +9,14 @@ import {
 import { FrameObjects } from "utils/utils"
 import createSmallExplosion from "vfx/smallExplosion"
 import {
+  AbstractProjectile,
   AutoCannonBullet,
   BigGunProjectile,
-  Projectile, RocketProjectile, ZapperProjectile
+  RocketProjectile, ZapperProjectile
 } from "./Projectile"
-import { IShield } from "./Shield"
+import { Shield } from "./Shield"
 import SpaceShip, {
-  ISpaceShipBase,
+  SpaceShipBase,
   SpaceShipDestroied,
   SpaceShipEngine,
   SpaceShipEngineIdle,
@@ -104,7 +105,7 @@ export class MainShipRocketsWeapon extends SpaceShipWeapon {
   async shoot() {
     const animation = this.getAnimation()
     if (animation && !animation.playing) {
-      const rockets: Projectile[] = [
+      const rockets: AbstractProjectile[] = [
         await this.createBullet(RocketProjectile, 6, 16),
         await this.createBullet(RocketProjectile, -6, 16),
         await this.createBullet(RocketProjectile, 10, 20),
@@ -230,7 +231,7 @@ export class MainShipSuperchargedEngine extends SpaceShipEngine {
 
 export default class MainShip extends SpaceShip {
   weapon: ISpaceShipWeapon | null
-  shield: IShield | null
+  shield: Shield | null
   velocity: Point
   friction: Point
   speed: Point
@@ -246,12 +247,12 @@ export default class MainShip extends SpaceShip {
     this.collision.shape.radius = 16
   }
 
-  changeState(state: ISpaceShipBase): void {
+  changeState(state: SpaceShipBase): void {
     super.changeState(state)
     this.onChangeState(state)
   }
 
-  onChangeState(state: ISpaceShipBase): void {
+  onChangeState(state: SpaceShipBase): void {
     if (state instanceof SpaceShipDestroied) {
       const destruction = createSmallExplosion()
       destruction.pos.x = this.position.x

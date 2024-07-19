@@ -1,10 +1,10 @@
 import { Ticker } from "pixi.js"
-import { Manager } from "./Manager"
-import { Collision } from "./Collision"
+import { AbstractCollision } from "./Collision"
 import { CollisionCache } from "./CollisionCache"
+import { Manager } from "./Manager"
 
 export class CollisionServer {
-  private collisions: Collision[] = []
+  private collisions: AbstractCollision[] = []
   private cache: CollisionCache = new CollisionCache()
   private running: boolean = false
 
@@ -24,10 +24,10 @@ export class CollisionServer {
   private async asyncTest() {
     this.running = true
 
-    const collides = (left: Collision, right: Collision) => {
+    const collides = (left: AbstractCollision, right: AbstractCollision) => {
       if (
         left &&
-        right.test(left.shape)
+        right.overleaps(left.shape)
       ) {
         this.cache.setCache(left, right)
         left.parent.emitter.emit("onCollision", right)
