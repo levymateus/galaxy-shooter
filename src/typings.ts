@@ -1,5 +1,6 @@
 import { EmitterConfigV3 } from "@pixi/particle-emitter"
 import { AbstractGameObject } from "core"
+import { Point } from "pixi.js"
 
 export interface AppEvents {
   scoreIncrement: [amount: number]
@@ -18,4 +19,9 @@ export type Vec2 = {
 export interface Pickable {
   equip(zIndex?: number): void
   unequip(): void
+}
+
+export interface Spawner {
+  spawn(point: Point): Promise<void> | void
+  revoke(): Promise<void> | void
 }

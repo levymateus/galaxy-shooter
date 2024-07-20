@@ -3,12 +3,13 @@ import { Circle, Graphics, Ticker, UPDATE_PRIORITY } from "pixi.js";
 
 import { Id } from "decorators";
 
-import type { Collideable, Debuggable, Unique } from "./typings";
+import type { Collideable, Drawable, Switchable, Unique } from "./typings";
 
 /**
- * `AbstractCollision` is a `Collideable` `Unique` object that can be `Debuggable`.
+ * `AbstractCollision` is a `Collideable` `Unique` object that can be `Drawable` and `Switchable`.
  */
-export class AbstractCollision implements Collideable, Unique, Debuggable {
+export class AbstractCollision
+  implements Collideable, Unique, Drawable, Switchable {
   @Id() id = '';
 
   private static DEFAULT_COLLISION_SHAPE_NAME = "CollisionShapeCircle"
@@ -16,33 +17,13 @@ export class AbstractCollision implements Collideable, Unique, Debuggable {
   constructor(
     public readonly parent: AbstractGameObject,
     public readonly shape: Circle,
-  ) {
-    const manager = this.parent.context.getManager()
-    manager.emitter.emit("addCollision", this)
+  ) { }
 
-    if (process.env.debug) this.debug()
-  }
-
-  private drawShape(alpha?: number) {
-    const graphic = this.parent.getChildByName<Graphics>(
-      AbstractCollision.DEFAULT_COLLISION_SHAPE_NAME,
-    )
-    graphic?.clear()
-    graphic?.beginFill(0xffffff, alpha)
-    graphic?.drawCircle(0, 0, this.shape.radius)
-    graphic?.endFill()
-  }
-
-  debug() {
-    Ticker.shared.add(() => {
-      this.shape.x = this.parent.x
-      this.shape.y = this.parent.y
-      this.drawShape(0.4)
-    }, this.parent, UPDATE_PRIORITY.LOW)
-
-    const gr = new Graphics()
-    gr.name = AbstractCollision.DEFAULT_COLLISION_SHAPE_NAME
-    this.parent.addChildAt(gr, 0)
+  draw(gr: Graphics) {
+    gr.clear()
+    gr.beginFill(0xffffff, 0.4)
+    gr.drawCircle(0, 0, this.shape.radius)
+    gr.endFill()
   }
 
   overleaps(shape: Circle) {
@@ -55,7 +36,36 @@ export class AbstractCollision implements Collideable, Unique, Debuggable {
     return colliding
   }
 
-  equal(u: Unique) {
-    return u.id === this.id;
+  equal(unique: Unique) {
+    return unique.id === this.id;
+  }
+
+  /**
+   * Adds the collision to the collision server and the container.
+   */
+  enable() {
+    const gr = new Graphics()
+
+    gr.name = AbstractCollision.DEFAULT_COLLISION_SHAPE_NAME
+
+    this.parent.addChildAt(gr, 0)
+
+    const manager = this.parent.context.getManager()
+    manager.emitter.emit("addCollision", this)
+
+    Ticker.shared.add(() => {
+      this.shape.x = this.parent.x
+      this.shape.y = this.parent.y
+      if (process.env.debug) this.draw(gr)
+    }, this.parent, UPDATE_PRIORITY.LOW)
+  }
+
+  /**
+   * Removes the collision from the collision server and the container.
+   */
+  disable(): void {
+    const manager = this.parent.context.getManager()
+    manager.emitter.emit("removeCollision", this)
+    this.parent.getChildByName(AbstractCollision.DEFAULT_COLLISION_SHAPE_NAME)
   }
 }

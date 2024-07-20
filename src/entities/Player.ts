@@ -27,6 +27,7 @@ export default class Player extends MainShip {
     new Timer().timeout(() => {
       blinkTimer.stop()
       this.baseState = new SpaceShipFullHealth(this)
+      this.collision.enable()
     }, 500)
   }
 
@@ -68,14 +69,6 @@ export default class Player extends MainShip {
   }
 
   onEnterBody(_: AbstractCollision): void {
-    console.log('enter')
-  }
-
-  onExitBody(_: AbstractCollision): void {
-    console.log('exit')
-  }
-
-  onCollide(_: AbstractCollision): void {
-    // console.log(coll);
+    this.takeDamage(100)
   }
 }

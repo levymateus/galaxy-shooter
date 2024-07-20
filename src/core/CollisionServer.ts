@@ -17,6 +17,13 @@ export class CollisionServer {
         this.collisions.push(collision)
       }
     )
+    this.manager.emitter.on(
+      "removeCollision",
+      (collision) => {
+        const index = this.collisions.findIndex((col) => col.equal(collision))
+        this.collisions.splice(index, 1)
+      }
+    )
     Ticker.shared.add(this.onUpdate, this)
   }
 
@@ -24,38 +31,57 @@ export class CollisionServer {
   private async asyncTest() {
     this.running = true
 
-    const collides = (left: AbstractCollision, right: AbstractCollision) => {
+    const colliding = (
+      left: AbstractCollision,
+      right: AbstractCollision
+    ) => {
       if (
         left &&
         right.overleaps(left.shape)
       ) {
         this.cache.setCache(left, right)
         left.parent.emitter.emit("onCollision", right)
+        right.parent.emitter.emit("onCollision", left)
         return true
       }
       return false
     }
 
-    this.collisions.forEach((left, index, collisions) => {
-      const right = collisions[index + 1]
+    // TODO: bug do shape 0, 0!!!!
 
+    const testBodyEnter = (
+      left: AbstractCollision,
+      right: AbstractCollision
+    ) => {
       if (
         left && right &&
-        !this.cache.cacheHit(left, right) && collides(left, right)
+        !this.cache.cacheHit(left, right) && colliding(left, right)
       ) {
         left.parent.emitter.emit("onCollisionEnter", right)
+        right.parent.emitter.emit("onCollisionEnter", left)
       }
+    }
 
+    const testBodyExit = (
+      left: AbstractCollision,
+      right: AbstractCollision
+    ) => {
       if (
         left && right &&
-        this.cache.cacheHit(left, right) && !collides(left, right)
+        this.cache.cacheHit(left, right) && !colliding(left, right)
       ) {
         left.parent.emitter.emit("onCollisionExit", right)
+        right.parent.emitter.emit("onCollisionExit", left)
         this.cache.removeCache(left, right)
       }
+    }
 
-      left && right && collides(left, right)
-      left && right && collides(right, left)
+    this.collisions.forEach((left, index, collisions) => {
+      const right = collisions[index + 1]
+      left && right && testBodyEnter(left, right)
+      left && right && testBodyExit(left, right)
+      left && right && colliding(left, right)
+      left && right && colliding(right, left)
     })
 
     this.running = false

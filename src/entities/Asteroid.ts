@@ -1,17 +1,14 @@
-import { AbstractGameObject, Context } from "core"
+import { AbstractRigidBody, Context } from "core"
+import { AbstractCollision } from "core/Collision"
 import { AnimatedSprite, Assets, Point, Sprite } from "pixi.js"
 import { MathUtils } from "utils/utils"
 
-export class Asteroid extends AbstractGameObject {
+export class Asteroid extends AbstractRigidBody {
   velocity: Point
   speed: Point
   rotate: number
 
-  async onStart(ctx: Context): Promise<void> {
-    this.position.set(
-      MathUtils.randf(ctx.bounds.x, ctx.bounds.right),
-      ctx.bounds.y,
-    )
+  async onStart(_: Context): Promise<void> {
     this.velocity = new Point(1, 1)
     this.speed = new Point(0, 1)
     this.rotate = MathUtils.randf(0, 1)
@@ -21,8 +18,14 @@ export class Asteroid extends AbstractGameObject {
     base.anchor.set(0.5)
     this.addChild(base)
 
+    this.collision.shape.radius = 20
+    this.collision.enable()
+
     this.emitter.on("outOfBounds", this.onOutOfBounds, this)
-    this.emitter.on("onCollide", this.onCollide, this)
+  }
+
+  onEnterBody(_: AbstractCollision) {
+    this.explodeAndDestroy()
   }
 
   onUpdate(dt: number): void {
@@ -33,10 +36,6 @@ export class Asteroid extends AbstractGameObject {
 
   onOutOfBounds() {
     this.destroy({ children: true })
-  }
-
-  onCollide() {
-    // empty
   }
 
   explodeAndDestroy() {
@@ -50,6 +49,7 @@ export class Asteroid extends AbstractGameObject {
     sprite.onComplete = () => {
       this.destroy({ children: true })
     }
+    this.collision.disable()
     this.addChild(sprite)
     sprite.play()
   }

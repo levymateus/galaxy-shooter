@@ -258,6 +258,7 @@ export default class MainShip extends SpaceShip {
       destruction.pos.x = this.position.x
       destruction.pos.y = this.position.y
       this.context.emitter.emit('dispathVFX', destruction)
+      this.collision.disable()
       this.destroy({ children: true })
     }
   }

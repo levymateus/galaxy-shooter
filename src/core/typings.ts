@@ -3,6 +3,7 @@ import {
   AssetsManifest,
   Circle,
   Container,
+  Graphics,
   Rectangle,
   Resource,
   Texture,
@@ -85,6 +86,11 @@ export interface RigidBody {
   onExitBody(collision: Collideable): void
 }
 
-export interface Debuggable {
-  debug(...args: unknown[]): void
+export interface Drawable {
+  draw(graphics: Graphics): void
+}
+
+export interface Switchable {
+  enable(): void
+  disable(): void
 }
