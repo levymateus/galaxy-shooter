@@ -8,6 +8,7 @@ import {
   Resource,
   Texture,
 } from "pixi.js"
+import { InputActionsEnum } from "./enums"
 
 export type SceneOptions = {
   manifest?: string | AssetsManifest
@@ -40,14 +41,6 @@ export type Textures = Texture<Resource>[]
 
 export type ActivityElement = Container & Activity
 
-export enum Actions {
-  MOVE_UP = "MOVE_UP",
-  MOVE_DOWN = "MOVE_DOWN",
-  MOVE_LEFT = "MOVE_LEFT",
-  MOVE_RIGHT = "MOVE_RIGHT",
-  WEAPON_FIRE = "WEAPON_FIRE",
-}
-
 /**
  * The `Activity` implements a basic lifecycles behaviour,
  * managed by a `Manager`, providing a `Context` to the children.
@@ -67,8 +60,8 @@ export interface ActivityElementCtor {
 }
 
 export interface InputEvents {
-  onActionPressed: [action: Actions]
-  onActionReleased: [action: Actions]
+  onActionPressed: [action: InputActionsEnum]
+  onActionReleased: [action: InputActionsEnum]
 }
 
 export interface Unique {

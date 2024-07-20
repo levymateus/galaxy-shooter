@@ -1,3 +1,4 @@
+import { Destructible, Restorable } from "app/typings"
 import { AbstractGameObject, Context, Textures } from "core"
 import { AbstractRigidBody } from "core/RigidBody"
 import {
@@ -10,10 +11,7 @@ import {
   Spritesheet
 } from "pixi.js"
 
-export interface SpaceShipBase {
-  takeDamage(value: number): void
-  heal(value: number): void
-}
+export type SpaceShipBase = Destructible & Restorable
 
 export class SpaceShipFullHealth implements SpaceShipBase {
   constructor(public readonly spaceShip: SpaceShip) {
@@ -274,9 +272,9 @@ export class SpaceShipEngine
 export default class SpaceShip
   extends AbstractRigidBody
   implements SpaceShipBase {
-  health: number
+  health = 100
   velocity: Point
-  maxHealth: number
+  maxHealth = 100
   baseState: SpaceShipBase
   spaceShipEngine: SpaceShipEngine | null
   spriteSrcs: Record<
@@ -285,8 +283,6 @@ export default class SpaceShip
 
   async onStart(ctx: Context): Promise<void> {
     this.sortableChildren = true
-    this.health = 100
-    this.maxHealth = 100
     this.spriteSrcs = {
       health: Assets.get("mainship_base_full_health"),
       damaged: Assets.get("mainship_base_slight_damaged"),

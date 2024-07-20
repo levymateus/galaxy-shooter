@@ -1,6 +1,6 @@
+import { Pickable } from "app/typings"
 import { AbstractGameObject, Context, Textures } from "core"
 import { Assets, Spritesheet } from "pixi.js"
-import { Pickable } from "typings"
 import MainShip from "./MainShip"
 import SpaceShip from "./SpaceShip"
 

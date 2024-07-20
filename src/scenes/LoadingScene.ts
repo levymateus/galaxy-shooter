@@ -1,10 +1,11 @@
+
+import { isCatalogSceneEnabled } from "app/feats"
 import { Context } from "core"
-import { isCatalogSceneEnabled } from "feats"
-import { gotoCatalogScene, gotoMainScene } from "index"
 import { Assets, AssetsManifest } from "pixi.js"
 import manifest from "res/manifest.json"
 import { TextFactory } from "ui/Text"
 import { Scene } from "../managers/SceneManager"
+import { gotoCatalogScene, gotoMainScene } from "app/app"
 
 export default class LoadingScene extends Scene {
   bundleIds?: string[]

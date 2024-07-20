@@ -1,5 +1,5 @@
 import { Point, RAD_TO_DEG } from "@pixi/math"
-import { Textures } from "core/typings"
+import { ActivityElement, Textures } from "core/typings"
 import { Container, DisplayObject, FrameObject } from "pixi.js"
 
 type Dice = { roll: (() => number) }
@@ -114,5 +114,11 @@ export class ContainerUtils {
 export class FrameObjects {
   static from(textures: Textures): FrameObject[] {
     return textures.map((texture) => ({ texture, time: 100 }))
+  }
+}
+
+export class EntityUtils {
+  static is(a: ActivityElement | Function, b: ActivityElement | Function) {
+    return a.name === b.name
   }
 }

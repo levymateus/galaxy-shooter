@@ -1,12 +1,18 @@
+import { Destructible, Restorable } from "app/typings"
 import { AbstractRigidBody, Context } from "core"
 import { AbstractCollision } from "core/Collision"
 import { AnimatedSprite, Assets, Point, Sprite } from "pixi.js"
-import { MathUtils } from "utils/utils"
+import { EntityUtils, MathUtils } from "utils/utils"
+import Player from "./Player"
 
-export class Asteroid extends AbstractRigidBody {
+export class Asteroid
+  extends AbstractRigidBody
+  implements Destructible, Restorable {
   velocity: Point
   speed: Point
   rotate: number
+  health = 1000
+  maxHealth = 1000
 
   async onStart(_: Context): Promise<void> {
     this.velocity = new Point(1, 1)
@@ -24,8 +30,10 @@ export class Asteroid extends AbstractRigidBody {
     this.emitter.on("outOfBounds", this.onOutOfBounds, this)
   }
 
-  onEnterBody(_: AbstractCollision) {
-    this.explodeAndDestroy()
+  onEnterBody(collision: AbstractCollision) {
+    if (EntityUtils.is(collision.parent, Player)) {
+      (collision.parent as Player).takeDamage(1000)
+    }
   }
 
   onUpdate(dt: number): void {
@@ -52,5 +60,26 @@ export class Asteroid extends AbstractRigidBody {
     this.collision.disable()
     this.addChild(sprite)
     sprite.play()
+  }
+
+  takeDamage(value: number): void {
+    this.health -= value
+
+    if (this.health <= 0) {
+      this.health = 0
+      this.explodeAndDestroy()
+    }
+
+    if (this.health >= this.maxHealth) {
+      this.health = this.maxHealth
+    }
+  }
+
+  heal(value: number): void {
+    this.health += value
+
+    if (this.health >= this.maxHealth) {
+      this.health = this.maxHealth
+    }
   }
 }

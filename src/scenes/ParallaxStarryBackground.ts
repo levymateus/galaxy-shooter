@@ -1,3 +1,4 @@
+import { Vec2 } from "app/typings"
 import dataJson from "assets/sprites/enviroment/starry_background.json"
 import { Activity, Context } from "core"
 import {
@@ -7,7 +8,6 @@ import {
   ISpritesheetData,
   Spritesheet
 } from "pixi.js"
-import { Vec2 } from "typings"
 import { MathUtils } from "utils/utils"
 
 type SpriteData = {

@@ -2,6 +2,7 @@ import { Ticker } from "pixi.js"
 import { AbstractCollision } from "./Collision"
 import { CollisionCache } from "./CollisionCache"
 import { Manager } from "./Manager"
+import { CollisionEventsEnum } from "./enums"
 
 export class CollisionServer {
   private collisions: AbstractCollision[] = []
@@ -40,14 +41,12 @@ export class CollisionServer {
         right.overleaps(left.shape)
       ) {
         this.cache.setCache(left, right)
-        left.parent.emitter.emit("onCollision", right)
-        right.parent.emitter.emit("onCollision", left)
+        left.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION, right)
+        right.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION, left)
         return true
       }
       return false
     }
-
-    // TODO: bug do shape 0, 0!!!!
 
     const testBodyEnter = (
       left: AbstractCollision,
@@ -57,8 +56,8 @@ export class CollisionServer {
         left && right &&
         !this.cache.cacheHit(left, right) && colliding(left, right)
       ) {
-        left.parent.emitter.emit("onCollisionEnter", right)
-        right.parent.emitter.emit("onCollisionEnter", left)
+        left.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_ENTER, right)
+        right.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_ENTER, left)
       }
     }
 
@@ -70,8 +69,8 @@ export class CollisionServer {
         left && right &&
         this.cache.cacheHit(left, right) && !colliding(left, right)
       ) {
-        left.parent.emitter.emit("onCollisionExit", right)
-        right.parent.emitter.emit("onCollisionExit", left)
+        left.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_EXIT, right)
+        right.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_EXIT, left)
         this.cache.removeCache(left, right)
       }
     }

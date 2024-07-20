@@ -1,6 +1,6 @@
+import { Pickable } from "app/typings"
 import { AbstractGameObject, Textures } from "core"
 import { Assets, Spritesheet } from "pixi.js"
-import { Pickable } from "typings"
 
 export class Pickup extends AbstractGameObject implements Pickable {
   addAnimatedSprite(textures: Textures, name: string) {

@@ -1,6 +1,6 @@
-import { Actions } from "core"
 import { KeyboardInput } from "core/KeyboardInput"
 import { Ticker, utils } from "pixi.js"
+import { InputActionsEnum } from "./enums"
 
 import settings from "res/settings.json"
 
@@ -27,9 +27,9 @@ class GameInputHandler extends utils.EventEmitter {
 
     this.ticker = Ticker.shared
     this.ticker.add(() => {
-      for (const act in Actions) {
-        this.isActionPressed(act as Actions)
-        this.isActionReleased(act as Actions)
+      for (const act in InputActionsEnum) {
+        this.isActionPressed(act as InputActionsEnum)
+        this.isActionReleased(act as InputActionsEnum)
       }
     })
     this.ticker.start()
@@ -49,7 +49,7 @@ class GameInputHandler extends utils.EventEmitter {
    * @param action The previus configured action name string
    * @returns `true` if is pressed or `false`.
    */
-  isActionPressed(action: Actions): boolean {
+  isActionPressed(action: InputActionsEnum): boolean {
     const key = settings?.Keyboard[action]
     const isKeyDown = this.keyboardInput.isKeyDown(key)
     if (isKeyDown) {
@@ -66,7 +66,7 @@ class GameInputHandler extends utils.EventEmitter {
   * @param action The previus configured action name string
   * @returns `true` if is released or `false`.
   */
-  isActionReleased(action: Actions): boolean {
+  isActionReleased(action: InputActionsEnum): boolean {
     const key = settings?.Keyboard[action]
     const isKeyUp = this.keyboardInput.isKeyUp(key)
     if (isKeyUp) {

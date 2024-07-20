@@ -25,3 +25,11 @@ export interface Spawner {
   spawn(point: Point): Promise<void> | void
   revoke(): Promise<void> | void
 }
+
+export interface Destructible {
+  takeDamage(value: number): void
+}
+
+export interface Restorable {
+  heal(value: number): void
+}

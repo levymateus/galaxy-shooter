@@ -1,9 +1,9 @@
+import { Spawner } from "app/typings"
 import { Context } from "core"
 import { Asteroid } from "entities/Asteroid"
 import Player from "entities/Player"
 import { Scene } from "managers/SceneManager"
 import { Point } from "pixi.js"
-import { Spawner } from "typings"
 import { MathUtils } from "utils/utils"
 
 class AsteroidsSpawner implements Spawner {

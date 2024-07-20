@@ -1,11 +1,14 @@
-import { Actions, Context, Input, Timer } from "core"
+import { Context, Input, Timer } from "core"
 import { AbstractCollision } from "core/Collision"
+import { InputActionsEnum } from "core/enums"
 import MainShip, { MainShipAutoCannonWeapon } from "./MainShip"
 import {
   SpaceShipBase,
   SpaceShipFullHealth,
   SpaceShipSpawning
 } from "./SpaceShip"
+import { EntityUtils } from "utils/utils"
+import { Asteroid } from "./Asteroid"
 
 export default class Player extends MainShip {
   private debounce: Timer
@@ -43,17 +46,17 @@ export default class Player extends MainShip {
 
     const canMove = !(this.baseState instanceof SpaceShipSpawning)
 
-    if (canMove && Input.isActionPressed(Actions.MOVE_UP))
+    if (canMove && Input.isActionPressed(InputActionsEnum.MOVE_UP))
       this.velocity.y = -this.speed.y
-    if (canMove && Input.isActionPressed(Actions.MOVE_RIGHT))
+    if (canMove && Input.isActionPressed(InputActionsEnum.MOVE_RIGHT))
       this.velocity.x = this.speed.x
-    if (canMove && Input.isActionPressed(Actions.MOVE_LEFT))
+    if (canMove && Input.isActionPressed(InputActionsEnum.MOVE_LEFT))
       this.velocity.x = -this.speed.x
-    if (canMove && Input.isActionPressed(Actions.MOVE_DOWN))
+    if (canMove && Input.isActionPressed(InputActionsEnum.MOVE_DOWN))
       this.velocity.y = this.speed.y
 
     if (this.weapon instanceof MainShipAutoCannonWeapon) this.weapon.fire()
-    else if (Input.isActionPressed(Actions.WEAPON_FIRE)) this.weapon?.fire()
+    else if (Input.isActionPressed(InputActionsEnum.WEAPON_FIRE)) this.weapon?.fire()
 
     this.move(
       this.velocity.x * delta,
@@ -68,7 +71,9 @@ export default class Player extends MainShip {
     }
   }
 
-  onEnterBody(_: AbstractCollision): void {
-    this.takeDamage(100)
+  onEnterBody(collision: AbstractCollision): void {
+    if (EntityUtils.is(collision.parent, Asteroid)) {
+      (collision.parent as Asteroid).takeDamage(100)
+    }
   }
 }
