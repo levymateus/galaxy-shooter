@@ -1,4 +1,4 @@
-import { Circle } from "pixi.js"
+import { Circle, IDestroyOptions } from "pixi.js"
 import { AbstractCollision } from "./Collision"
 import { Context } from "./Context"
 import { CollisionEventsEnum } from "./enums"
@@ -31,9 +31,20 @@ export class AbstractRigidBody extends AbstractGameObject implements RigidBody {
     )
   }
 
-  onEnterBody(_: Collideable): void { }
+  destroy(options?: boolean | IDestroyOptions | undefined): void {
+    this.collision.disable()
+    super.destroy(options)
+  }
 
-  onCollide(_: Collideable): void { }
+  onEnterBody(_: Collideable): void {
+    throw new Error("Method not implemented!")
+  }
 
-  onExitBody(_: Collideable): void { }
+  onCollide(_: Collideable): void {
+    throw new Error("Method not implemented!")
+  }
+
+  onExitBody(_: Collideable): void {
+    throw new Error("Method not implemented!")
+  }
 }

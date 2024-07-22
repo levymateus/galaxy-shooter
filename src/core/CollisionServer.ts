@@ -7,87 +7,83 @@ import { CollisionEventsEnum } from "./enums"
 export class CollisionServer {
   private collisions: AbstractCollision[] = []
   private cache: CollisionCache = new CollisionCache()
-  private running: boolean = false
 
   constructor(
     private readonly manager: Manager,
   ) {
     this.manager.emitter.on(
-      "addCollision",
-      (collision) => {
-        this.collisions.push(collision)
-      }
+      CollisionEventsEnum.ON_COLLISION_ADD,
+      this.add,
+      this
     )
+
     this.manager.emitter.on(
-      "removeCollision",
-      (collision) => {
-        const index = this.collisions.findIndex((col) => col.equal(collision))
-        this.collisions.splice(index, 1)
-      }
+      CollisionEventsEnum.ON_COLLISION_REMOVE,
+      this.remove,
+      this,
     )
+
     Ticker.shared.add(this.onUpdate, this)
   }
 
+  private add(collision: AbstractCollision) {
+    this.collisions.push(collision)
+  }
 
-  private async asyncTest() {
-    this.running = true
+  private remove(collision: AbstractCollision) {
+    const index = this.collisions.findIndex((col) => col === collision)
+    if (index >= 0) this.collisions.splice(index)
+  }
 
-    const colliding = (
-      left: AbstractCollision,
-      right: AbstractCollision
-    ) => {
-      if (
-        left &&
-        right.overleaps(left.shape)
-      ) {
-        this.cache.setCache(left, right)
-        left.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION, right)
-        right.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION, left)
-        return true
-      }
-      return false
+  private colliding(
+    left: AbstractCollision,
+    right: AbstractCollision
+  ) {
+    if (left.overleaps(right.shape) && right.overleaps(left.shape)) {
+      left.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION, right)
+      right.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION, left)
+      return true
     }
+    return false
+  }
 
-    const testBodyEnter = (
-      left: AbstractCollision,
-      right: AbstractCollision
-    ) => {
-      if (
-        left && right &&
-        !this.cache.cacheHit(left, right) && colliding(left, right)
-      ) {
-        left.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_ENTER, right)
-        right.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_ENTER, left)
-      }
+  private testBodyEnter(
+    left: AbstractCollision,
+    right: AbstractCollision
+  ) {
+    if (!this.cache.cacheHit(left, right) && this.colliding(left, right)) {
+      left.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_ENTER, right)
+      right.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_ENTER, left)
+      this.cache.setCache(left, right)
+      return true
     }
+    return false
+  }
 
-    const testBodyExit = (
-      left: AbstractCollision,
-      right: AbstractCollision
-    ) => {
-      if (
-        left && right &&
-        this.cache.cacheHit(left, right) && !colliding(left, right)
-      ) {
-        left.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_EXIT, right)
-        right.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_EXIT, left)
-        this.cache.removeCache(left, right)
-      }
+  private testBodyExit(
+    left: AbstractCollision,
+    right: AbstractCollision
+  ) {
+    if (this.cache.cacheHit(left, right) && !this.colliding(left, right)) {
+      left.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_EXIT, right)
+      right.parent.emitter.emit(CollisionEventsEnum.ON_COLLISION_EXIT, left)
+      this.cache.removeCache(left, right)
+      return true
     }
-
-    this.collisions.forEach((left, index, collisions) => {
-      const right = collisions[index + 1]
-      left && right && testBodyEnter(left, right)
-      left && right && testBodyExit(left, right)
-      left && right && colliding(left, right)
-      left && right && colliding(right, left)
-    })
-
-    this.running = false
+    return false
   }
 
   onUpdate() {
-    if (!this.running)
-      this.asyncTest()
+    const array = [...this.collisions]
+    for (let i = 0; i <= array.length; i += 1) {
+      for (let j = 0; j <= array.length; j += 1) {
+        const left = array[i]
+        const right = array[j]
+        if (left && right && !left.equal(right)) {
+          const isEnter = this.testBodyEnter(left, right)
+          !isEnter && this.testBodyExit(left, right)
+        }
+      }
+    }
   }
 }

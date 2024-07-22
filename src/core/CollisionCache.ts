@@ -4,7 +4,7 @@ export class CollisionCache {
   private map: Map<string, [AbstractCollision, AbstractCollision]> = new Map()
 
   private cacheId(...args: [AbstractCollision, AbstractCollision]) {
-    return [args[0], args[1]].join('-')
+    return [args[0].id, args[1].id].join('-')
   }
 
   setCache(...args: [AbstractCollision, AbstractCollision]) {

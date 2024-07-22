@@ -21,6 +21,7 @@ import VFX from "scenes/VFX"
 import { HUD, Menu } from "ui"
 import devtools from "./config"
 import { isPauseOnBlurEnabled } from "./feats"
+import { EventNamesEnum } from "./enums"
 
 const appOptions = {
   resizeTo: window,
@@ -137,7 +138,7 @@ emitter.on("gameOver", () => {
   new Timer().timeout(gotoGameOverScene, 2000)
 })
 
-emitter.on("dispathVFX", (config) => {
+emitter.on(EventNamesEnum.DISPATCH_VFX, (config) => {
   vfxManager.emit(config)
 })
 

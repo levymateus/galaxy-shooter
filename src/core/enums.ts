@@ -1,7 +1,9 @@
 export enum CollisionEventsEnum {
   ON_COLLISION = "on_collision_event",
   ON_COLLISION_ENTER = "on_collision_enter_event",
-  ON_COLLISION_EXIT = "on_collision_ext_event",
+  ON_COLLISION_EXIT = "on_collision_exit_event",
+  ON_COLLISION_ADD = "on_collision_add_event",
+  ON_COLLISION_REMOVE = "on_collision_remove_event",
 }
 
 export enum InputActionsEnum {

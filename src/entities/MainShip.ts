@@ -22,6 +22,7 @@ import SpaceShip, {
   SpaceShipEngineIdle,
 } from "./SpaceShip"
 import { ISpaceShipWeapon, SpaceShipWeapon } from "./SpaceShipWeapon"
+import { EventNamesEnum } from "app/enums"
 
 export class MainShipAutoCannonWeapon extends SpaceShipWeapon {
   constructor(
@@ -257,7 +258,7 @@ export default class MainShip extends SpaceShip {
       const destruction = createSmallExplosion()
       destruction.pos.x = this.position.x
       destruction.pos.y = this.position.y
-      this.context.emitter.emit('dispathVFX', destruction)
+      this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, destruction)
       this.collision.disable()
       this.destroy({ children: true })
     }

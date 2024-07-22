@@ -1,25 +1,27 @@
+import { EventNamesEnum } from "app/enums"
 import { Context, Input, Timer } from "core"
 import { AbstractCollision } from "core/Collision"
 import { InputActionsEnum } from "core/enums"
+import createSmallExplosion from "vfx/smallExplosion"
 import MainShip, { MainShipAutoCannonWeapon } from "./MainShip"
 import {
   SpaceShipBase,
   SpaceShipFullHealth,
   SpaceShipSpawning
 } from "./SpaceShip"
-import { EntityUtils } from "utils/utils"
-import { Asteroid } from "./Asteroid"
 
 export default class Player extends MainShip {
   private debounce: Timer
 
   async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
-
     this.debounce = new Timer()
-
     this.position.set(0, 0)
+    this.speed.set(2, 2)
+    this.blink()
+  }
 
+  private blink() {
     const blinkTimer = new Timer()
 
     blinkTimer.interval(() => {
@@ -31,7 +33,7 @@ export default class Player extends MainShip {
       blinkTimer.stop()
       this.baseState = new SpaceShipFullHealth(this)
       this.collision.enable()
-    }, 500)
+    }, 1000)
   }
 
   onUpdate(delta: number): void {
@@ -71,9 +73,18 @@ export default class Player extends MainShip {
     }
   }
 
-  onEnterBody(collision: AbstractCollision): void {
-    if (EntityUtils.is(collision.parent, Asteroid)) {
-      (collision.parent as Asteroid).takeDamage(100)
-    }
+  onEnterBody(_: AbstractCollision) {
+    const destruction = createSmallExplosion()
+    destruction.pos.x = this.position.x
+    destruction.pos.y = this.position.y
+    this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, destruction)
+  }
+
+  onCollide(_: AbstractCollision) {
+    // code...
+  }
+
+  onExitBody(_: AbstractCollision) {
+    // code...
   }
 }

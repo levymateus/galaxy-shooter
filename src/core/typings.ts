@@ -3,8 +3,6 @@ import {
   AssetsManifest,
   Circle,
   Container,
-  Graphics,
-  Rectangle,
   Resource,
   Texture,
 } from "pixi.js"
@@ -70,7 +68,7 @@ export interface Unique {
 }
 
 export interface Collideable {
-  overleaps(shape: Circle | Rectangle): boolean
+  overleaps(shape: Circle): boolean
 }
 
 export interface RigidBody {
@@ -80,7 +78,7 @@ export interface RigidBody {
 }
 
 export interface Drawable {
-  draw(graphics: Graphics): void
+  draw(): void
 }
 
 export interface Switchable {

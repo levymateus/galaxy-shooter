@@ -1,5 +1,3 @@
-import { uuid } from "utils/uuid"
-
 export const Id = () => {
   return function (target: Object, propertyKey: string) {
     let value: string
@@ -9,7 +7,7 @@ export const Id = () => {
     }
 
     const setter = function () {
-      value = uuid()
+      value = crypto.randomUUID()
     }
 
     Object.defineProperty(target, propertyKey, {

@@ -1,13 +1,16 @@
+import { isDestructible } from "app/is"
 import { Destructible, Restorable } from "app/typings"
-import { AbstractRigidBody, Context } from "core"
+import { AbstractRigidBody, Context, Timer, Unique } from "core"
 import { AbstractCollision } from "core/Collision"
 import { AnimatedSprite, Assets, Point, Sprite } from "pixi.js"
-import { EntityUtils, MathUtils } from "utils/utils"
-import Player from "./Player"
+import { MathUtils } from "utils/utils"
+import { uuid } from "utils/uuid"
 
 export class Asteroid
   extends AbstractRigidBody
-  implements Destructible, Restorable {
+  implements Destructible, Restorable, Unique {
+  id = uuid()
+
   velocity: Point
   speed: Point
   rotate: number
@@ -25,25 +28,42 @@ export class Asteroid
     this.addChild(base)
 
     this.collision.shape.radius = 20
-    this.collision.enable()
 
-    this.emitter.on("outOfBounds", this.onOutOfBounds, this)
+    this.blink()
+  }
+
+  private blink() {
+    const blinkTimer = new Timer()
+
+    blinkTimer.interval(() => {
+      const sprite = this.getChildByName("asteroid_base")
+      if (sprite) sprite.alpha = sprite.alpha ? 0 : 1
+    }, 250)
+
+    new Timer().timeout(() => {
+      blinkTimer.stop()
+      this.collision.enable()
+    }, 1000)
   }
 
   onEnterBody(collision: AbstractCollision) {
-    if (EntityUtils.is(collision.parent, Player)) {
-      (collision.parent as Player).takeDamage(1000)
+    if (isDestructible(collision.parent)) {
+      collision.parent.takeDamage(0)
     }
+  }
+
+  onCollide(_: AbstractCollision) {
+    // code...
+  }
+
+  onExitBody(_: AbstractCollision) {
+    // code...
   }
 
   onUpdate(dt: number): void {
     this.x += this.velocity.x * this.speed.x * dt
     this.y += this.velocity.y * this.speed.y * dt
     this.angle += this.rotate
-  }
-
-  onOutOfBounds() {
-    this.destroy({ children: true })
   }
 
   explodeAndDestroy() {
@@ -81,5 +101,9 @@ export class Asteroid
     if (this.health >= this.maxHealth) {
       this.health = this.maxHealth
     }
+  }
+
+  equal(object: Unique): boolean {
+    return object.id === this.id
   }
 }
