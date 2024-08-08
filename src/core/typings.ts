@@ -57,6 +57,17 @@ export interface ActivityElementCtor {
   new(ctx: Context, name: string): ActivityElement
 }
 
+export interface Observable {
+  on(event: string, callback: (<T>(...args: T[]) => void)): void
+}
+
+export interface Input {
+  isKeyPressed(key: string): boolean
+  isKeyReleased(key: string): boolean
+  isKeyDown(key: string): boolean
+  isKeyUp(key: string): boolean
+}
+
 export interface InputEvents {
   onActionPressed: [action: InputActionsEnum]
   onActionReleased: [action: InputActionsEnum]

@@ -214,6 +214,7 @@ export class SpaceShipEngine
   static CANONICAL_NAME = "SpaceShipBaseEngine"
   state: ISpaceShipEngine
   spritesheets: Record<"engine_power" | "engine_idle", Spritesheet>
+  isPowerOn = false
 
   constructor(
     public readonly parent: SpaceShip,
@@ -250,10 +251,12 @@ export class SpaceShipEngine
 
   powerOn(): void {
     this.state.powerOn()
+    this.isPowerOn = true
   }
 
   powerOff(): void {
     this.state.powerOff()
+    this.isPowerOn = false
   }
 
   removeSprite(name: string): void {

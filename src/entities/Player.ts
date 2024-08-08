@@ -1,37 +1,38 @@
 import { EventNamesEnum } from "app/enums"
-import { Context, Input, Timer } from "core"
+import { Context, InputSingleton, Timer } from "core"
 import { AbstractCollision } from "core/Collision"
-import { InputActionsEnum } from "core/enums"
 import createSmallExplosion from "vfx/smallExplosion"
-import MainShip, { MainShipAutoCannonWeapon } from "./MainShip"
+import MainShip from "./MainShip"
 import {
   SpaceShipBase,
+  SpaceShipEngine,
   SpaceShipFullHealth,
   SpaceShipSpawning
 } from "./SpaceShip"
 
 export default class Player extends MainShip {
-  private debounce: Timer
+  private debouncedVelocity = new Timer()
+  private debouncedInput = new Timer()
+  private blinkTimer = new Timer()
 
   async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
-    this.debounce = new Timer()
     this.position.set(0, 0)
-    this.speed.set(2, 2)
+    this.speed.set(1.0, 1.0)
     this.blink()
   }
 
   private blink() {
-    const blinkTimer = new Timer()
-
-    blinkTimer.interval(() => {
+    this.blinkTimer.interval(() => {
       const sprite = this.getChildByName("BaseSpaceShip")
       if (sprite) sprite.alpha = sprite.alpha ? 0 : 1
     }, 250)
 
-    new Timer().timeout(() => {
-      blinkTimer.stop()
+    this.blinkTimer.timeout(() => {
+      this.blinkTimer.stop()
       this.baseState = new SpaceShipFullHealth(this)
+      this.spaceShipEngine = new SpaceShipEngine(this, this.context)
+      this.spaceShipEngine.powerOff()
       this.collision.enable()
     }, 1000)
   }
@@ -42,23 +43,43 @@ export default class Player extends MainShip {
     if (this.velocity.x >= 0) this.velocity.x -= this.friction.x
     if (this.velocity.x <= 0) this.velocity.x += this.friction.x
 
-    if (Input.pressed) this.debounce.debounce(
-      () => this.velocity.set(0, 0), 500
+    if (InputSingleton.pressed) this.debouncedVelocity.debounce(
+      () => this.velocity.set(0, 0), 1000
     )
 
     const canMove = !(this.baseState instanceof SpaceShipSpawning)
 
-    if (canMove && Input.isActionPressed(InputActionsEnum.MOVE_UP))
+    if (canMove && InputSingleton.isKeyPressed("w")) {
       this.velocity.y = -this.speed.y
-    if (canMove && Input.isActionPressed(InputActionsEnum.MOVE_RIGHT))
-      this.velocity.x = this.speed.x
-    if (canMove && Input.isActionPressed(InputActionsEnum.MOVE_LEFT))
-      this.velocity.x = -this.speed.x
-    if (canMove && Input.isActionPressed(InputActionsEnum.MOVE_DOWN))
-      this.velocity.y = this.speed.y
+    }
 
-    if (this.weapon instanceof MainShipAutoCannonWeapon) this.weapon.fire()
-    else if (Input.isActionPressed(InputActionsEnum.WEAPON_FIRE)) this.weapon?.fire()
+    if (canMove && InputSingleton.isKeyPressed("s")) {
+      this.velocity.y = this.speed.y
+    }
+
+    if (canMove && InputSingleton.isKeyPressed("d")) {
+      this.velocity.x = this.speed.x
+    }
+
+    if (canMove && InputSingleton.isKeyPressed("a")) {
+      this.velocity.x = -this.speed.x
+    }
+
+    if (this.spaceShipEngine) {
+      if (
+        InputSingleton.isKeyPressed("w", "d", "a") &&
+        !this.spaceShipEngine.isPowerOn
+      ) {
+        this.spaceShipEngine.powerOn()
+      }
+
+      if (InputSingleton.isKeyReleased("w", "d", "a")) {
+        this.debouncedInput.debounce(
+          () => this.spaceShipEngine?.powerOff(),
+          1000
+        )
+      }
+    }
 
     this.move(
       this.velocity.x * delta,
