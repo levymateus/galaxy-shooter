@@ -81,6 +81,25 @@ export default class Player extends MainShip {
       }
     }
 
+    const anchor = this.context.bounds.anchor
+
+    if (
+      this.position.x + 16 >= this.context.bounds.width * anchor.x) {
+      this.position.x = this.context.bounds.x + 32
+    }
+
+    if (this.position.x - 16 <= -(this.context.bounds.width * anchor.x)) {
+      this.position.x = this.context.bounds.width * anchor.x - 32
+    }
+
+    if (this.position.y + 16 >= this.context.bounds.height * anchor.y) {
+      this.position.y = this.context.bounds.y + 32
+    }
+
+    if (this.position.y - 16 <= -(this.context.bounds.height / 2)) {
+      this.position.y = this.context.bounds.height * anchor.y - 32
+    }
+
     this.move(
       this.velocity.x * delta,
       this.velocity.y * delta,
