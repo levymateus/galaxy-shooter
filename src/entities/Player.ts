@@ -13,7 +13,6 @@ import {
 export default class Player extends MainShip {
   private debouncedVelocity = new Timer()
   private debouncedInput = new Timer()
-  private blinkTimer = new Timer()
 
   async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
@@ -23,18 +22,22 @@ export default class Player extends MainShip {
   }
 
   private blink() {
-    this.blinkTimer.interval(() => {
       const sprite = this.getChildByName("BaseSpaceShip")
+
+    const interval = new Timer()
+    const timeout = new Timer()
+
+    interval.interval(() => {
       if (sprite) sprite.alpha = sprite.alpha ? 0 : 1
     }, 250)
 
-    this.blinkTimer.timeout(() => {
-      this.blinkTimer.stop()
+    timeout.timeout(() => {
+      interval.stop()
       this.baseState = new SpaceShipFullHealth(this)
       this.spaceShipEngine = new SpaceShipEngine(this, this.context)
       this.spaceShipEngine.powerOff()
       this.collision.enable()
-    }, 1000)
+    }, 2000)
   }
 
   onUpdate(delta: number): void {
