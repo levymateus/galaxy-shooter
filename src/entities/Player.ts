@@ -1,10 +1,12 @@
 import { EventNamesEnum } from "app/enums"
+import { isDestructible } from "app/is"
 import { Context, InputSingleton, Timer } from "core"
 import { AbstractCollision } from "core/Collision"
 import createSmallExplosion from "vfx/smallExplosion"
 import MainShip, { MainShipAutoCannonWeapon } from "./MainShip"
 import {
   SpaceShipBase,
+  SpaceShipDestroied,
   SpaceShipEngine,
   SpaceShipFullHealth,
   SpaceShipSpawning
@@ -40,6 +42,14 @@ export default class Player extends MainShip {
       this.weapon?.equip()
       this.collision.enable()
     }, 2000)
+  }
+
+  private setToDefault() {
+    this.position.set(0, 0)
+    this.speed.set(1.0, 1.0)
+    this.health = this.maxHealth
+    this.weapon?.unequip()
+    this.spaceShipEngine?.powerOff()
   }
 
   onUpdate(delta: number): void {
@@ -118,13 +128,18 @@ export default class Player extends MainShip {
     if (state instanceof SpaceShipSpawning) {
       console.log("spawn")
     }
+    if (state instanceof SpaceShipDestroied) {
+      this.setToDefault()
+    }
   }
 
-  onEnterBody(_: AbstractCollision) {
-    const destruction = createSmallExplosion()
-    destruction.pos.x = this.position.x
-    destruction.pos.y = this.position.y
-    this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, destruction)
+  onEnterBody(collision: AbstractCollision) {
+    if (isDestructible(collision.parent)) {
+      const destruction = createSmallExplosion()
+      destruction.pos.x = this.position.x
+      destruction.pos.y = this.position.y
+      this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, destruction)
+    }
   }
 
   onCollide(_: AbstractCollision) {

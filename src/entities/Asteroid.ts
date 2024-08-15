@@ -14,8 +14,8 @@ export class Asteroid
   velocity: Point
   speed: Point
   rotate: number
-  health = 1000
-  maxHealth = 1000
+  health = 100
+  maxHealth = 100
 
   async onStart(_: Context): Promise<void> {
     this.velocity = new Point(1, 1)
@@ -47,8 +47,10 @@ export class Asteroid
   }
 
   onEnterBody(collision: AbstractCollision) {
-    if (isDestructible(collision.parent)) {
-      collision.parent.takeDamage(0)
+    const valid = collision.parent.name !== this.name
+
+    if (valid && isDestructible(collision.parent)) {
+      collision.parent.takeDamage(100)
     }
   }
 

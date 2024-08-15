@@ -40,13 +40,11 @@ export class AbstractProjectile
       this.velocity.set(velocity.x, velocity.y)
 
     this.zIndex = -10
-    this.countdown = 5000
+    this.countdown = 500
     this.timer = new Timer()
     this.spritesheet =
       Assets.get<Spritesheet>("mainship_weapons_projectile_auto_cannon_bullet")
-
-    const timer = new Timer()
-    timer.timeout(() => this.collision.enable(), 300)
+    this.collision.enable()
 
     return void context
   }
@@ -81,11 +79,15 @@ export class AbstractProjectile
   }
 
   onEnterBody(collision: AbstractCollision) {
-    if (isDestructible(collision.parent)) {
+    const valid = collision.parent.name !== "Player"
+    if (valid && isDestructible(collision.parent)) {
+      collision.parent.takeDamage(50)
+
       const destruction = createSmallExplosion()
       destruction.pos.x = this.position.x
       destruction.pos.y = this.position.y
       this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, destruction)
+
       this.destroy({ children: true })
     }
   }
