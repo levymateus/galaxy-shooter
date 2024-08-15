@@ -9,7 +9,16 @@ import { UPDATE_PRIORITY } from "pixi.js"
 /**
  * Game Stage Scenes Manager.
  */
-export class SceneManager extends Manager { }
+export class SceneManager extends Manager {
+  suspended = false
+
+  suspend() {
+    if (this.context) {
+      this.context.removeFromParent()
+      this.suspended = true
+    }
+  }
+}
 
 export class Scene implements Activity {
   context: Context

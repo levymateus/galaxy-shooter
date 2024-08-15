@@ -128,6 +128,7 @@ export default class Player extends MainShip {
       this.health = 0
       this.weapon?.unequip()
       this.spaceShipEngine?.powerOff()
+      this.context.emitter.emit("gameOver")
     }
   }
 

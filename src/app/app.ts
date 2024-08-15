@@ -20,8 +20,8 @@ import ParallaxStarryBackground from "scenes/ParallaxStarryBackground"
 import VFX from "scenes/VFX"
 import { HUD, Menu } from "ui"
 import devtools from "./config"
-import { isPauseOnBlurEnabled } from "./feats"
 import { EventNamesEnum } from "./enums"
+import { isPauseOnBlurEnabled } from "./feats"
 
 const appOptions = {
   resizeTo: window,
@@ -123,9 +123,9 @@ export const gotoCatalogScene = async () => {
 
 export const gotoGameOverScene = async () => {
   vfxManager.stop()
-  guiManager.destroy()
   bgManager.suspend()
-  await sceneManager.goto(GameOverScene)
+  sceneManager.suspend()
+  await guiManager.goto(GameOverScene)
 }
 
 export const gotoLoadingScene = async () => {
@@ -136,6 +136,10 @@ export const gotoLoadingScene = async () => {
 
 emitter.on("gameOver", () => {
   new Timer().timeout(gotoGameOverScene, 2000)
+})
+
+emitter.on("startGame", () => {
+  gotoMainScene()
 })
 
 emitter.on(EventNamesEnum.DISPATCH_VFX, (config) => {
