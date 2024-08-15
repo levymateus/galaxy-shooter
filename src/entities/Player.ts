@@ -2,7 +2,7 @@ import { EventNamesEnum } from "app/enums"
 import { Context, InputSingleton, Timer } from "core"
 import { AbstractCollision } from "core/Collision"
 import createSmallExplosion from "vfx/smallExplosion"
-import MainShip from "./MainShip"
+import MainShip, { MainShipAutoCannonWeapon } from "./MainShip"
 import {
   SpaceShipBase,
   SpaceShipEngine,
@@ -18,11 +18,12 @@ export default class Player extends MainShip {
     await super.onStart(ctx)
     this.position.set(0, 0)
     this.speed.set(1.0, 1.0)
+    this.weapon = new MainShipAutoCannonWeapon(this, ctx)
     this.blink()
   }
 
   private blink() {
-      const sprite = this.getChildByName("BaseSpaceShip")
+    const sprite = this.getChildByName("BaseSpaceShip")
 
     const interval = new Timer()
     const timeout = new Timer()
@@ -36,6 +37,7 @@ export default class Player extends MainShip {
       this.baseState = new SpaceShipFullHealth(this)
       this.spaceShipEngine = new SpaceShipEngine(this, this.context)
       this.spaceShipEngine.powerOff()
+      this.weapon?.equip()
       this.collision.enable()
     }, 2000)
   }
@@ -51,6 +53,8 @@ export default class Player extends MainShip {
     )
 
     const canMove = !(this.baseState instanceof SpaceShipSpawning)
+
+    this.weapon?.fire()
 
     if (canMove && InputSingleton.isKeyPressed("w")) {
       this.velocity.y = -this.speed.y

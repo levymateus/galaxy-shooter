@@ -28,11 +28,16 @@ export class CollisionServer {
 
   private add(collision: AbstractCollision) {
     this.collisions.push(collision)
+    this.clean()
+  }
+
+  private clean() {
+    this.collisions.forEach((c) => !c.enabled && this.remove(c))
   }
 
   private remove(collision: AbstractCollision) {
-    const index = this.collisions.findIndex((col) => col === collision)
-    if (index >= 0) this.collisions.splice(index)
+    const index = this.collisions.findIndex((col) => col.id === collision.id)
+    this.collisions.splice(index, 1)
   }
 
   private colliding(

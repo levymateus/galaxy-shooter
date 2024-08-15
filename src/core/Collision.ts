@@ -71,7 +71,5 @@ export class AbstractCollision
    */
   disable(): void {
     this.enabled = false
-    const manager = this.parent.context.getManager()
-    manager.emitter.emit(CollisionEventsEnum.ON_COLLISION_REMOVE, this)
   }
 }

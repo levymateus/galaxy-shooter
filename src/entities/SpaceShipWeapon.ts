@@ -30,7 +30,7 @@ export class SpaceShipWeapon
     this.parent = parent
     this.name = name
     this.ready = true
-    this.countdown = 1000
+    this.countdown = 3000
     this.timer = new Timer()
     this.setupFromSheet(Assets.get<Spritesheet>("mainship_weapons_auto_cannon"))
   }

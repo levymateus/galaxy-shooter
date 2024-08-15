@@ -1,3 +1,4 @@
+import { EventNamesEnum } from "app/enums"
 import { Context } from "core"
 import {
   AnimatedSprite,
@@ -22,7 +23,6 @@ import SpaceShip, {
   SpaceShipEngineIdle,
 } from "./SpaceShip"
 import { ISpaceShipWeapon, SpaceShipWeapon } from "./SpaceShipWeapon"
-import { EventNamesEnum } from "app/enums"
 
 export class MainShipAutoCannonWeapon extends SpaceShipWeapon {
   constructor(
@@ -245,7 +245,7 @@ export default class MainShip extends SpaceShip {
     this.velocity = new Point(0, 0)
     this.speed = new Point(1.00, 1.00)
     this.friction = new Point(0.06, 0.06)
-    this.collision.shape.radius = 16
+    this.collision.shape.radius = 13
   }
 
   changeState(state: SpaceShipBase): void {
