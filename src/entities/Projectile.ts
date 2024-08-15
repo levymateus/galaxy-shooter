@@ -5,6 +5,7 @@ import { AbstractCollision } from "core/Collision"
 import { AnimatedSprite, Assets, Point, Spritesheet } from "pixi.js"
 import { FrameObjects, MathUtils } from "utils/utils"
 import createSmallExplosion from "vfx/smallExplosion"
+import Player from "./Player"
 import { SpaceShipWeapon } from "./SpaceShipWeapon"
 
 export type ProjectileAnimations = Record<"shoot", Textures>
@@ -79,7 +80,7 @@ export class AbstractProjectile
   }
 
   onEnterBody(collision: AbstractCollision) {
-    const valid = collision.parent.name !== "Player"
+    const valid = collision.parent.name !== Player.name
     if (valid && isDestructible(collision.parent)) {
       collision.parent.takeDamage(50)
 

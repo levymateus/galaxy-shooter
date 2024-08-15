@@ -84,7 +84,12 @@ export class CollisionServer {
       for (let j = 0; j <= array.length; j += 1) {
         const left = array[i]
         const right = array[j]
-        if (left && right && !left.equal(right)) {
+        if (
+          left && right &&
+          left.enabled &&
+          right.enabled &&
+          !left.equal(right)
+        ) {
           const isEnter = this.testBodyEnter(left, right)
           !isEnter && this.testBodyExit(left, right)
         }

@@ -89,6 +89,7 @@ export class Asteroid
 
     if (this.health <= 0) {
       this.health = 0
+      this.context.emitter.emit("scoreIncrement", 100)
       this.explodeAndDestroy()
     }
 

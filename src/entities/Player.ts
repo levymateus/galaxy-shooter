@@ -44,15 +44,9 @@ export default class Player extends MainShip {
     }, 2000)
   }
 
-  private setToDefault() {
-    this.position.set(0, 0)
-    this.speed.set(1.0, 1.0)
-    this.health = this.maxHealth
-    this.weapon?.unequip()
-    this.spaceShipEngine?.powerOff()
-  }
-
   onUpdate(delta: number): void {
+    if (this instanceof SpaceShipDestroied) return
+
     if (this.velocity.y >= 0) this.velocity.y -= this.friction.y
     if (this.velocity.y <= 0) this.velocity.y += this.friction.y
     if (this.velocity.x >= 0) this.velocity.x -= this.friction.x
@@ -129,7 +123,11 @@ export default class Player extends MainShip {
       console.log("spawn")
     }
     if (state instanceof SpaceShipDestroied) {
-      this.setToDefault()
+      this.position.set(0, 0)
+      this.speed.set(0, 0)
+      this.health = 0
+      this.weapon?.unequip()
+      this.spaceShipEngine?.powerOff()
     }
   }
 
