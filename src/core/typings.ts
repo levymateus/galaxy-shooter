@@ -1,5 +1,12 @@
 import { Context } from "core"
-import { AssetsManifest, Container, Resource, Texture } from "pixi.js"
+import {
+  AssetsManifest,
+  Circle,
+  Container,
+  Resource,
+  Texture,
+} from "pixi.js"
+import { InputActionsEnum } from "./enums"
 
 export type SceneOptions = {
   manifest?: string | AssetsManifest
@@ -32,14 +39,6 @@ export type Textures = Texture<Resource>[]
 
 export type ActivityElement = Container & Activity
 
-export enum Actions {
-  MOVE_UP = "MOVE_UP",
-  MOVE_DOWN = "MOVE_DOWN",
-  MOVE_LEFT = "MOVE_LEFT",
-  MOVE_RIGHT = "MOVE_RIGHT",
-  WEAPON_FIRE = "WEAPON_FIRE",
-}
-
 /**
  * The `Activity` implements a basic lifecycles behaviour,
  * managed by a `Manager`, providing a `Context` to the children.
@@ -58,7 +57,42 @@ export interface ActivityElementCtor {
   new(ctx: Context, name: string): ActivityElement
 }
 
+export interface Observable {
+  on(event: string, callback: (<T>(...args: T[]) => void)): void
+}
+
+export interface Input {
+  isKeyPressed(key: string): boolean
+  isKeyReleased(key: string): boolean
+  isKeyDown(key: string): boolean
+  isKeyUp(key: string): boolean
+}
+
 export interface InputEvents {
-  onActionPressed: [action: Actions]
-  onActionReleased: [action: Actions]
+  onActionPressed: [action: InputActionsEnum]
+  onActionReleased: [action: InputActionsEnum]
+}
+
+export interface Unique {
+  id: string
+  equal(u: Unique): boolean
+}
+
+export interface Collideable {
+  overleaps(shape: Circle): boolean
+}
+
+export interface RigidBody {
+  onEnterBody(collision: Collideable): void
+  onCollide(collision: Collideable): void
+  onExitBody(collision: Collideable): void
+}
+
+export interface Drawable {
+  draw(): void
+}
+
+export interface Switchable {
+  enable(): void
+  disable(): void
 }

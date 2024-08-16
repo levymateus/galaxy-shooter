@@ -1,16 +1,22 @@
-import { Context, GameObject, Textures, Timer } from "core"
+import { EventNamesEnum } from "app/enums"
+import { isDestructible } from "app/is"
+import { AbstractRigidBody, Context, Textures, Timer } from "core"
+import { AbstractCollision } from "core/Collision"
 import { AnimatedSprite, Assets, Point, Spritesheet } from "pixi.js"
 import { FrameObjects, MathUtils } from "utils/utils"
+import createSmallExplosion from "vfx/smallExplosion"
+import Player from "./Player"
 import { SpaceShipWeapon } from "./SpaceShipWeapon"
 
 export type ProjectileAnimations = Record<"shoot", Textures>
 
-export interface IProjectile {
+export interface AbstractProjectile {
   animations: ProjectileAnimations
   shoot(): void
 }
 
-export class Projectile extends GameObject implements IProjectile {
+export class AbstractProjectile
+  extends AbstractRigidBody implements AbstractProjectile {
   animations: ProjectileAnimations
   weapon: SpaceShipWeapon
   velocity: Point
@@ -35,10 +41,12 @@ export class Projectile extends GameObject implements IProjectile {
       this.velocity.set(velocity.x, velocity.y)
 
     this.zIndex = -10
-    this.countdown = 5000
+    this.countdown = 500
     this.timer = new Timer()
     this.spritesheet =
       Assets.get<Spritesheet>("mainship_weapons_projectile_auto_cannon_bullet")
+    this.collision.enable()
+
     return void context
   }
 
@@ -59,21 +67,42 @@ export class Projectile extends GameObject implements IProjectile {
   }
 
   startCount() {
-    this.timer.timeout(() => this.destroy({ children: true }), this.countdown)
+    // start count lifetime.
   }
 
   shoot(): void {
     this.setupFromSheet(this.spritesheet)
-    this.startCount()
   }
 
   move(x: number, y: number) {
     this.position.x += x
     this.position.y += y
   }
+
+  onEnterBody(collision: AbstractCollision) {
+    const valid = collision.parent.name !== Player.name
+    if (valid && isDestructible(collision.parent)) {
+      collision.parent.takeDamage(50)
+
+      const destruction = createSmallExplosion()
+      destruction.pos.x = this.position.x
+      destruction.pos.y = this.position.y
+      this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, destruction)
+
+      this.destroy({ children: true })
+    }
+  }
+
+  onCollide(_: AbstractCollision) {
+    // empty
+  }
+
+  onExitBody(_: AbstractCollision) {
+    // empty.
+  }
 }
 
-export class AutoCannonBullet extends Projectile {
+export class AutoCannonBullet extends AbstractProjectile {
   async onStart(
     context: Context,
     ...args: unknown[]
@@ -92,7 +121,7 @@ export class AutoCannonBullet extends Projectile {
   }
 }
 
-export class RocketProjectile extends Projectile {
+export class RocketProjectile extends AbstractProjectile {
   private go: boolean
   private speed: Point
   private static MIN_MAX_SPEED: [Point, Point] = [
@@ -137,7 +166,7 @@ export class RocketProjectile extends Projectile {
   }
 }
 
-export class ZapperProjectile extends Projectile {
+export class ZapperProjectile extends AbstractProjectile {
   length: number
 
   async onStart(
@@ -174,7 +203,7 @@ export class ZapperProjectile extends Projectile {
   }
 }
 
-export class BigGunProjectile extends Projectile {
+export class BigGunProjectile extends AbstractProjectile {
   speed: Point
   private go: boolean
   private static MIN_MAX_SPEED: [Point, Point] = [
@@ -219,7 +248,7 @@ export class BigGunProjectile extends Projectile {
   }
 }
 
-export class KlaEdBullet extends Projectile {
+export class KlaEdBullet extends AbstractProjectile {
   speed: Point
   private go: boolean
   private static MIN_MAX_SPEED: [Point, Point] = [

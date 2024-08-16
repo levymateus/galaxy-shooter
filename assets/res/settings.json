@@ -1,10 +1,10 @@
 {
   "Keyboard": {
-    "MOVE_UP": "w",
-    "MOVE_DOWN": "s",
-    "MOVE_LEFT": "a",
-    "MOVE_RIGHT": "d",
-    "WEAPON_FIRE": " "
+    "input_move_up": "w",
+    "input_move_down": "s",
+    "input_move_left": "a",
+    "input_move_right": "d",
+    "input_weapon_fire": " "
   },
   "Mouse": {
     "MOVE_UP": null,

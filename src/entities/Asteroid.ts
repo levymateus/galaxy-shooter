@@ -1,17 +1,23 @@
-import { Context, GameObject } from "core"
+import { isDestructible } from "app/is"
+import { Destructible, Restorable } from "app/typings"
+import { AbstractRigidBody, Context, Timer, Unique } from "core"
+import { AbstractCollision } from "core/Collision"
 import { AnimatedSprite, Assets, Point, Sprite } from "pixi.js"
 import { MathUtils } from "utils/utils"
+import { uuid } from "utils/uuid"
 
-export class Asteroid extends GameObject {
+export class Asteroid
+  extends AbstractRigidBody
+  implements Destructible, Restorable, Unique {
+  id = uuid()
+
   velocity: Point
   speed: Point
   rotate: number
+  health = 100
+  maxHealth = 100
 
-  async onStart(ctx: Context): Promise<void> {
-    this.position.set(
-      MathUtils.randf(ctx.bounds.x, ctx.bounds.right),
-      ctx.bounds.y,
-    )
+  async onStart(_: Context): Promise<void> {
     this.velocity = new Point(1, 1)
     this.speed = new Point(0, 1)
     this.rotate = MathUtils.randf(0, 1)
@@ -21,22 +27,45 @@ export class Asteroid extends GameObject {
     base.anchor.set(0.5)
     this.addChild(base)
 
-    this.emitter.on("outOfBounds", this.onOutOfBounds, this)
-    this.emitter.on("onCollide", this.onCollide, this)
+    this.collision.shape.radius = 20
+
+    this.blink()
+  }
+
+  private blink() {
+    const blinkTimer = new Timer()
+
+    blinkTimer.interval(() => {
+      const sprite = this.getChildByName("asteroid_base")
+      if (sprite) sprite.alpha = sprite.alpha ? 0 : 1
+    }, 250)
+
+    new Timer().timeout(() => {
+      blinkTimer.stop()
+      this.collision.enable()
+    }, 1000)
+  }
+
+  onEnterBody(collision: AbstractCollision) {
+    const valid = collision.parent.name !== this.name
+
+    if (valid && isDestructible(collision.parent)) {
+      collision.parent.takeDamage(100)
+    }
+  }
+
+  onCollide(_: AbstractCollision) {
+    // code...
+  }
+
+  onExitBody(_: AbstractCollision) {
+    // code...
   }
 
   onUpdate(dt: number): void {
     this.x += this.velocity.x * this.speed.x * dt
     this.y += this.velocity.y * this.speed.y * dt
     this.angle += this.rotate
-  }
-
-  onOutOfBounds() {
-    this.destroy({ children: true })
-  }
-
-  onCollide() {
-    // empty
   }
 
   explodeAndDestroy() {
@@ -50,7 +79,34 @@ export class Asteroid extends GameObject {
     sprite.onComplete = () => {
       this.destroy({ children: true })
     }
+    this.collision.disable()
     this.addChild(sprite)
     sprite.play()
+  }
+
+  takeDamage(value: number): void {
+    this.health -= value
+
+    if (this.health <= 0) {
+      this.health = 0
+      this.context.emitter.emit("scoreIncrement", 100)
+      this.explodeAndDestroy()
+    }
+
+    if (this.health >= this.maxHealth) {
+      this.health = this.maxHealth
+    }
+  }
+
+  heal(value: number): void {
+    this.health += value
+
+    if (this.health >= this.maxHealth) {
+      this.health = this.maxHealth
+    }
+  }
+
+  equal(object: Unique): boolean {
+    return object.id === this.id
   }
 }

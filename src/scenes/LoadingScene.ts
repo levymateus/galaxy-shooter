@@ -1,6 +1,5 @@
+import { EventNamesEnum } from "app/enums"
 import { Context } from "core"
-import { isCatalogSceneEnabled } from "feats"
-import { gotoCatalogScene, gotoMainScene } from "index"
 import { Assets, AssetsManifest } from "pixi.js"
 import manifest from "res/manifest.json"
 import { TextFactory } from "ui/Text"
@@ -13,6 +12,7 @@ export default class LoadingScene extends Scene {
   async onStart(ctx: Context) {
     this.context = ctx
     this.context.anchor.set(-0.5)
+    this.context.visible = true
     this.bundleIds = [
       "enviroments_bundle",
       "mainship_bundle",
@@ -36,11 +36,20 @@ export default class LoadingScene extends Scene {
     text.anchor.set(0.5)
     this.context.addChild(text)
 
-    if (isCatalogSceneEnabled) return await gotoCatalogScene()
-    return await gotoMainScene()
+    await this.gotoMainMenu()
+  }
+
+  async gotoMainMenu() {
+    this.context.emitter.emit(EventNamesEnum.MAIN_MENU)
+
+    // the visible false solve the
+    // persistent loading scene after first main menu
+    this.context.visible = false
   }
 
   onUpdate(): void { }
+
   async onFinish(): Promise<void> { }
+
   destroy(): void { }
 }

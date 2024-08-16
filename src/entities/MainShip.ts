@@ -1,4 +1,5 @@
-import { Actions, Context, Input, Timer } from "core"
+import { EventNamesEnum } from "app/enums"
+import { Context } from "core"
 import {
   AnimatedSprite,
   Assets,
@@ -9,17 +10,17 @@ import {
 import { FrameObjects } from "utils/utils"
 import createSmallExplosion from "vfx/smallExplosion"
 import {
+  AbstractProjectile,
   AutoCannonBullet,
   BigGunProjectile,
-  Projectile, RocketProjectile, ZapperProjectile
+  RocketProjectile, ZapperProjectile
 } from "./Projectile"
-import { IShield } from "./Shield"
+import { Shield } from "./Shield"
 import SpaceShip, {
-  ISpaceShipBase,
+  SpaceShipBase,
   SpaceShipDestroied,
   SpaceShipEngine,
   SpaceShipEngineIdle,
-  SpaceShipSpawning
 } from "./SpaceShip"
 import { ISpaceShipWeapon, SpaceShipWeapon } from "./SpaceShipWeapon"
 
@@ -53,7 +54,7 @@ export class MainShipAutoCannonWeapon extends SpaceShipWeapon {
   }
 
   fire(): void {
-    if (this.ready) this.shoot()
+    if (this.ready && this.equiped) this.shoot()
     super.fire()
   }
 }
@@ -105,7 +106,7 @@ export class MainShipRocketsWeapon extends SpaceShipWeapon {
   async shoot() {
     const animation = this.getAnimation()
     if (animation && !animation.playing) {
-      const rockets: Projectile[] = [
+      const rockets: AbstractProjectile[] = [
         await this.createBullet(RocketProjectile, 6, 16),
         await this.createBullet(RocketProjectile, -6, 16),
         await this.createBullet(RocketProjectile, 10, 20),
@@ -231,12 +232,10 @@ export class MainShipSuperchargedEngine extends SpaceShipEngine {
 
 export default class MainShip extends SpaceShip {
   weapon: ISpaceShipWeapon | null
-  shield: IShield | null
+  shield: Shield | null
   velocity: Point
   friction: Point
   speed: Point
-
-  private debounce: Timer
 
   async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
@@ -246,47 +245,21 @@ export default class MainShip extends SpaceShip {
     this.velocity = new Point(0, 0)
     this.speed = new Point(1.00, 1.00)
     this.friction = new Point(0.06, 0.06)
-    this.debounce = new Timer()
+    this.collision.shape.radius = 13
   }
 
-  onUpdate(delta: number) {
-    if (this.velocity.y >= 0) this.velocity.y -= this.friction.y
-    if (this.velocity.y <= 0) this.velocity.y += this.friction.y
-    if (this.velocity.x >= 0) this.velocity.x -= this.friction.x
-    if (this.velocity.x <= 0) this.velocity.x += this.friction.x
-
-    if (Input.pressed) this.debounce.debounce(
-      () => this.velocity.set(0, 0), 500
-    )
-
-    const canMove = !(this.baseState instanceof SpaceShipSpawning)
-
-    if (canMove && Input.isActionPressed(Actions.MOVE_UP))
-      this.velocity.y = -this.speed.y
-    if (canMove && Input.isActionPressed(Actions.MOVE_RIGHT))
-      this.velocity.x = this.speed.x
-    if (canMove && Input.isActionPressed(Actions.MOVE_LEFT))
-      this.velocity.x = -this.speed.x
-    if (canMove && Input.isActionPressed(Actions.MOVE_DOWN))
-      this.velocity.y = this.speed.y
-
-    if (this.weapon instanceof MainShipAutoCannonWeapon) this.weapon.fire()
-    else if (Input.isActionPressed(Actions.WEAPON_FIRE)) this.weapon?.fire()
-
-    this.move(this.velocity.x * delta, this.velocity.y * delta)
-  }
-
-  changeState(state: ISpaceShipBase): void {
+  changeState(state: SpaceShipBase): void {
     super.changeState(state)
     this.onChangeState(state)
   }
 
-  onChangeState(state: ISpaceShipBase): void {
+  onChangeState(state: SpaceShipBase): void {
     if (state instanceof SpaceShipDestroied) {
       const destruction = createSmallExplosion()
       destruction.pos.x = this.position.x
       destruction.pos.y = this.position.y
-      this.context.emitter.emit('dispathVFX', destruction)
+      this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, destruction)
+      this.collision.disable()
       this.destroy({ children: true })
     }
   }

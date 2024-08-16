@@ -20,19 +20,18 @@ import { ContainerUtils, MathUtils } from "utils/utils"
 /**
  * The `GameObject` is a base class that extends the `PIXI.Container`.
  */
-export class GameObject
+export class AbstractGameObject
   extends Container implements Activity, ActivityElement {
   readonly name: string
   readonly emitter: utils.EventEmitter
   anchor: ObservablePoint
 
   constructor(
-    protected context: Context,
+    public context: Context,
     name: string,
   ) {
     super()
     this.name = name
-    this.context = context
     this.emitter = new utils.EventEmitter()
     this.anchor = new ObservablePoint(
       this.onAnchorUpdate,
@@ -122,7 +121,7 @@ export class GameObject
     this.context.removeChild(this)?.destroy(options)
   }
 
-  clone(): GameObject {
-    return new GameObject(this.context, this.name)
+  clone(): AbstractGameObject {
+    return new AbstractGameObject(this.context, this.name)
   }
 }

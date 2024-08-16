@@ -1,4 +1,6 @@
-import { Context, GameObject, Textures } from "core"
+import { Destructible, Restorable } from "app/typings"
+import { AbstractGameObject, Context, Textures } from "core"
+import { AbstractRigidBody } from "core/RigidBody"
 import {
   AnimatedSprite,
   Assets,
@@ -9,19 +11,16 @@ import {
   Spritesheet
 } from "pixi.js"
 
-export interface ISpaceShipBase {
-  damage(value: number): void
-  heal(value: number): void
-}
+export type SpaceShipBase = Destructible & Restorable
 
-export class SpaceShipFullHealth implements ISpaceShipBase {
+export class SpaceShipFullHealth implements SpaceShipBase {
   constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.spaceShip.addSprite(this.spaceShip.spriteSrcs.health, "BaseSpaceShip")
-    this.damage(0)
+    this.takeDamage(0)
   }
 
-  damage(value: number): void {
+  takeDamage(value: number): void {
     this.spaceShip.health -= value
     if (
       this.spaceShip.health < this.spaceShip.maxHealth
@@ -38,16 +37,16 @@ export class SpaceShipFullHealth implements ISpaceShipBase {
   }
 }
 
-export class SpaceShipFullSlightDamaged implements ISpaceShipBase {
- constructor(public readonly spaceShip: SpaceShip) {
+export class SpaceShipFullSlightDamaged implements SpaceShipBase {
+  constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.spaceShip.addSprite(
       this.spaceShip.spriteSrcs.slight_damaged, "BaseSpaceShip"
     )
-    this.damage(0)
+    this.takeDamage(0)
   }
 
-  damage(value: number): void {
+  takeDamage(value: number): void {
     this.spaceShip.health -= value
     if (
       this.spaceShip.health < this.spaceShip.maxHealth * 0.75
@@ -66,14 +65,14 @@ export class SpaceShipFullSlightDamaged implements ISpaceShipBase {
   }
 }
 
-export class SpaceShipDamaged implements ISpaceShipBase {
-constructor(public readonly spaceShip: SpaceShip) {
+export class SpaceShipDamaged implements SpaceShipBase {
+  constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.spaceShip.addSprite(this.spaceShip.spriteSrcs.damaged, "BaseSpaceShip")
-    this.damage(0)
+    this.takeDamage(0)
   }
 
-  damage(value: number): void {
+  takeDamage(value: number): void {
     this.spaceShip.health -= value
     if (
       this.spaceShip.health < this.spaceShip.maxHealth * 0.5
@@ -92,16 +91,16 @@ constructor(public readonly spaceShip: SpaceShip) {
   }
 }
 
-export class SpaceShipVeryDamaged implements ISpaceShipBase {
+export class SpaceShipVeryDamaged implements SpaceShipBase {
   constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.spaceShip.addSprite(
       this.spaceShip.spriteSrcs.very_damaged, "BaseSpaceShip"
     )
-    this.damage(0)
+    this.takeDamage(0)
   }
 
-  damage(value: number): void {
+  takeDamage(value: number): void {
     this.spaceShip.health -= value
     if (this.spaceShip.health <= 0) {
       this.spaceShip.changeState(new SpaceShipDestroied(this.spaceShip))
@@ -118,13 +117,13 @@ export class SpaceShipVeryDamaged implements ISpaceShipBase {
   }
 }
 
-export class SpaceShipDestroied implements ISpaceShipBase {
+export class SpaceShipDestroied implements SpaceShipBase {
   constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
-    this.damage(0)
+    this.takeDamage(0)
   }
 
-  damage(value: number): void {
+  takeDamage(value: number): void {
     if (this.spaceShip.health < 0) {
       this.spaceShip.health = 0
     }
@@ -190,14 +189,14 @@ export class SpaceShipEngineIdle implements ISpaceShipEngine {
   }
 }
 
-export class SpaceShipSpawning implements ISpaceShipBase {
+export class SpaceShipSpawning implements SpaceShipBase {
   constructor(public readonly spaceShip: SpaceShip) {
     this.spaceShip = spaceShip
     this.spaceShip.addSprite(this.spaceShip.spriteSrcs.health, "BaseSpaceShip")
-    this.damage(0)
+    this.takeDamage(0)
   }
 
-  damage(value: number): void {
+  takeDamage(value: number): void {
     return void value
   }
 
@@ -210,11 +209,12 @@ export class SpaceShipSpawning implements ISpaceShipBase {
  * Mainship base engine.
  */
 export class SpaceShipEngine
-  extends GameObject
+  extends AbstractGameObject
   implements ISpaceShipEngine {
   static CANONICAL_NAME = "SpaceShipBaseEngine"
   state: ISpaceShipEngine
   spritesheets: Record<"engine_power" | "engine_idle", Spritesheet>
+  isPowerOn = false
 
   constructor(
     public readonly parent: SpaceShip,
@@ -251,10 +251,12 @@ export class SpaceShipEngine
 
   powerOn(): void {
     this.state.powerOn()
+    this.isPowerOn = true
   }
 
   powerOff(): void {
     this.state.powerOff()
+    this.isPowerOn = false
   }
 
   removeSprite(name: string): void {
@@ -271,12 +273,12 @@ export class SpaceShipEngine
 }
 
 export default class SpaceShip
-  extends GameObject
-  implements ISpaceShipBase {
-  health: number
+  extends AbstractRigidBody
+  implements SpaceShipBase {
+  health = 100
   velocity: Point
-  maxHealth: number
-  baseState: ISpaceShipBase
+  maxHealth = 100
+  baseState: SpaceShipBase
   spaceShipEngine: SpaceShipEngine | null
   spriteSrcs: Record<
     "health" | "slight_damaged" | "very_damaged" | "damaged", SpriteSource
@@ -284,8 +286,6 @@ export default class SpaceShip
 
   async onStart(ctx: Context): Promise<void> {
     this.sortableChildren = true
-    this.health = 100
-    this.maxHealth = 100
     this.spriteSrcs = {
       health: Assets.get("mainship_base_full_health"),
       damaged: Assets.get("mainship_base_slight_damaged"),
@@ -311,12 +311,12 @@ export default class SpaceShip
     }
   }
 
-  changeState(state: ISpaceShipBase) {
+  changeState(state: SpaceShipBase) {
     this.baseState = state
   }
 
-  damage(value: number): void {
-    this.baseState.damage(value)
+  takeDamage(value: number): void {
+    this.baseState.takeDamage(value)
   }
 
   heal(value: number): void {

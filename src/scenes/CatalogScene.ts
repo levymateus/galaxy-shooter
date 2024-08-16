@@ -1,5 +1,6 @@
 import {
-  Context, GameObject,
+  AbstractGameObject,
+  Context,
 } from "core"
 import KlaEdBomber from "entities/KlaEdBomber"
 import KlaEdFighter from "entities/KlaEdFighter"
@@ -13,7 +14,7 @@ export default class CatalogScene extends Scene {
   async onStart(ctx: Context): Promise<void> {
     super.onStart(ctx)
     ctx.anchor.set(0)
-    const list: GameObject[] = []
+    const list: AbstractGameObject[] = []
     list.push(await ctx.create(MainShip))
     list.push(await ctx.create(KlaEdFighter))
     list.push(await ctx.create(KlaEdScout))

@@ -1,15 +1,15 @@
 import { Context, Textures } from "core"
 import { Assets, Point, SpriteSource } from "pixi.js"
-import { Shield } from "./Shield"
+import { AbstractShield } from "./Shield"
 import SpaceShip, {
-  ISpaceShipBase,
+  SpaceShipBase,
   SpaceShipDestroied,
   SpaceShipEngine,
   SpaceShipEngineIdle,
   SpaceShipFullHealth
 } from "./SpaceShip"
 
-class KlaEdBomberShield extends Shield {
+class KlaEdBomberShield extends AbstractShield {
   constructor(
     public readonly parent: KlaEdBomber,
     ctx: Context
@@ -43,12 +43,12 @@ export default class KlaEdBomber extends SpaceShip {
     this.look(this.velocity.multiply(new Point(100, 100)))
   }
 
-  changeState(state: ISpaceShipBase): void {
+  changeState(state: SpaceShipBase): void {
     super.changeState(state)
     this.onChangeState(state)
   }
 
-  onChangeState(state: ISpaceShipBase): void {
+  onChangeState(state: SpaceShipBase): void {
     if (state instanceof SpaceShipDestroied) {
       const animations = (Assets.get("klaed_bomber_destruction")
         .animations as Record<"destruction", Textures>)
