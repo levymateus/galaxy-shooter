@@ -3,7 +3,6 @@ import "@pixi/math-extras"
 import "styles.css"
 
 import { Group, Stage } from "@pixi/layers"
-import { isMainMenuEnalbed } from "app/feats"
 import { Core, Settings, Surface, Timer } from "core"
 import { CollisionServer } from "core/CollisionServer"
 import { ModuleManager } from "core/ModuleManager"
@@ -19,7 +18,7 @@ import MainMenuScene from "scenes/MainMenuScene"
 import MainScene from "scenes/MainScene"
 import ParallaxStarryBackground from "scenes/ParallaxStarryBackground"
 import VFX from "scenes/VFX"
-import { HUD, Menu } from "ui"
+import { HUD, PauseMenu } from "ui"
 import devtools from "./config"
 import { EventNamesEnum } from "./enums"
 import { isPauseOnBlurEnabled } from "./feats"
@@ -141,6 +140,11 @@ export const gotoLoadingScene = async () => {
   await sceneManager.goto(LoadingScene)
 }
 
+export const gotoPauseMenu = async () => {
+  vfxManager.stop()
+  await guiManager.goto(PauseMenu)
+}
+
 emitter.on(EventNamesEnum.GAME_OVER, () => {
   new Timer().timeout(gotoGameOverScene, 2000)
 })
@@ -157,14 +161,25 @@ emitter.on(EventNamesEnum.DISPATCH_VFX, (config) => {
   vfxManager.emit(config)
 })
 
+emitter.on(EventNamesEnum.PAUSE_GAME, (paused) => {
+  const isValid = guiManager.context?.name !== MainMenuScene.name
+  if (isValid && paused) {
+    gotoPauseMenu()
+  }
+  if (isValid && !paused) {
+    vfxManager.play()
+    guiManager.goto(HUD)
+  }
+})
+
 const addViewEventListener = app.view.addEventListener
-addViewEventListener && addViewEventListener('blur', () => {
-  isMainMenuEnalbed && guiManager.goto(Menu)
-  isMainMenuEnalbed && emitter.emit("appPause", true)
-})
-addViewEventListener && addViewEventListener('focus', () => {
-  isMainMenuEnalbed && guiManager.goto(HUD)
-  isMainMenuEnalbed && emitter.emit("appPause", false)
-})
+
+addViewEventListener && addViewEventListener('keydown',
+  (evt: KeyboardEvent) => {
+    if (evt.key === "Escape") {
+      emitter.emit(EventNamesEnum.PAUSE_GAME, true)
+    }
+  }
+)
 
 gotoLoadingScene()

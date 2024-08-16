@@ -86,6 +86,8 @@ export default class MainScene extends Scene {
 
     this.asteroidsSpawner = new AsteroidsSpawner(ctx)
     this.asteroidsSpawner.spawn()
+
+    console.log('MAIN SCENE START!')
   }
 
   onUpdate(_: number): void {
