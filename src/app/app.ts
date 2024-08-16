@@ -15,6 +15,7 @@ import { Application, Assets, ICanvas, settings, utils } from "pixi.js"
 import CatalogScene from "scenes/CatalogScene"
 import GameOverScene from "scenes/GameOverScene"
 import LoadingScene from "scenes/LoadingScene"
+import MainMenuScene from "scenes/MainMenuScene"
 import MainScene from "scenes/MainScene"
 import ParallaxStarryBackground from "scenes/ParallaxStarryBackground"
 import VFX from "scenes/VFX"
@@ -108,6 +109,12 @@ moduleManager.addSingleton<CollisionServer>(CollisionServer,
 
 vfxManager.goto(VFX)
 
+export const gotoMainMenuScene = async () => {
+  vfxManager.stop()
+  bgManager.goto(ParallaxStarryBackground)
+  await guiManager.goto(MainMenuScene)
+}
+
 export const gotoMainScene = async () => {
   vfxManager.play()
   bgManager.goto(ParallaxStarryBackground)
@@ -134,12 +141,16 @@ export const gotoLoadingScene = async () => {
   await sceneManager.goto(LoadingScene)
 }
 
-emitter.on("gameOver", () => {
+emitter.on(EventNamesEnum.GAME_OVER, () => {
   new Timer().timeout(gotoGameOverScene, 2000)
 })
 
-emitter.on("startGame", () => {
+emitter.on(EventNamesEnum.START_GAME, () => {
   gotoMainScene()
+})
+
+emitter.on(EventNamesEnum.MAIN_MENU, () => {
+  gotoMainMenuScene()
 })
 
 emitter.on(EventNamesEnum.DISPATCH_VFX, (config) => {
