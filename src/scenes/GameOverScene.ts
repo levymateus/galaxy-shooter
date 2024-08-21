@@ -1,4 +1,5 @@
 import { EventNamesEnum } from "app/enums";
+import { score } from "app/score";
 import { Activity, Context } from "core";
 import { GUIManager } from "managers/GUIManager";
 import { ButtonText } from "ui/ButtonText";
@@ -21,7 +22,9 @@ export default class GameOverScene implements Activity {
     )
     mainMenuBtn.onPress.connect(
       () => ctx.emitter.emit(EventNamesEnum.MAIN_MENU)
-    );
+    )
+
+    score.set(0)
 
     ctx.addChild(sceneTitleText)
     ctx.addChild(startGameBtn)

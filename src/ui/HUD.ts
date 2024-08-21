@@ -1,3 +1,4 @@
+import { score as scoreStore } from "app/score"
 import { Activity, Context } from "core"
 import { GUIElement, GUIManager } from "managers/GUIManager"
 import { HTMLText } from "pixi.js"
@@ -9,14 +10,18 @@ export class Score extends GUIElement {
 
   async onStart(ctx: Context) {
     ctx.anchor.set(-0.5)
-    this.count = 0
+    this.count = scoreStore.value
     const factory = ctx.getManager<GUIManager>().textFactory
     this.text = await factory.createText(Score.MASK)
     this.addChild(this.text)
+    this.setValue(this.count)
   }
 
   onUpdate(): void { }
-  async onFinish(): Promise<void> { }
+
+  async onFinish(): Promise<void> {
+    scoreStore.set(this.count)
+  }
 
   private pad(value: number, size: number) {
     const strValue: string = Score.MASK + value
@@ -29,12 +34,14 @@ export class Score extends GUIElement {
 
   add(amount: number): number {
     this.count = this.count + amount
+    scoreStore.set(this.count)
     this.setValue(this.count)
     return this.count
   }
 }
 
 export class HUD implements Activity {
+  private score: Score
   async onStart(ctx: Context): Promise<void> {
     const score = await ctx.create<Score>(Score)
     score.text.anchor.set(1)
@@ -42,9 +49,12 @@ export class HUD implements Activity {
     score.y = ctx.bounds.y + score.text.height + 8
     ctx.emitter.on("scoreIncrement", score.add, score)
     ctx.zIndex = 1000
+    this.score = score
   }
 
   onUpdate(): void { }
 
-  async onFinish(): Promise<void> { }
+  async onFinish(): Promise<void> {
+    return await this.score.onFinish()
+  }
 }
