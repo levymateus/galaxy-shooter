@@ -146,7 +146,7 @@ export const gotoPauseMenu = async () => {
 }
 
 emitter.on(EventNamesEnum.GAME_OVER, () => {
-  new Timer().timeout(gotoGameOverScene, 2000)
+  new Timer().timeout(2000, gotoGameOverScene)
 })
 
 emitter.on(EventNamesEnum.START_GAME, () => {
@@ -162,11 +162,11 @@ emitter.on(EventNamesEnum.DISPATCH_VFX, (config) => {
 })
 
 emitter.on(EventNamesEnum.PAUSE_GAME, (paused) => {
-  const isValid = guiManager.context?.name !== MainMenuScene.name
-  if (isValid && paused) {
+  if (paused) {
     gotoPauseMenu()
   }
-  if (isValid && !paused) {
+
+  if (!paused) {
     vfxManager.play()
     guiManager.goto(HUD)
   }
@@ -176,7 +176,13 @@ const addViewEventListener = app.view.addEventListener
 
 addViewEventListener && addViewEventListener('keydown',
   (evt: KeyboardEvent) => {
-    if (evt.key === "Escape") {
+    if (
+      evt.key === "Escape" &&
+      guiManager.context &&
+      guiManager.context.name !== MainMenuScene.name &&
+      guiManager.context.name !== PauseMenu.name &&
+      guiManager.context.name !== GameOverScene.name
+    ) {
       emitter.emit(EventNamesEnum.PAUSE_GAME, true)
     }
   }

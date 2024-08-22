@@ -1,7 +1,8 @@
 import {
-  Core,
+  ActivityCtor,
   ActivityElement,
   Context,
+  Core,
   Manager,
   Surface
 } from "core"
@@ -10,8 +11,7 @@ import { GUITextFactory, TextFactory } from "ui/Text"
 
 export class GUIElement
   extends Container
-    implements ActivityElement
-{
+  implements ActivityElement {
   constructor() {
     super()
   }
@@ -49,5 +49,12 @@ export class GUIManager extends Manager {
   ) {
     super(ticker, stage, screen, surface, bounds, emitter, index)
     this.textFactory = new TextFactory()
+  }
+
+  async goto(
+    ctor: ActivityCtor,
+    options?: { gotoAndStart?: boolean }
+  ): Promise<void> {
+    await super.goto(ctor, options)
   }
 }

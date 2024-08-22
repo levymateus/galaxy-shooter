@@ -147,7 +147,7 @@ export default class KlaEdBattleCruiser extends SpaceShip {
     this.velocity = new Point(0, -1)
 
     this.weapon.equip(1)
-    new Timer().interval(() => this.weapon.fire(), 1000)
+    new Timer().interval(1000, () => this.weapon.fire())
 
     this.shield = new KlaEdBattleCruiseShield(this, ctx)
   }

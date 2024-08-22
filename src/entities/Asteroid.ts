@@ -35,15 +35,15 @@ export class Asteroid
   private blink() {
     const blinkTimer = new Timer()
 
-    blinkTimer.interval(() => {
+    blinkTimer.interval(250, () => {
       const sprite = this.getChildByName("asteroid_base")
       if (sprite) sprite.alpha = sprite.alpha ? 0 : 1
-    }, 250)
+    })
 
-    new Timer().timeout(() => {
+    new Timer().timeout(1000, () => {
       blinkTimer.stop()
       this.collision.enable()
-    }, 1000)
+    })
   }
 
   onEnterBody(collision: AbstractCollision) {

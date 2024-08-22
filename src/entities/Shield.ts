@@ -36,6 +36,10 @@ export class AbstractShield extends AbstractGameObject implements Shield {
     this.animations = sheet.animations as ShieldAnimations
   }
 
+  equiped() {
+    return !!this.parent.getChildByName(this.name)
+  }
+
   equip(): void {
     this.parent.removeChildByName(this.name)
     const sprite =

@@ -44,11 +44,11 @@ class AsteroidsSpawner implements Spawner {
         }
       }
     })
-    this.timer.interval(() => {
+    this.timer.interval(this.frequency, () => {
       if (this.canCreate()) {
         this.createAsteroid()
       }
-    }, this.frequency)
+    })
   }
 
   async revoke() {

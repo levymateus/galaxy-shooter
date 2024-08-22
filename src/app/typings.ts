@@ -6,6 +6,7 @@ export type Vec2 = {
 }
 
 export interface Pickable {
+  equiped(): boolean
   equip(zIndex?: number): void
   unequip(): void
 }

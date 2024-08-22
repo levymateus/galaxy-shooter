@@ -18,7 +18,6 @@ export class SpaceShipWeapon
   ready: boolean
   countdown: number
   name: string
-  equiped = false
   animations: SpaceShipWeaponAnimations
   protected timer: Timer
 
@@ -60,10 +59,14 @@ export class SpaceShipWeapon
   fire(): void {
     if (this.ready) {
       this.ready = false
-      this.timer.timeout(() => {
+      this.timer.timeout(this.countdown, () => {
         this.ready = true
-      }, this.countdown)
+      })
     }
+  }
+
+  equiped() {
+    return !!this.parent.getChildByName(this.name)
   }
 
   equip(zIndex?: number): void {
@@ -73,11 +76,9 @@ export class SpaceShipWeapon
     sprite.anchor.set(0.5)
     sprite.animationSpeed = 0.4
     sprite.zIndex = zIndex || -1
-    this.equiped = true
   }
 
   unequip(): void {
     this.parent.removeChildByName(this.name)
-    this.equiped = false
   }
 }

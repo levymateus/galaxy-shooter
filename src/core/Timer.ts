@@ -18,19 +18,31 @@ export class Timer {
     this.status = TimerStatus.IDLE
   }
 
-  timeout(callback: TimeHandler, ms: number): void {
-    this.stop()
-    this.status = TimerStatus.RUNNING
-    this.id = window.setTimeout(() => {
-      this.status = TimerStatus.COMPLETE
-      callback()
-    }, ms)
+  async wait(ms: number = 1000): Promise<void> {
+    return await this.timeout(ms)
   }
 
-  interval(callback: TimeHandler, ms: number): void {
-    this.stop()
-    this.status = TimerStatus.RUNNING
-    this.id = window.setInterval(callback, ms)
+  async timeout(ms: number = 1000, callback?: TimeHandler): Promise<void> {
+    return new Promise<void>((resolve) => {
+      this.stop()
+      this.status = TimerStatus.RUNNING
+      this.id = window.setTimeout(() => {
+        this.status = TimerStatus.COMPLETE
+        callback && callback()
+        resolve()
+      }, ms)
+    })
+  }
+
+  async interval(ms: number = 1000, callback?: TimeHandler): Promise<void> {
+    return new Promise<void>((resolve) => {
+      this.stop()
+      this.status = TimerStatus.RUNNING
+      this.id = window.setInterval(() => {
+        callback && callback()
+        resolve()
+      }, ms)
+    })
   }
 
   running(): boolean {
@@ -44,17 +56,17 @@ export class Timer {
   tick(callback: TimeHandler, tick: number, total: number): Timer {
     this.stop()
     const interval = new Timer()
-    interval.interval(() => callback(), tick)
-    this.timeout(() => {
+    interval.interval(tick, callback)
+    this.timeout(total, () => {
       this.status = TimerStatus.COMPLETE
       callback()
       interval.clear()
-    }, total)
+    })
     return this
   }
 
-  debounce(callback: TimeHandler, ms: number = 300){
-    return this.timeout(callback, ms)
+  debounce(callback: TimeHandler, ms: number = 300) {
+    return this.timeout(ms, callback)
   }
 
   clear(): void {

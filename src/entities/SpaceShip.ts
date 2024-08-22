@@ -1,4 +1,4 @@
-import { Destructible, Restorable } from "app/typings"
+import { Destructible, Pickable, Restorable } from "app/typings"
 import { AbstractGameObject, Context, Textures } from "core"
 import { AbstractRigidBody } from "core/RigidBody"
 import {
@@ -210,11 +210,14 @@ export class SpaceShipSpawning implements SpaceShipBase {
  */
 export class SpaceShipEngine
   extends AbstractGameObject
-  implements ISpaceShipEngine {
+  implements ISpaceShipEngine, Pickable {
+
   static CANONICAL_NAME = "SpaceShipBaseEngine"
   state: ISpaceShipEngine
   spritesheets: Record<"engine_power" | "engine_idle", Spritesheet>
-  isPowerOn = false
+
+  private isPowerOn = false
+  private engineSprite: Sprite | null = null
 
   constructor(
     public readonly parent: SpaceShip,
@@ -230,12 +233,16 @@ export class SpaceShipEngine
     this.setupFromSrc(Assets.get<SpriteSource>("mainship_base_engine"))
   }
 
+  get power() {
+    return this.isPowerOn
+  }
+
   setupFromSrc(spriteSrc: SpriteSource) {
     this.removeSprite(SpaceShipEngine.CANONICAL_NAME)
-    const engineSprite = this.addSprite(
+    this.engineSprite = this.addSprite(
       spriteSrc, SpaceShipEngine.CANONICAL_NAME
     )
-    engineSprite.zIndex = -1
+    this.engineSprite.zIndex = -1
   }
 
   initSpritesheets(sheet: Spritesheet) {
@@ -250,13 +257,17 @@ export class SpaceShipEngine
   }
 
   powerOn(): void {
-    this.state.powerOn()
-    this.isPowerOn = true
+    if (this.equiped() && !this.isPowerOn) {
+      this.state.powerOn()
+      this.isPowerOn = true
+    }
   }
 
   powerOff(): void {
-    this.state.powerOff()
-    this.isPowerOn = false
+    if (this.equiped() && this.isPowerOn) {
+      this.state.powerOff()
+      this.isPowerOn = false
+    }
   }
 
   removeSprite(name: string): void {
@@ -269,6 +280,20 @@ export class SpaceShipEngine
 
   addAnimatedSprite(textures: Textures, name: string): AnimatedSprite {
     return this.parent.addAnimatedSprite(textures, name)
+  }
+
+  equiped() {
+    return !!this.parent?.getChildByName(SpaceShipEngine.CANONICAL_NAME)
+  }
+
+  equip(_?: number): void {
+    this.setParent(this.parent)
+    if (this.engineSprite) this.engineSprite.visible = this.equiped()
+  }
+
+  unequip(): void {
+    this.removeFromParent()
+    if (this.engineSprite) this.engineSprite.visible = this.equiped()
   }
 }
 
