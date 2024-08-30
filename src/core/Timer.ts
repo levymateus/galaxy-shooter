@@ -22,6 +22,12 @@ export class Timer {
     return await this.timeout(ms)
   }
 
+  static async wait(ms: number): Promise<void> {
+    return new Promise<void>((resolve) => {
+      window.setTimeout(resolve, ms)
+    })
+  }
+
   async timeout(ms: number = 1000, callback?: TimeHandler): Promise<void> {
     return new Promise<void>((resolve) => {
       this.stop()

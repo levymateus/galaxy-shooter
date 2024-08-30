@@ -22,6 +22,7 @@ import { HUD, PauseMenu } from "ui"
 import devtools from "./config"
 import { EventNamesEnum } from "./enums"
 import { isPauseOnBlurEnabled } from "./feats"
+import stores from "./stores"
 
 const appOptions = {
   resizeTo: window,
@@ -102,7 +103,7 @@ const vfxManager = moduleManager.addSingleton<VFXManager>(VFXManager,
   0,
 )
 
-moduleManager.addSingleton<CollisionServer>(CollisionServer,
+const collisionServer = moduleManager.addSingleton<CollisionServer>(CollisionServer,
   sceneManager,
 )
 
@@ -111,6 +112,7 @@ vfxManager.goto(VFX)
 export const gotoMainMenuScene = async () => {
   vfxManager.stop()
   bgManager.goto(ParallaxStarryBackground)
+  collisionServer.disable()
   await guiManager.goto(MainMenuScene)
 }
 
@@ -118,12 +120,14 @@ export const gotoMainScene = async () => {
   vfxManager.play()
   bgManager.goto(ParallaxStarryBackground)
   guiManager.goto(HUD)
+  collisionServer.enable()
   await sceneManager.goto(MainScene)
 }
 
 export const gotoCatalogScene = async () => {
   vfxManager.stop()
   bgManager.suspend()
+  collisionServer.disable()
   await sceneManager.goto(CatalogScene)
 }
 
@@ -131,22 +135,25 @@ export const gotoGameOverScene = async () => {
   vfxManager.stop()
   bgManager.suspend()
   sceneManager.suspend()
+  collisionServer.disable()
   await guiManager.goto(GameOverScene)
 }
 
 export const gotoLoadingScene = async () => {
   vfxManager.stop()
   guiManager.destroy()
+  collisionServer.disable()
   await sceneManager.goto(LoadingScene)
 }
 
 export const gotoPauseMenu = async () => {
   vfxManager.stop()
+  collisionServer.disable()
   await guiManager.goto(PauseMenu)
 }
 
 emitter.on(EventNamesEnum.GAME_OVER, () => {
-  new Timer().timeout(2000, gotoGameOverScene)
+  new Timer().debounce(gotoGameOverScene, 2000)
 })
 
 emitter.on(EventNamesEnum.START_GAME, () => {
@@ -162,12 +169,15 @@ emitter.on(EventNamesEnum.DISPATCH_VFX, (config) => {
 })
 
 emitter.on(EventNamesEnum.PAUSE_GAME, (paused) => {
+  stores.paused = paused
+
   if (paused) {
     gotoPauseMenu()
   }
 
   if (!paused) {
     vfxManager.play()
+    collisionServer.enable()
     guiManager.goto(HUD)
   }
 })

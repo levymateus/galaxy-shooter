@@ -15,11 +15,11 @@ export interface ISpaceShipWeapon extends Pickable {
 export class SpaceShipWeapon
   extends AbstractGameObject
   implements ISpaceShipWeapon {
-  ready: boolean
-  countdown: number
+  ready = true
+  countdown = 3000
   name: string
   animations: SpaceShipWeaponAnimations
-  protected timer: Timer
+  protected timer = new Timer()
 
   constructor(
     public readonly parent: SpaceShip,
@@ -29,9 +29,6 @@ export class SpaceShipWeapon
     super(ctx, name)
     this.parent = parent
     this.name = name
-    this.ready = true
-    this.countdown = 3000
-    this.timer = new Timer()
     this.setupFromSheet(Assets.get<Spritesheet>("mainship_weapons_auto_cannon"))
   }
 

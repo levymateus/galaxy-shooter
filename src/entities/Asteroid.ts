@@ -11,17 +11,13 @@ export class Asteroid
   implements Destructible, Restorable, Unique {
   id = uuid()
 
-  velocity: Point
-  speed: Point
-  rotate: number
+  velocity = new Point(1, 1)
+  speed = new Point(0, 1)
+  rotate = MathUtils.randf(0, 1)
   health = 100
   maxHealth = 100
 
   async onStart(_: Context): Promise<void> {
-    this.velocity = new Point(1, 1)
-    this.speed = new Point(0, 1)
-    this.rotate = MathUtils.randf(0, 1)
-
     const base = Sprite.from(Assets.get("asteroid_base"))
     base.name = "asteroid_base"
     base.anchor.set(0.5)

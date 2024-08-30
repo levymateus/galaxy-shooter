@@ -21,7 +21,7 @@ export default class Player extends MainShip {
     await super.onStart(ctx)
 
     this.position.set(0, 0)
-    this.speed.set(1.0, 1.0)
+    this.speed.set(0.9, 0.9)
     this.weapon = new MainShipAutoCannonWeapon(this, ctx)
 
     ctx.emitter.on(EventNamesEnum.PAUSE_GAME, (paused: boolean) => {
@@ -59,7 +59,7 @@ export default class Player extends MainShip {
     const timeout = new Timer()
 
     interval.interval(250, () => {
-      if (sprite) sprite.alpha = sprite.alpha >= 1 ? 0.3 : 1
+      if (sprite) sprite.alpha = sprite.alpha >= 1 ? 0.2 : 1
     })
 
     await timeout.wait(2000)

@@ -1,29 +1,29 @@
+
 export const createStore =
-  <K extends string, T>(
-    initialState: Record<K, T>,
-    actions?: Partial<Record<K, (state: T) => T>>,
+  <T extends { [key: string]: any }>(
+    initialState: T,
+    actions?: Partial<Record<keyof T, (state: T) => T>>,
   ) => {
-    const store = initialState
 
     const handler = {
       set(
-        target: typeof store,
-        prop: keyof typeof store,
-        receiver: T
+        target: { [key: string]: any },
+        prop: string,
+        receiver: any
       ) {
         if (target[prop] !== undefined) {
           target[prop] = receiver
           return true
         }
         console.warn(
-          `The property ${prop} is missing.\n
-          Initialize the prop ${prop}!`
+          `The property ${String(prop)} is missing.\n
+          Initialize the prop ${String(prop)}!`
         )
         return false
       },
       get(
-        target: typeof store,
-        prop: keyof typeof store,
+        target: { [key: string]: any },
+        prop: string,
       ) {
         if (target[prop] !== undefined) {
           const callback = actions && actions[prop]
@@ -33,5 +33,5 @@ export const createStore =
       }
     }
 
-    return new Proxy(store, handler)
+    return new Proxy<typeof initialState>(initialState, handler)
   }
