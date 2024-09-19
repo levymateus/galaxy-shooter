@@ -11,6 +11,10 @@ export class Pickup extends AbstractGameObject implements Pickable {
     return sprite
   }
 
+  equiped() {
+    return !!this.parent.getChildByName(this.name)
+  }
+
   equip(_?: number): void {
     throw new Error("Method not implemented.")
   }

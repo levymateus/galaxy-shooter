@@ -3,8 +3,9 @@ import { AbstractCollision } from "./Collision"
 import { CollisionCache } from "./CollisionCache"
 import { Manager } from "./Manager"
 import { CollisionEventsEnum } from "./enums"
+import { Switchable } from "./typings"
 
-export class CollisionServer {
+export class CollisionServer implements Switchable {
   private collisions: AbstractCollision[] = []
   private cache: CollisionCache = new CollisionCache()
 
@@ -22,8 +23,6 @@ export class CollisionServer {
       this.remove,
       this,
     )
-
-    Ticker.shared.add(this.onUpdate, this)
   }
 
   private add(collision: AbstractCollision) {
@@ -76,6 +75,14 @@ export class CollisionServer {
       return true
     }
     return false
+  }
+
+  enable(): void {
+    Ticker.shared.add(this.onUpdate, this)
+  }
+
+  disable(): void {
+    Ticker.shared.remove(this.onUpdate, this)
   }
 
   onUpdate() {

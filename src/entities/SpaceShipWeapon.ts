@@ -15,12 +15,11 @@ export interface ISpaceShipWeapon extends Pickable {
 export class SpaceShipWeapon
   extends AbstractGameObject
   implements ISpaceShipWeapon {
-  ready: boolean
-  countdown: number
+  ready = true
+  countdown = 3000
   name: string
-  equiped = false
   animations: SpaceShipWeaponAnimations
-  protected timer: Timer
+  protected timer = new Timer()
 
   constructor(
     public readonly parent: SpaceShip,
@@ -30,9 +29,6 @@ export class SpaceShipWeapon
     super(ctx, name)
     this.parent = parent
     this.name = name
-    this.ready = true
-    this.countdown = 3000
-    this.timer = new Timer()
     this.setupFromSheet(Assets.get<Spritesheet>("mainship_weapons_auto_cannon"))
   }
 
@@ -60,10 +56,14 @@ export class SpaceShipWeapon
   fire(): void {
     if (this.ready) {
       this.ready = false
-      this.timer.timeout(() => {
+      this.timer.timeout(this.countdown, () => {
         this.ready = true
-      }, this.countdown)
+      })
     }
+  }
+
+  equiped() {
+    return !!this.parent.getChildByName(this.name)
   }
 
   equip(zIndex?: number): void {
@@ -73,11 +73,9 @@ export class SpaceShipWeapon
     sprite.anchor.set(0.5)
     sprite.animationSpeed = 0.4
     sprite.zIndex = zIndex || -1
-    this.equiped = true
   }
 
   unequip(): void {
     this.parent.removeChildByName(this.name)
-    this.equiped = false
   }
 }

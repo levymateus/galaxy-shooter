@@ -44,11 +44,11 @@ class AsteroidsSpawner implements Spawner {
         }
       }
     })
-    this.timer.interval(() => {
+    this.timer.interval(this.frequency, () => {
       if (this.canCreate()) {
         this.createAsteroid()
       }
-    }, this.frequency)
+    })
   }
 
   async revoke() {
@@ -86,6 +86,8 @@ export default class MainScene extends Scene {
 
     this.asteroidsSpawner = new AsteroidsSpawner(ctx)
     this.asteroidsSpawner.spawn()
+
+    console.log('MAIN SCENE START!')
   }
 
   onUpdate(_: number): void {

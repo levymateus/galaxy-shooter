@@ -11,17 +11,13 @@ export class Asteroid
   implements Destructible, Restorable, Unique {
   id = uuid()
 
-  velocity: Point
-  speed: Point
-  rotate: number
+  velocity = new Point(1, 1)
+  speed = new Point(0, 1)
+  rotate = MathUtils.randf(0, 1)
   health = 100
   maxHealth = 100
 
   async onStart(_: Context): Promise<void> {
-    this.velocity = new Point(1, 1)
-    this.speed = new Point(0, 1)
-    this.rotate = MathUtils.randf(0, 1)
-
     const base = Sprite.from(Assets.get("asteroid_base"))
     base.name = "asteroid_base"
     base.anchor.set(0.5)
@@ -35,15 +31,15 @@ export class Asteroid
   private blink() {
     const blinkTimer = new Timer()
 
-    blinkTimer.interval(() => {
+    blinkTimer.interval(250, () => {
       const sprite = this.getChildByName("asteroid_base")
       if (sprite) sprite.alpha = sprite.alpha ? 0 : 1
-    }, 250)
+    })
 
-    new Timer().timeout(() => {
+    new Timer().timeout(1000, () => {
       blinkTimer.stop()
       this.collision.enable()
-    }, 1000)
+    })
   }
 
   onEnterBody(collision: AbstractCollision) {

@@ -54,7 +54,7 @@ export class MainShipAutoCannonWeapon extends SpaceShipWeapon {
   }
 
   fire(): void {
-    if (this.ready && this.equiped) this.shoot()
+    if (this.ready && this.equiped()) this.shoot()
     super.fire()
   }
 }

@@ -1,17 +1,28 @@
+import { EventNamesEnum } from "app/enums"
 import { Activity, Context } from "core"
 import { GUIElement, GUIManager } from "managers/GUIManager"
 import { Graphics, HTMLText } from "pixi.js"
+import { ButtonText } from "./ButtonText"
 
 export class MenuList extends GUIElement {
   titleText: HTMLText
 
   async onStart(ctx: Context): Promise<void> {
     const factory = ctx.getManager<GUIManager>().textFactory
-    this.titleText = await factory.createTextLg("The Game is Pauded!")
+    this.titleText = await factory.createTextLg("The Game is Paused!")
+    const startGame = await (new ButtonText(ctx, "start").create())
+
     this.titleText.name = "MenuListTitle"
     this.titleText.anchor.set(0.5)
     this.titleText.position.set(0, 0)
+    startGame.position.set(0, 64)
+
+    startGame.onPress.connect(
+      () => ctx.emitter.emit(EventNamesEnum.PAUSE_GAME, false)
+    )
+
     this.addChild(this.titleText)
+    this.addChild(startGame)
   }
 
   onUpdate(): void { }
@@ -23,8 +34,9 @@ export class MenuList extends GUIElement {
   }
 }
 
-export class Menu implements Activity {
+export class PauseMenu implements Activity {
   async onStart(ctx: Context): Promise<void> {
+    ctx.anchor.set(-0.5)
 
     const menuList = await ctx.create<MenuList>(MenuList)
     menuList.setTitle("The Game is Paused!")

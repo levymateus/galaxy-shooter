@@ -3,7 +3,6 @@ import "@pixi/math-extras"
 import "styles.css"
 
 import { Group, Stage } from "@pixi/layers"
-import { isMainMenuEnalbed } from "app/feats"
 import { Core, Settings, Surface, Timer } from "core"
 import { CollisionServer } from "core/CollisionServer"
 import { ModuleManager } from "core/ModuleManager"
@@ -19,10 +18,11 @@ import MainMenuScene from "scenes/MainMenuScene"
 import MainScene from "scenes/MainScene"
 import ParallaxStarryBackground from "scenes/ParallaxStarryBackground"
 import VFX from "scenes/VFX"
-import { HUD, Menu } from "ui"
+import { HUD, PauseMenu } from "ui"
 import devtools from "./config"
 import { EventNamesEnum } from "./enums"
 import { isPauseOnBlurEnabled } from "./feats"
+import stores from "./stores"
 
 const appOptions = {
   resizeTo: window,
@@ -103,7 +103,7 @@ const vfxManager = moduleManager.addSingleton<VFXManager>(VFXManager,
   0,
 )
 
-moduleManager.addSingleton<CollisionServer>(CollisionServer,
+const collisionServer = moduleManager.addSingleton<CollisionServer>(CollisionServer,
   sceneManager,
 )
 
@@ -112,6 +112,7 @@ vfxManager.goto(VFX)
 export const gotoMainMenuScene = async () => {
   vfxManager.stop()
   bgManager.goto(ParallaxStarryBackground)
+  collisionServer.disable()
   await guiManager.goto(MainMenuScene)
 }
 
@@ -119,12 +120,14 @@ export const gotoMainScene = async () => {
   vfxManager.play()
   bgManager.goto(ParallaxStarryBackground)
   guiManager.goto(HUD)
+  collisionServer.enable()
   await sceneManager.goto(MainScene)
 }
 
 export const gotoCatalogScene = async () => {
   vfxManager.stop()
   bgManager.suspend()
+  collisionServer.disable()
   await sceneManager.goto(CatalogScene)
 }
 
@@ -132,17 +135,25 @@ export const gotoGameOverScene = async () => {
   vfxManager.stop()
   bgManager.suspend()
   sceneManager.suspend()
+  collisionServer.disable()
   await guiManager.goto(GameOverScene)
 }
 
 export const gotoLoadingScene = async () => {
   vfxManager.stop()
   guiManager.destroy()
+  collisionServer.disable()
   await sceneManager.goto(LoadingScene)
 }
 
+export const gotoPauseMenu = async () => {
+  vfxManager.stop()
+  collisionServer.disable()
+  await guiManager.goto(PauseMenu)
+}
+
 emitter.on(EventNamesEnum.GAME_OVER, () => {
-  new Timer().timeout(gotoGameOverScene, 2000)
+  new Timer().debounce(gotoGameOverScene, 2000)
 })
 
 emitter.on(EventNamesEnum.START_GAME, () => {
@@ -157,14 +168,34 @@ emitter.on(EventNamesEnum.DISPATCH_VFX, (config) => {
   vfxManager.emit(config)
 })
 
+emitter.on(EventNamesEnum.PAUSE_GAME, (paused) => {
+  stores.paused = paused
+
+  if (paused) {
+    gotoPauseMenu()
+  }
+
+  if (!paused) {
+    vfxManager.play()
+    collisionServer.enable()
+    guiManager.goto(HUD)
+  }
+})
+
 const addViewEventListener = app.view.addEventListener
-addViewEventListener && addViewEventListener('blur', () => {
-  isMainMenuEnalbed && guiManager.goto(Menu)
-  isMainMenuEnalbed && emitter.emit("appPause", true)
-})
-addViewEventListener && addViewEventListener('focus', () => {
-  isMainMenuEnalbed && guiManager.goto(HUD)
-  isMainMenuEnalbed && emitter.emit("appPause", false)
-})
+
+addViewEventListener && addViewEventListener('keydown',
+  (evt: KeyboardEvent) => {
+    if (
+      evt.key === "Escape" &&
+      guiManager.context &&
+      guiManager.context.name !== MainMenuScene.name &&
+      guiManager.context.name !== PauseMenu.name &&
+      guiManager.context.name !== GameOverScene.name
+    ) {
+      emitter.emit(EventNamesEnum.PAUSE_GAME, true)
+    }
+  }
+)
 
 gotoLoadingScene()

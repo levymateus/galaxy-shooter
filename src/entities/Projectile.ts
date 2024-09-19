@@ -19,8 +19,8 @@ export class AbstractProjectile
   extends AbstractRigidBody implements AbstractProjectile {
   animations: ProjectileAnimations
   weapon: SpaceShipWeapon
-  velocity: Point
-  countdown: number
+  velocity = new Point()
+  countdown = 500
 
   protected spritesheet: Spritesheet
   protected timer: Timer
@@ -35,13 +35,10 @@ export class AbstractProjectile
     if (position && position instanceof Point)
       this.position.set(position.x, position.y)
 
-    this.velocity = new Point()
-
     if (velocity && velocity instanceof Point)
       this.velocity.set(velocity.x, velocity.y)
 
     this.zIndex = -10
-    this.countdown = 500
     this.timer = new Timer()
     this.spritesheet =
       Assets.get<Spritesheet>("mainship_weapons_projectile_auto_cannon_bullet")

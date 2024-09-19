@@ -15,33 +15,56 @@ import {
 export default class Player extends MainShip {
   private debouncedVelocity = new Timer()
   private debouncedInput = new Timer()
+  private canMove = false
 
   async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
+
     this.position.set(0, 0)
-    this.speed.set(1.0, 1.0)
+    this.speed.set(0.9, 0.9)
     this.weapon = new MainShipAutoCannonWeapon(this, ctx)
-    this.blink()
+
+    ctx.emitter.on(EventNamesEnum.PAUSE_GAME, (paused: boolean) => {
+      if (!paused) {
+        this.canMove = true
+        this.spawn()
+      }
+    })
+
+    this.canMove = false
+    this.spawn().then(() => {
+      this.canMove = true
+    })
   }
 
-  private blink() {
+  private async spawn() {
+    this.weapon?.unequip()
+    this.collision.disable()
+
+    this.changeState(new SpaceShipSpawning(this))
+
+    await this.blink()
+
+    this.baseState = new SpaceShipFullHealth(this)
+    this.spaceShipEngine = new SpaceShipEngine(this, this.context)
+
+    this.weapon?.equip()
+    this.collision.enable()
+  }
+
+  private async blink() {
     const sprite = this.getChildByName("BaseSpaceShip")
 
     const interval = new Timer()
     const timeout = new Timer()
 
-    interval.interval(() => {
-      if (sprite) sprite.alpha = sprite.alpha ? 0 : 1
-    }, 250)
+    interval.interval(250, () => {
+      if (sprite) sprite.alpha = sprite.alpha >= 1 ? 0.2 : 1
+    })
 
-    timeout.timeout(() => {
-      interval.stop()
-      this.baseState = new SpaceShipFullHealth(this)
-      this.spaceShipEngine = new SpaceShipEngine(this, this.context)
-      this.spaceShipEngine.powerOff()
-      this.weapon?.equip()
-      this.collision.enable()
-    }, 2000)
+    await timeout.wait(2000)
+
+    interval.stop()
   }
 
   onUpdate(delta: number): void {
@@ -56,7 +79,7 @@ export default class Player extends MainShip {
       () => this.velocity.set(0, 0), 1000
     )
 
-    const canMove = !(this.baseState instanceof SpaceShipSpawning)
+    const canMove = this.canMove
 
     this.weapon?.fire()
 
@@ -79,7 +102,7 @@ export default class Player extends MainShip {
     if (this.spaceShipEngine) {
       if (
         InputSingleton.isKeyPressed("w", "d", "a") &&
-        !this.spaceShipEngine.isPowerOn
+        !this.spaceShipEngine.power
       ) {
         this.spaceShipEngine.powerOn()
       }

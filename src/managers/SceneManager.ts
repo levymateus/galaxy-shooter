@@ -1,3 +1,4 @@
+import { EventNamesEnum } from "app/enums"
 import {
   Activity,
   Context,
@@ -31,7 +32,7 @@ export class Scene implements Activity {
     this.context.getManager()
       .ticker.add(this.boundsUpdate, this, UPDATE_PRIORITY.UTILITY)
 
-    this.context.emitter.on("appPause", isPause =>
+    this.context.emitter.on(EventNamesEnum.PAUSE_GAME, isPause =>
       isPause ? this.context.removeUpdates() : this.context.addUpdates()
     )
   }
