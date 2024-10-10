@@ -1,11 +1,10 @@
-import { EventNamesEnum } from "app/enums"
 import {
   Activity,
   Context,
   Core,
   Manager
 } from "core"
-import { UPDATE_PRIORITY } from "pixi.js"
+import { Container, UPDATE_PRIORITY } from "pixi.js"
 
 /**
  * Game Stage Scenes Manager.
@@ -13,10 +12,19 @@ import { UPDATE_PRIORITY } from "pixi.js"
 export class SceneManager extends Manager {
   suspended = false
 
+  private parent: Container
+
   suspend() {
     if (this.context) {
+      this.parent = this.context.parent
       this.context.removeFromParent()
       this.suspended = true
+    }
+  }
+
+  unsusped() {
+    if (this.context && this.parent) {
+      this.parent.addChild(this.context)
     }
   }
 }
@@ -31,10 +39,6 @@ export class Scene implements Activity {
     this.boundingArea = ctx.bounds.clone().pad(32, 32) as Core.AxisAlignedBounds
     this.context.getManager()
       .ticker.add(this.boundsUpdate, this, UPDATE_PRIORITY.UTILITY)
-
-    this.context.emitter.on(EventNamesEnum.PAUSE_GAME, isPause =>
-      isPause ? this.context.removeUpdates() : this.context.addUpdates()
-    )
   }
 
   private boundsUpdate() {

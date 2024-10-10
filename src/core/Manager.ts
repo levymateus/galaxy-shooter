@@ -1,8 +1,8 @@
 import {
-  Core,
   Activity,
   ActivityCtor,
   Context,
+  Core,
   Surface
 } from "core"
 import { Container, Rectangle, Ticker, utils } from "pixi.js"

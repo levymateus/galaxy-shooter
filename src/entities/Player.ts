@@ -1,7 +1,7 @@
-import { EventNamesEnum } from "app/enums"
-import { isDestructible } from "app/is"
 import { Context, InputSingleton, Timer } from "core"
 import { AbstractCollision } from "core/Collision"
+import { EventNamesEnum } from "typings/enums"
+import { isDestructible } from "utils/is"
 import createSmallExplosion from "vfx/smallExplosion"
 import MainShip, { MainShipAutoCannonWeapon } from "./MainShip"
 import {
@@ -23,13 +23,6 @@ export default class Player extends MainShip {
     this.position.set(0, 0)
     this.speed.set(0.9, 0.9)
     this.weapon = new MainShipAutoCannonWeapon(this, ctx)
-
-    ctx.emitter.on(EventNamesEnum.PAUSE_GAME, (paused: boolean) => {
-      if (!paused) {
-        this.canMove = true
-        this.spawn()
-      }
-    })
 
     this.canMove = false
     this.spawn().then(() => {
@@ -142,16 +135,14 @@ export default class Player extends MainShip {
 
   onChangeState(state: SpaceShipBase): void {
     super.onChangeState(state)
-    if (state instanceof SpaceShipSpawning) {
-      console.log("spawn")
-    }
+
     if (state instanceof SpaceShipDestroied) {
       this.position.set(0, 0)
       this.speed.set(0, 0)
       this.health = 0
       this.weapon?.unequip()
       this.spaceShipEngine?.powerOff()
-      this.context.emitter.emit(EventNamesEnum.GAME_OVER)
+      this.context.emitter.emit(EventNamesEnum.GOTO_GAME_OVER)
     }
   }
 

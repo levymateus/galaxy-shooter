@@ -1,8 +1,8 @@
 import {
-  Core,
-  Surface,
   ActivityCtor,
-  Manager
+  Core,
+  Manager,
+  Surface
 } from "core"
 import { Container, Rectangle, Ticker, utils } from "pixi.js"
 
@@ -11,6 +11,8 @@ import { Container, Rectangle, Ticker, utils } from "pixi.js"
  */
 export class BgManager extends Manager {
   suspended: boolean
+
+  private parent: Container
 
   constructor(
     public readonly ticker: Ticker,
@@ -38,8 +40,15 @@ export class BgManager extends Manager {
 
   suspend() {
     if (this.context) {
+      this.parent = this.context.parent
       this.context.removeFromParent()
       this.suspended = true
+    }
+  }
+
+  unsusped() {
+    if (this.context && this.parent) {
+      this.parent.addChild(this.context)
     }
   }
 }

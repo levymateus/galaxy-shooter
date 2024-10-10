@@ -1,4 +1,4 @@
-import { Destructible, Pickable, Restorable } from "app/typings"
+import { Destructible, Pickable, Restorable } from "typings/typings"
 import { AbstractGameObject, Context, Textures } from "core"
 import { AbstractRigidBody } from "core/RigidBody"
 import {

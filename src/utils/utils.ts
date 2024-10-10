@@ -1,11 +1,23 @@
 import { Point, RAD_TO_DEG } from "@pixi/math"
-import { ActivityElement, Textures } from "core/typings"
+import { Textures } from "core/typings"
 import { Container, DisplayObject, FrameObject } from "pixi.js"
 
 type Dice = { roll: (() => number) }
 
 export class MathUtils {
+  static TO_MILLISECONDS = 1000
+
   /**
+   * Return a milliseconds number value.
+   * @param secs - a number value in seconds.
+   * @returns a number value in milliseconds.
+   */
+  static sec2ms(secs: number): number {
+    return secs * MathUtils.TO_MILLISECONDS
+  }
+
+  /**
+   * NO USED!
    * Generates a random integer number between `min` and `max` value.
    * @param min The minimum value
    * @param max The maximum value.
@@ -69,6 +81,7 @@ export class MathUtils {
   }
 
   /**
+   * NO USED!
    * Create a dice
    * @param sides The number of sides
    * @returns A dice object
@@ -114,11 +127,5 @@ export class ContainerUtils {
 export class FrameObjects {
   static from(textures: Textures): FrameObject[] {
     return textures.map((texture) => ({ texture, time: 100 }))
-  }
-}
-
-export class EntityUtils {
-  static is(a: ActivityElement | Function, b: ActivityElement | Function) {
-    return a.name === b.name
   }
 }

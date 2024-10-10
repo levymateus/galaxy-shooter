@@ -10,6 +10,9 @@ import type { Collideable, Drawable, Switchable, Unique } from "./typings";
  */
 export class AbstractCollision
   implements Collideable, Unique, Drawable, Switchable {
+
+  // BUG: AbstractCollision não esta atualizada com o pai.
+
   id = uuid();
   enabled = false
   private graphics = new Graphics()

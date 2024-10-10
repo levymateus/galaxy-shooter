@@ -1,7 +1,7 @@
-import { EventNamesEnum } from "app/enums"
 import { Context } from "core"
 import { Assets, AssetsManifest } from "pixi.js"
 import manifest from "res/manifest.json"
+import { EventNamesEnum } from "typings/enums"
 import { TextFactory } from "ui/Text"
 import { Scene } from "../managers/SceneManager"
 
@@ -40,7 +40,7 @@ export default class LoadingScene extends Scene {
   }
 
   async gotoMainMenu() {
-    this.context.emitter.emit(EventNamesEnum.MAIN_MENU)
+    this.context.emitter.emit(EventNamesEnum.GOTO_MAIN_MENU)
 
     // the visible false solve the
     // persistent loading scene after first main menu

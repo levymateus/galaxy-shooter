@@ -2,6 +2,7 @@ import store from "app/stores"
 import { Activity, Context } from "core"
 import { GUIElement, GUIManager } from "managers/GUIManager"
 import { HTMLText } from "pixi.js"
+import { EventNamesEnum } from "typings/enums"
 
 export class PlayerScoreHUD extends GUIElement {
   static MASK = "00000000"
@@ -10,7 +11,7 @@ export class PlayerScoreHUD extends GUIElement {
 
   async onStart(ctx: Context) {
     ctx.anchor.set(-0.5)
-    this.count = store.score
+    this.count = store.playerScore
     const factory = ctx.getManager<GUIManager>().textFactory
     this.text = await factory.createText(PlayerScoreHUD.MASK)
     this.addChild(this.text)
@@ -20,7 +21,7 @@ export class PlayerScoreHUD extends GUIElement {
   onUpdate(): void { }
 
   async onFinish(): Promise<void> {
-    store.score = this.count
+    store.playerScore = this.count
   }
 
   private pad(value: number, size: number) {
@@ -34,7 +35,7 @@ export class PlayerScoreHUD extends GUIElement {
 
   add(amount: number): number {
     this.count = this.count + amount
-    store.score = this.count
+    store.playerScore = this.count
     this.setValue(this.count)
     return this.count
   }
@@ -49,13 +50,14 @@ export class HUD implements Activity {
     score.text.anchor.set(1)
     score.x = ctx.bounds.right - 8
     score.y = ctx.bounds.y + score.text.height + 8
-    ctx.emitter.on("scoreIncrement", score.add, score)
+    ctx.emitter.on(EventNamesEnum.SCORE_INC, score.add, score)
     ctx.zIndex = 1000
   }
 
   onUpdate(): void { }
 
   async onFinish(): Promise<void> {
+    // BUG: score undefined quando aperta escape repetidas vezes
     return await this.score.onFinish()
   }
 }

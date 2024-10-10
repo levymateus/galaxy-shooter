@@ -1,4 +1,4 @@
-import { Vec2 } from "app/typings"
+import { Vec2 } from "typings/typings"
 import dataJson from "assets/sprites/enviroment/starry_background.json"
 import { Activity, Context } from "core"
 import {
