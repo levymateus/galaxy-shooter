@@ -24,8 +24,6 @@ const defaultManagerOptions: ManagerOptions = {
  *
  */
 export class Manager {
-  index?: number
-
   /**
    * Current running activity.
    */
@@ -36,6 +34,8 @@ export class Manager {
    */
   context: Context | null
 
+  private parent: Container
+
   constructor(
     public readonly ticker: Ticker,
     public readonly stage: Container,
@@ -43,11 +43,9 @@ export class Manager {
     public readonly surface: Surface,
     public readonly bounds: Core.AxisAlignedBounds,
     public readonly emitter: utils.EventEmitter,
-    index?: number,
   ) {
     this.context = null
     this.activity = null
-    this.index = index
   }
 
   /**
@@ -76,8 +74,7 @@ export class Manager {
     this.activity = new ctor()
     await this.activity.onStart(this.context)
 
-    if (this.index) this.stage.addChildAt(this.context, this.index)
-    else this.stage.addChild(this.context)
+    this.stage.addChild(this.context)
     this.stage.sortChildren()
 
     this.ticker.add(this.activity.onUpdate, this.activity)
@@ -101,6 +98,32 @@ export class Manager {
         baseTexture: false
       })
       this.context = null
+    }
+  }
+
+  /**
+   * Removes the context from the stage.
+   */
+  suspend() {
+    if (this.context) {
+      this.parent = this.context.parent
+      this.context.removeFromParent()
+    }
+  }
+
+  /**
+   * Adds the context on the stage.
+   */
+  unsusped() {
+    if (this.context && this.parent) {
+      this.parent.addChild(this.context)
+    }
+  }
+
+  setIndex(index: number) {
+    if (this.context) {
+      this.context.zIndex = index
+      this.stage.sortChildren()
     }
   }
 }

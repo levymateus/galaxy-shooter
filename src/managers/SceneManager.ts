@@ -4,30 +4,12 @@ import {
   Core,
   Manager
 } from "core"
-import { Container, UPDATE_PRIORITY } from "pixi.js"
+import { UPDATE_PRIORITY } from "pixi.js"
 
 /**
  * Game Stage Scenes Manager.
  */
-export class SceneManager extends Manager {
-  suspended = false
-
-  private parent: Container
-
-  suspend() {
-    if (this.context) {
-      this.parent = this.context.parent
-      this.context.removeFromParent()
-      this.suspended = true
-    }
-  }
-
-  unsusped() {
-    if (this.context && this.parent) {
-      this.parent.addChild(this.context)
-    }
-  }
-}
+export class SceneManager extends Manager {}
 
 export class Scene implements Activity {
   context: Context
@@ -35,6 +17,8 @@ export class Scene implements Activity {
 
   async onStart(ctx: Context) {
     this.context = ctx
+
+    await import("@pixi/math-extras")
 
     this.boundingArea = ctx.bounds.clone().pad(32, 32) as Core.AxisAlignedBounds
     this.context.getManager()

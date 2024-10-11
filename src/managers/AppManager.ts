@@ -1,10 +1,10 @@
-import { DEFAULT_Z_INDEX } from "app/consts"
 import stores from "app/stores"
 import { Core, Settings, Surface } from "core"
 import { CollisionServer } from "core/CollisionServer"
 import { Countdown } from "core/Countdown"
 import { ModuleManager } from "core/ModuleManager"
-import { Application, utils } from "pixi.js"
+import { Application, Assets, utils } from "pixi.js"
+import manifest from "res/manifest.json"
 import GameOverScene from "scenes/GameOverScene"
 import LoadingScene from "scenes/LoadingScene"
 import MainMenuScene from "scenes/MainMenuScene"
@@ -13,10 +13,10 @@ import ParallaxStarryBackground from "scenes/ParallaxStarryBackground"
 import VFX from "scenes/VFX"
 import { EventNamesEnum } from "typings/enums"
 import { HUD } from "ui/HUD"
-import { PauseMenu } from "ui/PauseMenu"
 import { MathUtils } from "utils/utils"
 import { BgManager } from "./BgManager"
 import { GUIManager } from "./GUIManager"
+import { SceneLoader } from "./SceneLoader"
 import { SceneManager } from "./SceneManager"
 import VFXManager from "./VFXManager"
 
@@ -41,16 +41,6 @@ export class AppManager {
     readonly bounds: Core.AxisAlignedBounds,
     readonly moduleManager: ModuleManager,
   ) {
-    this.guiManager = moduleManager.addSingleton<GUIManager>(GUIManager,
-      app.ticker,
-      app.stage,
-      app.screen,
-      surface,
-      bounds,
-      emitter,
-      DEFAULT_Z_INDEX,
-    )
-
     this.bgManager = moduleManager.addSingleton<BgManager>(BgManager,
       app.ticker,
       app.stage,
@@ -58,7 +48,6 @@ export class AppManager {
       surface,
       bounds,
       emitter,
-      DEFAULT_Z_INDEX,
     )
 
     this.sceneManager = moduleManager.addSingleton<SceneManager>(SceneManager,
@@ -68,7 +57,6 @@ export class AppManager {
       surface,
       bounds,
       emitter,
-      DEFAULT_Z_INDEX,
     )
 
     this.vfxManager = moduleManager.addSingleton<VFXManager>(VFXManager,
@@ -78,7 +66,15 @@ export class AppManager {
       surface,
       bounds,
       emitter,
-      DEFAULT_Z_INDEX,
+    )
+
+    this.guiManager = moduleManager.addSingleton<GUIManager>(GUIManager,
+      app.ticker,
+      app.stage,
+      app.screen,
+      surface,
+      bounds,
+      emitter,
     )
 
     this.collisionServer = moduleManager.addSingleton<CollisionServer>(
@@ -105,6 +101,8 @@ export class AppManager {
       EventNamesEnum.DISPATCH_VFX,
       (config) => this.vfxManager.emit(config)
     )
+
+    Assets.init({ manifest: manifest || "" })
   }
 
   private async doStartApp() {
@@ -126,17 +124,42 @@ export class AppManager {
 
   async gotoMainMenu() {
     this.vfxManager.stop()
-    await this.bgManager.goto(ParallaxStarryBackground)
+    this.bgManager.suspend()
     this.collisionServer.disable()
     await this.guiManager.goto(MainMenuScene)
   }
 
   async gotoMainScene() {
+    const bundleIds = [
+      "mainship_bundle",
+      "mainship_base_engine_bundle",
+      "mainship_weapons_auto_cannon_bundle",
+      "asteroid_bundle",
+      "vfx_bundle"
+    ]
+
+    const mainScene = new SceneLoader(
+      bundleIds,
+      this.sceneManager,
+      MainScene,
+      LoadingScene,
+    )
+
+    this.bgManager.suspend()
+
+    this.guiManager.suspend()
+
+    await mainScene.load()
+
     this.vfxManager.play()
-    await this.bgManager.goto(ParallaxStarryBackground)
-    await this.guiManager.goto(HUD)
+
     this.collisionServer.enable()
-    await this.sceneManager.goto(MainScene)
+
+    await this.guiManager.goto(HUD)
+
+    await this.bgManager.goto(ParallaxStarryBackground)
+
+    this.sceneManager.setIndex(1)
   }
 
   async gotoGameOver() {
@@ -149,16 +172,22 @@ export class AppManager {
 
   async gotoLoading() {
     this.vfxManager.stop()
-    await this.guiManager.destroy()
     this.collisionServer.disable()
-    await this.sceneManager.goto(LoadingScene)
-  }
-
-  async gotoPauseMenu() {
-    this.vfxManager.stop()
     this.bgManager.suspend()
-    this.sceneManager.suspend()
-    this.collisionServer.disable()
-    await this.guiManager.goto(PauseMenu)
+
+    await this.guiManager.destroy()
+
+    const bundleIds = [
+      "enviroments_bundle",
+    ]
+
+    const mainMenuScene = new SceneLoader(
+      bundleIds,
+      this.guiManager,
+      MainMenuScene,
+      LoadingScene,
+    )
+
+    await mainMenuScene.load()
   }
 }
