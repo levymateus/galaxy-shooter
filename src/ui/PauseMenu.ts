@@ -1,4 +1,3 @@
-import { EventNamesEnum } from "app/enums"
 import { Activity, Context } from "core"
 import { GUIElement, GUIManager } from "managers/GUIManager"
 import { Graphics, HTMLText } from "pixi.js"
@@ -17,10 +16,6 @@ export class MenuList extends GUIElement {
     this.titleText.position.set(0, 0)
     startGame.position.set(0, 64)
 
-    startGame.onPress.connect(
-      () => ctx.emitter.emit(EventNamesEnum.PAUSE_GAME, false)
-    )
-
     this.addChild(this.titleText)
     this.addChild(startGame)
   }
@@ -34,6 +29,9 @@ export class MenuList extends GUIElement {
   }
 }
 
+/**
+ * NO USED!
+ */
 export class PauseMenu implements Activity {
   async onStart(ctx: Context): Promise<void> {
     ctx.anchor.set(-0.5)

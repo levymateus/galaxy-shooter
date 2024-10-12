@@ -1,4 +1,4 @@
-import { EventNamesEnum } from "app/enums"
+import { EventNamesEnum } from "typings/enums"
 import { Context } from "core"
 import {
   AnimatedSprite,

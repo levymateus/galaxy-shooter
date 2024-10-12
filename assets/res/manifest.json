@@ -18,7 +18,12 @@
         {
           "name": "mainship_base_very_damaged",
           "srcs": "assets/sprites/mainship/bases/mainship_base_very_damaged.png"
-        },
+        }
+      ]
+    },
+    {
+      "name": "mainship_base_engine_bundle",
+      "assets": [
         {
           "name": "mainship_base_engine",
           "srcs": "assets/sprites/mainship/engines/mainship_base_engine.png"
@@ -30,7 +35,12 @@
         {
           "name": "mainship_base_engine_powering",
           "srcs": "assets/sprites/mainship/engine_effects/mainship_base_engine_powering.json"
-        },
+        }
+      ]
+    },
+    {
+      "name": "mainship_weapons_auto_cannon_bundle",
+      "assets": [
         {
           "name": "mainship_weapons_auto_cannon",
           "srcs": "assets/sprites/mainship/weapons/mainship_weapons_auto_cannon.json"
@@ -38,7 +48,12 @@
         {
           "name": "mainship_weapons_projectile_auto_cannon_bullet",
           "srcs": "assets/sprites/mainship/projectiles/mainship_weapon_projectile_auto_cannon_bullet.json"
-        },
+        }
+      ]
+    },
+    {
+      "name": "mainship_weapons_big_space_gun_bundle",
+      "assets": [
         {
           "name": "mainship_weapons_big_space_gun",
           "srcs": "assets/sprites/mainship/weapons/mainship_weapons_big_space_gun.json"
@@ -46,7 +61,12 @@
         {
           "name": "mainship_weapons_projectile_big_gun",
           "srcs": "assets/sprites/mainship/projectiles/mainship_weapon_projectile_big_gun.json"
-        },
+        }
+      ]
+    },
+    {
+      "name": "mainship_weapons_rockets_bundle",
+      "assets": [
         {
           "name": "mainship_weapons_rockets",
           "srcs": "assets/sprites/mainship/weapons/mainship_weapons_rockets.json"
@@ -54,7 +74,12 @@
         {
           "name": "mainship_weapons_projectile_rockets",
           "srcs": "assets/sprites/mainship/projectiles/mainship_weapon_projectile_rocket.json"
-        },
+        }
+      ]
+    },
+    {
+      "name": "mainship_weapons_zapper_bundle",
+      "assets": [
         {
           "name": "mainship_weapons_zapper",
           "srcs": "assets/sprites/mainship/weapons/mainship_weapons_zapper.json"
@@ -62,7 +87,12 @@
         {
           "name": "mainship_weapons_projectile_zapper",
           "srcs": "assets/sprites/mainship/projectiles/mainship_weapon_projectile_zapper.json"
-        },
+        }
+      ]
+    },
+    {
+      "name": "mainship_big_pulse_engine_bundle",
+      "assets": [
         {
           "name": "mainship_big_pulse_engine",
           "srcs": "assets/sprites/mainship/engines/mainship_big_pulse_engine.png"
@@ -74,7 +104,12 @@
         {
           "name": "mainship_big_pulse_engine_powering",
           "srcs": "assets/sprites/mainship/engine_effects/mainship_big_pulse_engine_powering.json"
-        },
+        }
+      ]
+    },
+    {
+      "name": "mainship_burst_engine_bundle",
+      "assets": [
         {
           "name": "mainship_burst_engine",
           "srcs": "assets/sprites/mainship/engines/mainship_burst_engine.png"
@@ -86,7 +121,12 @@
         {
           "name": "mainship_burst_engine_powering",
           "srcs": "assets/sprites/mainship/engine_effects/mainship_burst_engine_powering.json"
-        },
+        }
+      ]
+    },
+    {
+      "name": "mainship_supercharged_engine_bundle",
+      "assets": [
         {
           "name": "mainship_supercharged_engine",
           "srcs": "assets/sprites/mainship/engines/mainship_supercharged_engine.png"
@@ -98,7 +138,12 @@
         {
           "name": "mainship_supercharged_engine_powering",
           "srcs": "assets/sprites/mainship/engine_effects/mainship_supercharged_engine_powering.json"
-        },
+        }
+      ]
+    },
+    {
+      "name": "mainship_shield_bundle",
+      "assets": [
         {
           "name": "mainship_shield_front_sides",
           "srcs": "assets/sprites/shields/mainship_shield_front_sides.json"
@@ -176,7 +221,7 @@
       ]
     },
     {
-      "name": "enviroments_bundle",
+      "name": "asteroid_bundle",
       "assets": [
         {
           "name": "asteroid_base",
@@ -189,7 +234,12 @@
         {
           "name": "asteroid_flame",
           "srcs": "assets/sprites/asteroid/asteroid_flame.json"
-        },
+        }
+      ]
+    },
+    {
+      "name": "enviroments_bundle",
+      "assets": [
         {
           "name": "starry_background_layer_02_shadows",
           "srcs": "assets/sprites/enviroment/starry_background_layer_02_shadows.png"

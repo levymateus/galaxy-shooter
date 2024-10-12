@@ -1,8 +1,8 @@
 import {
-  Core,
-  Surface,
   ActivityCtor,
-  Manager
+  Core,
+  Manager,
+  Surface
 } from "core"
 import { Container, Rectangle, Ticker, utils } from "pixi.js"
 
@@ -19,9 +19,8 @@ export class BgManager extends Manager {
     public readonly surface: Surface,
     public readonly bounds: Core.AxisAlignedBounds,
     public readonly emitter: utils.EventEmitter,
-    index?: number
   ) {
-    super(ticker, stage, screen, surface, bounds, emitter, index)
+    super(ticker, stage, screen, surface, bounds, emitter)
     this.suspended = false
   }
 
@@ -33,13 +32,6 @@ export class BgManager extends Manager {
       this.stage.addChild(this.context)
       this.stage.sortChildren()
       this.suspended = false
-    }
-  }
-
-  suspend() {
-    if (this.context) {
-      this.context.removeFromParent()
-      this.suspended = true
     }
   }
 }

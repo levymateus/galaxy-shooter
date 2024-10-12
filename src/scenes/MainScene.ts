@@ -1,4 +1,4 @@
-import { Spawner } from "app/typings"
+import { Spawner } from "typings/typings"
 import { Context, Timer, Unique } from "core"
 import { Asteroid } from "entities/Asteroid"
 import Player from "entities/Player"
@@ -86,8 +86,6 @@ export default class MainScene extends Scene {
 
     this.asteroidsSpawner = new AsteroidsSpawner(ctx)
     this.asteroidsSpawner.spawn()
-
-    console.log('MAIN SCENE START!')
   }
 
   onUpdate(_: number): void {

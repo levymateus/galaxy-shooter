@@ -45,9 +45,8 @@ export class GUIManager extends Manager {
     public readonly surface: Surface,
     public readonly bounds: Core.AxisAlignedBounds,
     public readonly emitter: utils.EventEmitter,
-    index?: number,
   ) {
-    super(ticker, stage, screen, surface, bounds, emitter, index)
+    super(ticker, stage, screen, surface, bounds, emitter)
     this.textFactory = new TextFactory()
   }
 

@@ -1,12 +1,13 @@
 import { createStore } from "utils/createStore"
 
 const initialStoreState = {
-  score: 0,
-  paused: false,
+  playerScore: 0,
+  appIsPaused: false,
+  appIsGameOver: false,
 }
 
 const stores = createStore(initialStoreState, {
-  score: (prevScore) => prevScore,
+  playerScore: (prevScore) => prevScore,
 })
 
 export default stores

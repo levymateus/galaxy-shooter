@@ -1,4 +1,4 @@
-import { EventNamesEnum } from "app/enums";
+import { EventNamesEnum } from "typings/enums";
 import { Activity, Context } from "core";
 import { GUIManager } from "managers/GUIManager";
 import { ButtonText } from "ui/ButtonText";

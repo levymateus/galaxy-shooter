@@ -1,10 +1,11 @@
-import { isDestructible } from "app/is"
-import { Destructible, Restorable } from "app/typings"
+import { Destructible, Restorable } from "typings/typings"
 import { AbstractRigidBody, Context, Timer, Unique } from "core"
 import { AbstractCollision } from "core/Collision"
 import { AnimatedSprite, Assets, Point, Sprite } from "pixi.js"
+import { isDestructible } from "utils/is"
 import { MathUtils } from "utils/utils"
 import { uuid } from "utils/uuid"
+import { EventNamesEnum } from "typings/enums"
 
 export class Asteroid
   extends AbstractRigidBody
@@ -85,7 +86,7 @@ export class Asteroid
 
     if (this.health <= 0) {
       this.health = 0
-      this.context.emitter.emit("scoreIncrement", 100)
+      this.context.emitter.emit(EventNamesEnum.SCORE_INC, 100)
       this.explodeAndDestroy()
     }
 

@@ -1,4 +1,4 @@
-import { Pickable } from "app/typings"
+import { Pickable } from "typings/typings"
 import { AbstractGameObject, Textures } from "core"
 import { Assets, Spritesheet } from "pixi.js"
 

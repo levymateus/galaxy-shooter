@@ -16,7 +16,8 @@
       "assets/*": ["assets/*"],
       "res/*": ["assets/res/*"],
       "sprites/*": ["assets/sprites/*"],
-      "app/*": ["src/app/*"]
+      "app/*": ["src/app/*"],
+      "typings/*": ["src/typings/*"]
     },
     "sourceMap": true,
     "sourceRoot": "/",
