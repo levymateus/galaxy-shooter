@@ -96,3 +96,8 @@ export interface Switchable {
   enable(): void
   disable(): void
 }
+
+export interface Storable {
+  save(): void
+  restore(): void
+}

@@ -1,13 +1,13 @@
-import store from "app/stores";
-import { Activity, Context } from "core";
-import { GUIManager } from "managers/GUIManager";
-import { EventNamesEnum } from "typings/enums";
-import { ButtonText } from "ui/ButtonText";
+import { Activity, Context } from "core"
+import { GUIManager } from "managers/GUIManager"
+import { EventNamesEnum } from "typings/enums"
+import { ButtonText } from "ui/ButtonText"
 
 export default class GameOverScene implements Activity {
   async onStart(ctx: Context) {
     ctx.anchor.set(-0.5)
-    const factory = ctx.getManager<GUIManager>().textFactory
+    const manager = ctx.getManager<GUIManager>()
+    const factory = manager.textFactory
     const sceneTitleText = await factory.createTextLg("Game Over")
     const startGameBtn = await (new ButtonText(ctx, "try again!").create())
     const mainMenuBtn = await (new ButtonText(ctx, "main menu").create())
@@ -20,11 +20,10 @@ export default class GameOverScene implements Activity {
     startGameBtn.onPress.connect(
       () => ctx.emitter.emit(EventNamesEnum.START_GAME)
     )
+
     mainMenuBtn.onPress.connect(
       () => ctx.emitter.emit(EventNamesEnum.GOTO_MAIN_MENU)
     )
-
-    store.playerScore = 0
 
     ctx.addChild(sceneTitleText)
     ctx.addChild(startGameBtn)

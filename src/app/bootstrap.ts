@@ -1,4 +1,5 @@
 import { PREFER_WORKERS } from "./consts"
+import { Store } from "../managers/Store"
 
 export const bootstrap = async () => {
   import("pixi.js").then(({
@@ -27,6 +28,8 @@ export const bootstrap = async () => {
 
         bounds.anchor.set(0.5)
 
+        const store = new Store()
+
         import("managers/AppManager").then(({ AppManager }) => {
           const moduleManager = new ModuleManager()
 
@@ -36,7 +39,8 @@ export const bootstrap = async () => {
             emitter,
             surface,
             bounds,
-            moduleManager
+            moduleManager,
+            store,
           )
 
           appManager.startUpApp()

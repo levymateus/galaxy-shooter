@@ -1,4 +1,3 @@
-import stores from "app/stores"
 import { Core, Settings, Surface } from "core"
 import { CollisionServer } from "core/CollisionServer"
 import { Countdown } from "core/Countdown"
@@ -19,6 +18,7 @@ import { GUIManager } from "./GUIManager"
 import { SceneLoader } from "./SceneLoader"
 import { SceneManager } from "./SceneManager"
 import VFXManager from "./VFXManager"
+import { Store } from "./Store"
 
 export class AppManager {
   private guiManager: GUIManager
@@ -40,6 +40,7 @@ export class AppManager {
     readonly surface: Surface,
     readonly bounds: Core.AxisAlignedBounds,
     readonly moduleManager: ModuleManager,
+    readonly store: Store,
   ) {
     this.bgManager = moduleManager.addSingleton<BgManager>(BgManager,
       app.ticker,
@@ -75,6 +76,7 @@ export class AppManager {
       surface,
       bounds,
       emitter,
+      store,
     )
 
     this.collisionServer = moduleManager.addSingleton<CollisionServer>(
@@ -107,12 +109,10 @@ export class AppManager {
 
   private async doStartApp() {
     await this.gotoMainScene()
-    stores.appIsGameOver = false
     await this.cd.count(MathUtils.sec2ms(2))
   }
 
   private async doGameOverApp() {
-    stores.appIsGameOver = true
     await this.cd.count(MathUtils.sec2ms(2))
     await this.gotoGameOver()
   }
