@@ -3,6 +3,8 @@ import { PlayerScore } from "entities/PlayerScore"
 import { GUIElement, GUIManager } from "managers/GUIManager"
 import { HTMLText } from "pixi.js"
 import { EventNamesEnum } from "typings/enums"
+import { EventTypes } from "typings/typings"
+import { ContainerUtils } from "utils/utils"
 
 export class PlayerScoreHUD extends GUIElement {
   static MASK = "00000000"
@@ -39,11 +41,44 @@ export class PlayerScoreHUD extends GUIElement {
     this.text.text = this.pad(value, PlayerScoreHUD.MASK.length)
   }
 
-  add(amount: number): number {
+  add({ amount }: { amount: number }): number {
     const scoreValue = this.playerScore.inc(amount)
     this.setValue(scoreValue)
     return scoreValue
   }
+}
+
+export class FloatingTextHUD extends GUIElement {
+  manager: GUIManager
+
+  async onStart(ctx: Context<EventTypes>): Promise<void> {
+    ctx.anchor.set(-0.5)
+    this.manager = ctx.getManager<GUIManager>()
+    ctx.emitter.on(
+      EventNamesEnum.SCORE_INC,
+      this.logText,
+      this,
+    )
+  }
+
+  async logText({ amount, x, y }: { amount: number, x: number, y: number }) {
+    const factory = this.manager.textFactory
+    const sxText = await factory.createTextSx(`+${amount}`)
+
+    sxText.x = x - sxText.width * 0.5
+    sxText.y = y - sxText.height * 0.5
+
+    this.addChild(sxText)
+
+    ContainerUtils.fadeOut(sxText, 0.016, () => {
+      this.removeChild(sxText)
+      sxText.destroy({ children: true })
+    })
+  }
+
+  onUpdate(_delta: number): void { }
+
+  async onFinish(): Promise<void> { }
 }
 
 export class HUD implements Activity {
@@ -54,11 +89,15 @@ export class HUD implements Activity {
     this.context = ctx
 
     const scoreHud = await ctx.create<PlayerScoreHUD>(PlayerScoreHUD)
+    const floatingTextHud = await ctx.create<FloatingTextHUD>(FloatingTextHUD)
 
     this.playerScoreHud = scoreHud
     scoreHud.text.anchor.set(1)
     scoreHud.x = ctx.bounds.right - 8
     scoreHud.y = ctx.bounds.y + scoreHud.text.height + 8
+
+    floatingTextHud.x = 0
+    floatingTextHud.y = 0
 
     ctx.emitter.on(
       EventNamesEnum.SCORE_INC,

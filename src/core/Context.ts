@@ -1,7 +1,7 @@
 import {
-  Core,
   ActivityElement,
   ActivityElementCtor,
+  Core,
   Manager,
   Surface
 } from "core"
@@ -22,8 +22,8 @@ export type ContextChildren = ActivityElement[]
  * like an observable `EventEmitter` and a `AxisAlignedBounds`.
  */
 export class Context
-    extends Container
-{
+  <EventTypes extends utils.EventEmitter.ValidEventTypes = any>
+  extends Container {
   name: string
   anchor: ObservablePoint
   children: ContextChildren
@@ -35,7 +35,7 @@ export class Context
     private readonly surface: Surface,
     private readonly screen: Rectangle,
     public readonly bounds: Core.AxisAlignedBounds,
-    public readonly emitter: utils.EventEmitter,
+    public readonly emitter: utils.EventEmitter<EventTypes>,
   ) {
     super()
     this.name = "Context"

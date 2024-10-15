@@ -1,11 +1,11 @@
-import { Destructible, Restorable } from "typings/typings"
 import { AbstractRigidBody, Context, Timer, Unique } from "core"
 import { AbstractCollision } from "core/Collision"
 import { AnimatedSprite, Assets, Point, Sprite } from "pixi.js"
+import { EventNamesEnum } from "typings/enums"
+import { Destructible, EventTypes, Restorable } from "typings/typings"
 import { isDestructible } from "utils/is"
 import { MathUtils } from "utils/utils"
 import { uuid } from "utils/uuid"
-import { EventNamesEnum } from "typings/enums"
 
 export class Asteroid
   extends AbstractRigidBody
@@ -17,6 +17,7 @@ export class Asteroid
   rotate = MathUtils.randf(0, 1)
   health = 100
   maxHealth = 100
+  context: Context<EventTypes>
 
   async onStart(_: Context): Promise<void> {
     const base = Sprite.from(Assets.get("asteroid_base"))
@@ -86,7 +87,14 @@ export class Asteroid
 
     if (this.health <= 0) {
       this.health = 0
-      this.context.emitter.emit(EventNamesEnum.SCORE_INC, 100)
+      this.context.emitter.emit(
+        EventNamesEnum.SCORE_INC,
+        {
+          amount: 100,
+          x: this.position.x,
+          y: this.position.y,
+        }
+      )
       this.explodeAndDestroy()
     }
 

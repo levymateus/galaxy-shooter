@@ -1,6 +1,6 @@
 import { Point, RAD_TO_DEG } from "@pixi/math"
 import { Textures } from "core/typings"
-import { Container, DisplayObject, FrameObject } from "pixi.js"
+import { Container, DisplayObject, FrameObject, Ticker } from "pixi.js"
 
 type Dice = { roll: (() => number) }
 
@@ -121,6 +121,22 @@ export class ContainerUtils {
   static removeChildByName = (container: Container, name: string): void => {
     const child = container.getChildByName(name)
     child && container.removeChild(child)
+  }
+
+  static fadeOut(container: Container, alpha: number, complete: () => void) {
+    const fadeOut = (dt: number) => {
+      container.alpha -= alpha * dt
+      if (container.alpha <= 0) {
+        handleComplete()
+      }
+    }
+
+    const handleComplete = () => {
+      complete()
+      Ticker.shared.remove(fadeOut)
+    }
+
+    Ticker.shared.add(fadeOut)
   }
 }
 

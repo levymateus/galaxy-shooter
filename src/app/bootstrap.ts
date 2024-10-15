@@ -1,10 +1,10 @@
-import { PREFER_WORKERS } from "./consts"
+import { utils } from "pixi.js"
 import { Store } from "../managers/Store"
+import { PREFER_WORKERS } from "./consts"
 
 export const bootstrap = async () => {
   import("pixi.js").then(({
     Assets,
-    utils: { EventEmitter }
   }) => {
     Assets.setPreferences({
       preferWorkers: PREFER_WORKERS,
@@ -12,7 +12,7 @@ export const bootstrap = async () => {
 
     import("./appSetup").then(({ app }) => {
       import("core").then(({ Core, Settings, Surface, ModuleManager }) => {
-        const emitter = new EventEmitter()
+        const emitter = new utils.EventEmitter()
 
         const appSettings = Settings.getInstance()
 

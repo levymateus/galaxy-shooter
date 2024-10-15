@@ -17,8 +17,8 @@ import { BgManager } from "./BgManager"
 import { GUIManager } from "./GUIManager"
 import { SceneLoader } from "./SceneLoader"
 import { SceneManager } from "./SceneManager"
-import VFXManager from "./VFXManager"
 import { Store } from "./Store"
+import VFXManager from "./VFXManager"
 
 export class AppManager {
   private guiManager: GUIManager

@@ -1,6 +1,7 @@
 import { Context, InputSingleton, Timer } from "core"
 import { AbstractCollision } from "core/Collision"
 import { EventNamesEnum } from "typings/enums"
+import { EventTypes } from "typings/typings"
 import { isDestructible } from "utils/is"
 import createSmallExplosion from "vfx/smallExplosion"
 import MainShip, { MainShipAutoCannonWeapon } from "./MainShip"
@@ -16,6 +17,7 @@ export default class Player extends MainShip {
   private debouncedVelocity = new Timer()
   private debouncedInput = new Timer()
   private canMove = false
+  context: Context<EventTypes>
 
   async onStart(ctx: Context): Promise<void> {
     await super.onStart(ctx)
