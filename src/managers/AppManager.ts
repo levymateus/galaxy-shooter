@@ -134,8 +134,9 @@ export class AppManager {
       "mainship_bundle",
       "mainship_base_engine_bundle",
       "mainship_weapons_auto_cannon_bundle",
+      "klaed_fighter_bundle",
       "asteroid_bundle",
-      "vfx_bundle"
+      "vfx_bundle",
     ]
 
     const mainScene = new SceneLoader(

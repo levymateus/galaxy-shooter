@@ -154,6 +154,7 @@ export default class Player extends MainShip {
       destruction.pos.x = this.position.x
       destruction.pos.y = this.position.y
       this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, destruction)
+      collision.parent.takeDamage(100)
     }
   }
 

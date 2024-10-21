@@ -1,8 +1,6 @@
 import { Point, RAD_TO_DEG } from "@pixi/math"
 import { Textures } from "core/typings"
-import { Container, DisplayObject, FrameObject, Ticker } from "pixi.js"
-
-type Dice = { roll: (() => number) }
+import { Container, DisplayObject, FrameObject } from "pixi.js"
 
 export class MathUtils {
   static TO_MILLISECONDS = 1000
@@ -17,7 +15,6 @@ export class MathUtils {
   }
 
   /**
-   * NO USED!
    * Generates a random integer number between `min` and `max` value.
    * @param min The minimum value
    * @param max The maximum value.
@@ -79,22 +76,6 @@ export class MathUtils {
     }
     return point
   }
-
-  /**
-   * NO USED!
-   * Create a dice
-   * @param sides The number of sides
-   * @returns A dice object
-   */
-  static dice(sides: number): Dice {
-    const dice = {
-      sides: sides,
-      roll: () => {
-        return Math.floor(Math.random() * sides) + 1
-      }
-    }
-    return dice
-  }
 }
 
 export class ContainerUtils {
@@ -121,22 +102,6 @@ export class ContainerUtils {
   static removeChildByName = (container: Container, name: string): void => {
     const child = container.getChildByName(name)
     child && container.removeChild(child)
-  }
-
-  static fadeOut(container: Container, alpha: number, complete: () => void) {
-    const fadeOut = (dt: number) => {
-      container.alpha -= alpha * dt
-      if (container.alpha <= 0) {
-        handleComplete()
-      }
-    }
-
-    const handleComplete = () => {
-      complete()
-      Ticker.shared.remove(fadeOut)
-    }
-
-    Ticker.shared.add(fadeOut)
   }
 }
 

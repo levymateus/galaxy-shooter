@@ -1,4 +1,3 @@
-import { Destructible, Pickable, Restorable } from "typings/typings"
 import { AbstractGameObject, Context, Textures } from "core"
 import { AbstractRigidBody } from "core/RigidBody"
 import {
@@ -10,6 +9,7 @@ import {
   SpriteSource,
   Spritesheet
 } from "pixi.js"
+import { Destructible, Pickable, Restorable } from "typings/typings"
 
 export type SpaceShipBase = Destructible & Restorable
 
