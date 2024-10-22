@@ -59,11 +59,15 @@ export class Timer {
     return this.status === TimerStatus.COMPLETE
   }
 
-  tick(callback: TimeHandler, tick: number, total: number): Timer {
+  async tick(
+    callback: TimeHandler,
+    tick: number,
+    total: number
+  ): Promise<Timer> {
     this.stop()
     const interval = new Timer()
     interval.interval(tick, callback)
-    this.timeout(total, () => {
+    await this.timeout(total, () => {
       this.status = TimerStatus.COMPLETE
       callback()
       interval.clear()

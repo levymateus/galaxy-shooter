@@ -8,10 +8,9 @@ import {
 } from "core"
 import { Container, HTMLText, Rectangle, Ticker, utils } from "pixi.js"
 import { GUITextFactory, TextFactory } from "ui/Text"
+import { Store } from "./Store"
 
-export class GUIElement
-  extends Container
-  implements ActivityElement {
+export class GUIElement extends Container implements ActivityElement {
   constructor() {
     super()
   }
@@ -45,6 +44,7 @@ export class GUIManager extends Manager {
     public readonly surface: Surface,
     public readonly bounds: Core.AxisAlignedBounds,
     public readonly emitter: utils.EventEmitter,
+    public readonly store: Store,
   ) {
     super(ticker, stage, screen, surface, bounds, emitter)
     this.textFactory = new TextFactory()

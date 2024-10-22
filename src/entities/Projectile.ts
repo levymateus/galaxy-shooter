@@ -1,10 +1,8 @@
-import { EventNamesEnum } from "typings/enums"
 import { AbstractRigidBody, Context, Textures, Timer } from "core"
 import { AbstractCollision } from "core/Collision"
 import { AnimatedSprite, Assets, Point, Spritesheet } from "pixi.js"
 import { isDestructible } from "utils/is"
 import { FrameObjects, MathUtils } from "utils/utils"
-import createSmallExplosion from "vfx/smallExplosion"
 import Player from "./Player"
 import { SpaceShipWeapon } from "./SpaceShipWeapon"
 
@@ -79,13 +77,7 @@ export class AbstractProjectile
   onEnterBody(collision: AbstractCollision) {
     const valid = collision.parent.name !== Player.name
     if (valid && isDestructible(collision.parent)) {
-      collision.parent.takeDamage(50)
-
-      const destruction = createSmallExplosion()
-      destruction.pos.x = this.position.x
-      destruction.pos.y = this.position.y
-      this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, destruction)
-
+      collision.parent.takeDamage(100)
       this.destroy({ children: true })
     }
   }
@@ -108,7 +100,7 @@ export class AutoCannonBullet extends AbstractProjectile {
   }
 
   shoot(): void {
-    this.velocity = new Point(0, -2)
+    this.velocity = new Point(0, -5)
     super.shoot()
   }
 

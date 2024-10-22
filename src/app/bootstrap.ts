@@ -1,9 +1,10 @@
+import { utils } from "pixi.js"
+import { Store } from "../managers/Store"
 import { PREFER_WORKERS } from "./consts"
 
 export const bootstrap = async () => {
   import("pixi.js").then(({
     Assets,
-    utils: { EventEmitter }
   }) => {
     Assets.setPreferences({
       preferWorkers: PREFER_WORKERS,
@@ -11,7 +12,7 @@ export const bootstrap = async () => {
 
     import("./appSetup").then(({ app }) => {
       import("core").then(({ Core, Settings, Surface, ModuleManager }) => {
-        const emitter = new EventEmitter()
+        const emitter = new utils.EventEmitter()
 
         const appSettings = Settings.getInstance()
 
@@ -27,6 +28,8 @@ export const bootstrap = async () => {
 
         bounds.anchor.set(0.5)
 
+        const store = new Store()
+
         import("managers/AppManager").then(({ AppManager }) => {
           const moduleManager = new ModuleManager()
 
@@ -36,7 +39,8 @@ export const bootstrap = async () => {
             emitter,
             surface,
             bounds,
-            moduleManager
+            moduleManager,
+            store,
           )
 
           appManager.startUpApp()

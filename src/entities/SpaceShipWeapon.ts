@@ -1,6 +1,6 @@
-import { Pickable } from "typings/typings"
 import { AbstractGameObject, ActivityElementCtor, Context, Textures, Timer } from "core"
 import { AnimatedSprite, Assets, Point, Spritesheet } from "pixi.js"
+import { Pickable } from "typings/typings"
 import { MathUtils } from "utils/utils"
 import { AbstractProjectile } from "./Projectile"
 import SpaceShip from "./SpaceShip"

@@ -10,8 +10,6 @@ import { Container, Rectangle, Ticker, utils } from "pixi.js"
  * Game Background Manager.
  */
 export class BgManager extends Manager {
-  suspended: boolean
-
   constructor(
     public readonly ticker: Ticker,
     public readonly stage: Container,
@@ -21,17 +19,15 @@ export class BgManager extends Manager {
     public readonly emitter: utils.EventEmitter,
   ) {
     super(ticker, stage, screen, surface, bounds, emitter)
-    this.suspended = false
   }
 
   async goto(ctor: ActivityCtor): Promise<void> {
-    if (!this.suspended) {
+    if (!this.context?.parent) {
       return super.goto(ctor)
     }
     if (this.context) {
       this.stage.addChild(this.context)
       this.stage.sortChildren()
-      this.suspended = false
     }
   }
 }

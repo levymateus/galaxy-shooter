@@ -2,8 +2,6 @@ import { Point, RAD_TO_DEG } from "@pixi/math"
 import { Textures } from "core/typings"
 import { Container, DisplayObject, FrameObject } from "pixi.js"
 
-type Dice = { roll: (() => number) }
-
 export class MathUtils {
   static TO_MILLISECONDS = 1000
 
@@ -17,7 +15,6 @@ export class MathUtils {
   }
 
   /**
-   * NO USED!
    * Generates a random integer number between `min` and `max` value.
    * @param min The minimum value
    * @param max The maximum value.
@@ -78,22 +75,6 @@ export class MathUtils {
         point.y = min.y
     }
     return point
-  }
-
-  /**
-   * NO USED!
-   * Create a dice
-   * @param sides The number of sides
-   * @returns A dice object
-   */
-  static dice(sides: number): Dice {
-    const dice = {
-      sides: sides,
-      roll: () => {
-        return Math.floor(Math.random() * sides) + 1
-      }
-    }
-    return dice
   }
 }
 

@@ -2,14 +2,26 @@ import {
   Activity,
   Context,
   Core,
-  Manager
+  Manager,
+  Surface
 } from "core"
-import { UPDATE_PRIORITY } from "pixi.js"
+import { Container, Rectangle, Ticker, UPDATE_PRIORITY, utils } from "pixi.js"
 
 /**
  * Game Stage Scenes Manager.
  */
-export class SceneManager extends Manager {}
+export class SceneManager extends Manager {
+  constructor(
+    public readonly ticker: Ticker,
+    public readonly stage: Container,
+    public readonly screen: Rectangle,
+    public readonly surface: Surface,
+    public readonly bounds: Core.AxisAlignedBounds,
+    public readonly emitter: utils.EventEmitter,
+  ) {
+    super(ticker, stage, screen, surface, bounds, emitter)
+  }
+}
 
 export class Scene implements Activity {
   context: Context

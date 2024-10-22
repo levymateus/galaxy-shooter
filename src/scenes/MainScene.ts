@@ -1,16 +1,17 @@
-import { Spawner } from "typings/typings"
 import { Context, Timer, Unique } from "core"
 import { Asteroid } from "entities/Asteroid"
+import KlaEdFighter from "entities/KlaEdFighter"
 import Player from "entities/Player"
 import { Scene } from "managers/SceneManager"
 import { Point } from "pixi.js"
+import { Spawner } from "typings/typings"
 import { MathUtils } from "utils/utils"
 
 class AsteroidsSpawner implements Spawner {
-  private static MAX_ASTEROIDS_COUNT = 3
+  private static MAX_ASTEROIDS_COUNT = 4
 
   private asteroids: Asteroid[] = []
-  private frequency = (1 / 1) * 1000
+  private frequency = 3000
   private timer = new Timer()
 
   constructor(
@@ -73,9 +74,64 @@ class PlayerSpawner implements Spawner {
   }
 }
 
+class KlaEdFighterSpawner implements Spawner {
+  private static MAX_KLAED_FIGHTERS = 5
+
+  private klaedFighters: KlaEdFighter[] = []
+  private frequency = 3000
+  private timer = new Timer()
+
+  constructor(
+    public readonly ctx: Context,
+  ) { }
+
+  private canCreate() {
+    return this.klaedFighters.length < KlaEdFighterSpawner.MAX_KLAED_FIGHTERS
+  }
+
+  private removeKlaEdFighter(arg: Unique) {
+    const index = this.klaedFighters.findIndex((item) => arg.equal(item))
+    this.klaedFighters.splice(index, 1)
+  }
+
+  private async createKlaEdFighter() {
+    const klaedFighter = await this.ctx.create<KlaEdFighter>(KlaEdFighter)
+    klaedFighter.offset =
+      MathUtils.randi(this.ctx.bounds.left, this.ctx.bounds.right)
+    klaedFighter.position.set(
+      klaedFighter.offset,
+      this.ctx.bounds.y,
+    )
+    this.klaedFighters.push(klaedFighter)
+  }
+
+  async spawn() {
+    this.ctx.on("childRemoved", (child) => {
+      if (child instanceof KlaEdFighter) {
+        this.removeKlaEdFighter(child)
+        if (this.canCreate()) {
+          this.createKlaEdFighter()
+        }
+      }
+    })
+    this.timer.interval(this.frequency, () => {
+      if (this.canCreate()) {
+        this.createKlaEdFighter()
+      }
+    })
+  }
+
+  async revoke() {
+    this.klaedFighters.forEach((klaedFighter) => {
+      klaedFighter.removeChild()
+    })
+  }
+}
+
 export default class MainScene extends Scene {
   private asteroidsSpawner: AsteroidsSpawner
   private playerSpawner: PlayerSpawner
+  private klaedFighterSpawner: KlaEdFighterSpawner
 
   async onStart(ctx: Context): Promise<void> {
     super.onStart(ctx)
@@ -86,6 +142,9 @@ export default class MainScene extends Scene {
 
     this.asteroidsSpawner = new AsteroidsSpawner(ctx)
     this.asteroidsSpawner.spawn()
+
+    this.klaedFighterSpawner = new KlaEdFighterSpawner(ctx)
+    this.klaedFighterSpawner.spawn()
   }
 
   onUpdate(_: number): void {

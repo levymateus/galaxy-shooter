@@ -1,4 +1,5 @@
 import { Point } from "pixi.js"
+import { EventNamesEnum } from "./enums"
 
 export type Vec2 = {
   x: number,
@@ -22,4 +23,12 @@ export interface Destructible {
 
 export interface Restorable {
   heal(value: number): void
+}
+
+export type EventTypes = {
+  [EventNamesEnum.SCORE_INC]: [{ amount: number, x: number, y: number }],
+  [EventNamesEnum.GOTO_GAME_OVER]: void,
+  [EventNamesEnum.START_GAME]: void,
+  [EventNamesEnum.GOTO_MAIN_MENU]: void,
+  [EventNamesEnum.DISPATCH_VFX]: void,
 }
