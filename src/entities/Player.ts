@@ -149,11 +149,12 @@ export default class Player extends MainShip {
   }
 
   onEnterBody(collision: AbstractCollision) {
-    if (isDestructible(collision.parent)) {
-      const destruction = createSmallExplosion()
-      destruction.pos.x = this.position.x
-      destruction.pos.y = this.position.y
-      this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, destruction)
+    const valid = collision.parent.name !== Player.name
+    if (valid && isDestructible(collision.parent)) {
+      const explosion = createSmallExplosion()
+      explosion.pos.x = this.position.x
+      explosion.pos.y = this.position.y
+      this.context.emitter.emit(EventNamesEnum.DISPATCH_VFX, explosion)
       collision.parent.takeDamage(100)
     }
   }
